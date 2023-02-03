@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { DisplayDtoResult } from "src/baseData/base.dto";
 import { Repository } from "typeorm";
 import { createUserDtoInput } from "./dtos/create-user.dto";
 import { User } from "./entities/users.entity";
@@ -10,11 +11,11 @@ export class UsersService {
     @InjectRepository(User) private readonly userRepository: Repository<User>
   ) {}
 
-  async getUsers() {
+  async getUsers(): Promise<DisplayDtoResult | User[]> {
     try {
       return await this.userRepository.find();
-    } catch (e) {
-      console.log(e);
+    } catch (errorMessage) {
+      return { isOk: false, errorMessage };
     }
   }
 
@@ -25,15 +26,20 @@ export class UsersService {
    *  en troiseme, hash de la PW
    * @param param email, password, role
    */
-  async createUser({ email, password, role }: createUserDtoInput) {
+  async createUser({
+    email,
+    password,
+    role,
+  }: createUserDtoInput): Promise<DisplayDtoResult> {
     try {
       const isClientWithEmail = await this.userRepository.findOneBy({ email });
-      if (isClientWithEmail) return;
+      if (isClientWithEmail)
+        return { isOk: false, errorMessage: "this email already exists" };
       const entityUser = this.userRepository.create({ email, password, role });
       await this.userRepository.save(entityUser);
-      return true;
-    } catch (e) {
-      console.log("error");
+      return { isOk: true };
+    } catch (errorMessage) {
+      return { isOk: false, errorMessage };
     }
   }
 }
