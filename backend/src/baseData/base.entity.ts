@@ -3,14 +3,14 @@ import { IsNumber, IsString } from "class-validator";
 import {
   CreateDateColumn,
   Entity,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 
 @Entity()
 @ObjectType()
-export class baseEntity {
-  @PrimaryColumn()
+export class ParentEntity {
+  @PrimaryGeneratedColumn()
   @IsNumber()
   @Field((type) => Number)
   id: number;

@@ -13,9 +13,8 @@ export class UsersResolver {
   }
 
   @Mutation((returns) => Boolean)
-  createUser(@Args("input") createUserDtoInput: createUserDtoInput) {
-    console.log(createUserDtoInput, " is input value");
-    // this.UsersService.createUser(createUserDtoInput);
+  async createUser(@Args("input") createUserDtoInput: createUserDtoInput) {
+    await this.UsersService.createUser(createUserDtoInput);
     return true;
   }
 }

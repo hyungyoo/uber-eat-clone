@@ -5,7 +5,7 @@ import {
   registerEnumType,
 } from "@nestjs/graphql";
 import { IsString } from "class-validator";
-import { baseEntity } from "src/baseData/base.entity";
+import { ParentEntity } from "src/baseData/base.entity";
 import { Column, Entity } from "typeorm";
 
 enum UserRole {
@@ -14,14 +14,12 @@ enum UserRole {
   delivery,
 }
 
-registerEnumType(UserRole, {
-  name: "UserRole",
-});
+registerEnumType(UserRole, { name: "UserRole" });
 
 @InputType({ isAbstract: true })
 @ObjectType()
 @Entity()
-export class User extends baseEntity {
+export class User extends ParentEntity {
   @Column()
   @IsString()
   @Field((type) => String)

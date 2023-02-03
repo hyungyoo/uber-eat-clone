@@ -23,7 +23,7 @@ export class UsersService {
    *  en premier, check avec email afin de ne pas inscrire avec meme email
    *  en dexieme, creation nouveau user
    *  en troiseme, hash de la PW
-   * @param param0 email, password, role
+   * @param param email, password, role
    */
   async createUser({ email, password, role }: createUserDtoInput) {
     try {
@@ -32,8 +32,9 @@ export class UsersService {
       await this.userRepository.save(
         this.userRepository.create({ email, password, role })
       );
+      return true;
     } catch (e) {
-      console.log(e);
+      console.log("error");
     }
   }
 }
