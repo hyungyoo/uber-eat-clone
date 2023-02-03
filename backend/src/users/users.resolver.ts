@@ -7,13 +7,15 @@ import { UsersService } from "./users.service";
 export class UsersResolver {
   constructor(private readonly UsersService: UsersService) {}
 
-  @Query((returns) => User)
-  getTest() {
-    return "a";
+  @Query((returns) => [User])
+  getUsers() {
+    return this.UsersService.getUsers();
   }
 
   @Mutation((returns) => Boolean)
   createUser(@Args("input") createUserDtoInput: createUserDtoInput) {
-    return Boolean;
+    console.log(createUserDtoInput, " is input value");
+    // this.UsersService.createUser(createUserDtoInput);
+    return true;
   }
 }

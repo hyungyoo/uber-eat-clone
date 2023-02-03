@@ -6,12 +6,13 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { UsersModule } from "./users/users.module";
 import * as Joi from "joi";
 import { User } from "./users/entities/users.entity";
+import { BaseModule } from "./baseData/base.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: "./env",
+      envFilePath: ".env",
       validationSchema: Joi.object({
         POSTGRES_HOST: Joi.string().required(),
         POSTGRES_PORT: Joi.string().required(),
@@ -27,14 +28,16 @@ import { User } from "./users/entities/users.entity";
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [User],
       synchronize: true,
+      logging: true,
+      entities: [User],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
     }),
     UsersModule,
+    BaseModule,
   ],
   controllers: [],
   providers: [],

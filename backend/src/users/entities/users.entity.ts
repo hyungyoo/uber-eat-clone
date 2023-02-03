@@ -4,6 +4,7 @@ import {
   ObjectType,
   registerEnumType,
 } from "@nestjs/graphql";
+import { IsString } from "class-validator";
 import { baseEntity } from "src/baseData/base.entity";
 import { Column, Entity } from "typeorm";
 
@@ -22,10 +23,12 @@ registerEnumType(UserRole, {
 @Entity()
 export class User extends baseEntity {
   @Column()
+  @IsString()
   @Field((type) => String)
   email: string;
 
   @Column()
+  @IsString()
   @Field((type) => String)
   password: string;
 
