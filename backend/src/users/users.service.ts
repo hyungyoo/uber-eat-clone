@@ -29,9 +29,8 @@ export class UsersService {
     try {
       const isClientWithEmail = await this.userRepository.findOneBy({ email });
       if (isClientWithEmail) return;
-      await this.userRepository.save(
-        this.userRepository.create({ email, password, role })
-      );
+      const entityUser = this.userRepository.create({ email, password, role });
+      await this.userRepository.save(entityUser);
       return true;
     } catch (e) {
       console.log("error");
