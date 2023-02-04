@@ -9,6 +9,7 @@ import { ParentEntity } from "src/baseData/base.entity";
 import { BeforeInsert, Column, Entity } from "typeorm";
 import * as bcrypt from "bcryptjs";
 import { HttpException, HttpStatus } from "@nestjs/common";
+import { DisplayResult } from "src/baseData/base.display.result";
 
 enum UserRole {
   CLIENT,
@@ -38,13 +39,23 @@ export class User extends ParentEntity {
   role: UserRole;
 
   @BeforeInsert()
-  async makeHashedPW(): Promise<void> {
+  async MakeHashedPW(): Promise<void> {
     try {
       const saltRounds = 10;
       const salt = await bcrypt.genSalt(saltRounds);
       this.password = await bcrypt.hash(this.password, salt);
     } catch (error) {
       throw new HttpException({ error }, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async ValidatePW(InputPW: string): Promise<DisplayResult> {
+    try {
+      const IsCorrectPW = await bcrypt.compare(InputPW, this.password);
+      if (IsCorrectPW) return { isOk: true, token: "not yet!" };
+      else return { isOk: false, errorMessage: "password not correct!" };
+    } catch (errorMessage) {
+      throw { isOk: false, errorMessage };
     }
   }
 }
