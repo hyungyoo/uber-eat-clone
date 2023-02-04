@@ -1,6 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { IsBoolean, IsString } from "class-validator";
-import { type } from "os";
 
 @ObjectType()
 export class DisplayResult {
@@ -11,4 +10,8 @@ export class DisplayResult {
   @Field((type) => String, { nullable: true })
   @IsString()
   errorMessage?: string;
+
+  @Field((type) => String, { nullable: true })
+  @IsString()
+  token?: string;
 }

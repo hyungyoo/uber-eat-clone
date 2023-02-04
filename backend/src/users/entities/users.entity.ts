@@ -10,6 +10,7 @@ import { BeforeInsert, Column, Entity } from "typeorm";
 import * as bcrypt from "bcryptjs";
 import { HttpException, HttpStatus } from "@nestjs/common";
 import { DisplayResult } from "src/baseData/base.display.result";
+import { LoginDisplayResult } from "../dtos/login.dto";
 
 enum UserRole {
   CLIENT,
@@ -49,7 +50,7 @@ export class User extends ParentEntity {
     }
   }
 
-  async ValidatePW(InputPW: string): Promise<DisplayResult> {
+  async ValidatePW(InputPW: string): Promise<LoginDisplayResult> {
     try {
       const IsCorrectPW = await bcrypt.compare(InputPW, this.password);
       if (IsCorrectPW) return { isOk: true, token: "not yet!" };

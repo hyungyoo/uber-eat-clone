@@ -3,7 +3,7 @@ import { DisplayResult } from "src/baseData/base.display.result";
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { User } from "./entities/users.entity";
 import { UsersService } from "./users.service";
-import { LoginDto } from "./dtos/login.dto";
+import { LoginDisplayResult, LoginDto } from "./dtos/login.dto";
 
 @Resolver((of) => User)
 export class UsersResolver {
@@ -14,7 +14,7 @@ export class UsersResolver {
     return this.UsersService.GetUsers();
   }
 
-  @Query((returns) => DisplayResult)
+  @Query((returns) => LoginDisplayResult)
   async Login(@Args("input") LoginDto: LoginDto) {
     return await this.UsersService.Login(LoginDto);
   }
