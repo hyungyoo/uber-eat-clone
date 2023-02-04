@@ -15,9 +15,9 @@ import {
 } from "@nestjs/common";
 
 enum UserRole {
-  client,
-  restaurantOwner,
-  delivery,
+  CLIENT,
+  RESTAURANT,
+  DELIVERY,
 }
 
 registerEnumType(UserRole, { name: "UserRole" });

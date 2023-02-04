@@ -2,18 +2,18 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DisplayDtoResult } from "src/baseData/base.dto";
 import { Repository } from "typeorm";
-import { createUserDtoInput } from "./dtos/create-user.dto";
+import { CreateUserDto } from "./dtos/create-user.dto";
 import { User } from "./entities/users.entity";
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>
+    @InjectRepository(User) private readonly UserRepository: Repository<User>
   ) {}
 
-  async getUsers(): Promise<DisplayDtoResult | User[]> {
+  async GetUsers(): Promise<DisplayDtoResult | User[]> {
     try {
-      return await this.userRepository.find();
+      return await this.UserRepository.find();
     } catch (errorMessage) {
       return { isOk: false, errorMessage };
     }
@@ -26,17 +26,17 @@ export class UsersService {
    *  en troiseme, hash de la PW
    * @param param email, password, role
    */
-  async createUser({
+  async CreateUser({
     email,
     password,
     role,
-  }: createUserDtoInput): Promise<DisplayDtoResult> {
+  }: CreateUserDto): Promise<DisplayDtoResult> {
     try {
-      const isClientWithEmail = await this.userRepository.findOneBy({ email });
-      if (isClientWithEmail)
+      const IsClientWithEmail = await this.UserRepository.findOneBy({ email });
+      if (IsClientWithEmail)
         return { isOk: false, errorMessage: "this email already exists" };
-      const entityUser = this.userRepository.create({ email, password, role });
-      await this.userRepository.save(entityUser);
+      const EntityUser = this.UserRepository.create({ email, password, role });
+      await this.UserRepository.save(EntityUser);
       return { isOk: true };
     } catch (errorMessage) {
       return { isOk: false, errorMessage };
