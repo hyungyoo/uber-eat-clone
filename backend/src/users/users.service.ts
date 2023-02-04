@@ -29,6 +29,7 @@ export class UsersService {
    */
   async CreateUser({
     email,
+    name,
     password,
     role,
   }: CreateUserDto): Promise<DisplayResult> {
@@ -36,7 +37,12 @@ export class UsersService {
       const IsUsertWithEmail = await this.UserRepository.findOneBy({ email });
       if (IsUsertWithEmail)
         return { isOk: false, errorMessage: "this email already exists" };
-      const EntityUser = this.UserRepository.create({ email, password, role });
+      const EntityUser = this.UserRepository.create({
+        email,
+        name,
+        password,
+        role,
+      });
       await this.UserRepository.save(EntityUser);
       return { isOk: true };
     } catch (errorMessage) {

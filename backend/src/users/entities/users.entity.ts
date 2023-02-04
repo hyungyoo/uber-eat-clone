@@ -32,6 +32,11 @@ export class User extends ParentEntity {
   @Column()
   @IsString()
   @Field((type) => String)
+  name: string;
+
+  @Column()
+  @IsString()
+  @Field((type) => String)
   password: string;
 
   @Column({ type: "enum", enum: UserRole })

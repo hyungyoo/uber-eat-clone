@@ -4,6 +4,7 @@ import { User } from "../entities/users.entity";
 @InputType()
 export class CreateUserDto extends PickType(User, [
   "email",
+  "name",
   "password",
   "role",
 ]) {}
