@@ -1,8 +1,8 @@
 import { Field, InputType, ObjectType, PickType } from "@nestjs/graphql";
 import { User } from "../entities/users.entity";
 import { basename } from "path";
-import { DisplayResult } from "./user.display.result";
 import { IsString } from "class-validator";
+import { DisplayResult } from "src/baseData/base.display.result";
 
 @InputType()
 export class LoginDto extends PickType(User, ["email", "password"]) {}

@@ -4,19 +4,22 @@ import { DisplayResult } from "src/baseData/base.display.result";
 import { Repository } from "typeorm";
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { User } from "./entities/users.entity";
-import { LoginDto } from "./dtos/login.dto";
+import { LoginDisplayResult, LoginDto } from "./dtos/login.dto";
+import * as Jwt from "jsonwebtoken";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private readonly UserRepository: Repository<User>
+    @InjectRepository(User) private readonly UserRepository: Repository<User>,
+    private readonly ConfigService: ConfigService
   ) {}
 
-  async GetUsers(): Promise<DisplayResult | User[]> {
+  async GetUsers(): Promise<User[]> {
     try {
       return await this.UserRepository.find();
     } catch (errorMessage) {
-      return { isOk: false, errorMessage };
+      return [];
     }
   }
 
@@ -57,12 +60,20 @@ export class UsersService {
    * @param param0 email, password
    * @returns DisplayResult with token
    */
-  async Login({ email, password }: LoginDto): Promise<DisplayResult> {
+  async Login({ email, password }: LoginDto): Promise<LoginDisplayResult> {
     try {
       const IsUser = await this.UserRepository.findOneBy({ email });
       if (!IsUser)
         return { isOk: false, errorMessage: "user not exists wtih this email" };
-      return IsUser.ValidatePW(password);
+      console.log(process.env.PRIVATE_KEY_FOR_TOKEN);
+      if (IsUser.ValidatePW(password))
+        return {
+          isOk: true,
+          token: Jwt.sign(
+            { id: IsUser.id },
+            this.ConfigService.get("PRIVATE_KEY_FOR_TOKEN")
+          ),
+        };
     } catch (errorMessage) {
       return { isOk: false, errorMessage };
     }

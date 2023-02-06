@@ -19,6 +19,7 @@ import { BaseModule } from "./baseData/base.module";
         POSTGRES_USER: Joi.string().required(),
         POSTGRES_PASSWORD: Joi.string().required(),
         POSTGRES_DB: Joi.string().required(),
+        PRIVATE_KEY_FOR_TOKEN: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({
