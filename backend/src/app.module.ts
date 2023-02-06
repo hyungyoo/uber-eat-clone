@@ -1,5 +1,10 @@
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
-import { Module } from "@nestjs/common";
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -7,6 +12,8 @@ import { UsersModule } from "./users/users.module";
 import * as Joi from "joi";
 import { User } from "./users/entities/users.entity";
 import { BaseModule } from "./baseData/base.module";
+import { JwtModule } from "./jwt/jwt.module";
+import { JwtMiddleWare } from "./jwt/jwt.middleware";
 
 @Module({
   imports: [
@@ -39,8 +46,18 @@ import { BaseModule } from "./baseData/base.module";
     }),
     UsersModule,
     BaseModule,
+    JwtModule.forRoot({
+      isGlobal: true,
+    }),
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(JwtMiddleWare).forRoutes({
+      path: "/graphql",
+      method: RequestMethod.ALL,
+    });
+  }
+}
