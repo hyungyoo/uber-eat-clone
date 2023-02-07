@@ -11,9 +11,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { UsersModule } from "./users/users.module";
 import * as Joi from "joi";
 import { User } from "./users/entities/users.entity";
-import { BaseModule } from "./baseData/base.module";
 import { JwtModule } from "./jwt/jwt.module";
 import { JwtMiddleWare } from "./jwt/jwt.middleware";
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -48,10 +48,10 @@ import { JwtMiddleWare } from "./jwt/jwt.middleware";
       },
     }),
     UsersModule,
-    BaseModule,
     JwtModule.forRoot({
       isGlobal: true,
     }),
+    AuthModule,
   ],
   controllers: [],
   providers: [],
