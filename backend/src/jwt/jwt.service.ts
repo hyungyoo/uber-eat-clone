@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import * as Jwt from "jsonwebtoken";
 
@@ -10,12 +10,14 @@ export class JwtService {
     return Jwt.sign(payload, this.ConfigService.get("PRIVATE_KEY_FOR_TOKEN"));
   }
 
-  verifyToken(token: string) {
-    const returnVerify = Jwt.verify(
-      token,
-      this.ConfigService.get("PRIVATE_KEY_FOR_TOKEN")
-    );
-    console.log(returnVerify);
-    // return true;
+  async verifyToken(token: string) {
+    try {
+      return Jwt.verify(
+        token,
+        await this.ConfigService.get("PRIVATE_KEY_FOR_TOKEN")
+      )["id"];
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 }

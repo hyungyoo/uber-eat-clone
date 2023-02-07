@@ -6,10 +6,15 @@ import { JwtService } from "./jwt.service";
 export class JwtMiddleWare implements NestMiddleware {
   constructor(private readonly JwtService: JwtService) {}
 
-  use(req: Request, res: Response, next: NextFunction) {
-    const jwtToken = req.headers["jwt-token"];
-    if (jwtToken) {
-      this.JwtService.verifyToken(jwtToken.toString());
+  async use(req: Request, res: Response, next: NextFunction) {
+    try {
+      if ("jwt-token" in req.headers) {
+        const userId = await this.JwtService.verifyToken(
+          req.headers["jwt-token"].toString()
+        );
+      }
+    } catch (e) {
+      console.log(e, " [in JwtMiddleWare]");
     }
     next();
   }
