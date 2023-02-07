@@ -73,4 +73,13 @@ export class UsersService {
       return { isOk: false, errorMessage };
     }
   }
+
+  /**
+   * find user from id
+   * @param id
+   * @returns
+   */
+  async FindUserById(id: number): Promise<User> {
+    return await this.UserRepository.findOneBy({ id });
+  }
 }
