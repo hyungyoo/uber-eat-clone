@@ -44,7 +44,6 @@ import { UsersModule } from "./users/users.module";
       driver: ApolloDriver,
       autoSchemaFile: true,
       context: async ({ req }) => {
-        console.log("i am in graphql module ");
         return { user: req["user"] };
       },
     }),

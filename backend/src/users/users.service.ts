@@ -6,6 +6,8 @@ import { CreateUserDto } from "./dtos/create-user.dto";
 import { User } from "./entities/users.entity";
 import { LoginDisplayResult, LoginDto } from "./dtos/login.dto";
 import { JwtService } from "src/jwt/jwt.service";
+import { GetUsersOutput } from "./dtos/get-users.dto";
+import { GetUserOutput } from "./dtos/get-user.dto";
 
 @Injectable()
 export class UsersService {
@@ -14,11 +16,19 @@ export class UsersService {
     private readonly JwtService: JwtService
   ) {}
 
-  async GetUsers(): Promise<User[]> {
+  async GetUsers(): Promise<GetUsersOutput> {
     try {
-      return await this.UserRepository.find();
+      const users = await this.UserRepository.find();
+      if (!users) throw Error();
+      return {
+        isOk: true,
+        users,
+      };
     } catch (errorMessage) {
-      return [];
+      return {
+        isOk: false,
+        errorMessage,
+      };
     }
   }
 
@@ -66,7 +76,7 @@ export class UsersService {
         return { isOk: false, errorMessage: "user not exists wtih this email" };
       const isCorrectPW = await IsUser.ValidatePW(password);
       return {
-        isOk: isCorrectPW ? true : false,
+        isOk: Boolean(isCorrectPW),
         token: isCorrectPW ? this.JwtService.SignToken({ id: IsUser.id }) : "",
         errorMessage: !isCorrectPW ? "password not correct" : "",
       };
@@ -80,7 +90,19 @@ export class UsersService {
    * @param id
    * @returns
    */
-  async FindUserById(id: number): Promise<User> {
-    return await this.UserRepository.findOneBy({ id });
+  async FindUserById(id: number): Promise<GetUserOutput> {
+    try {
+      const user = await this.UserRepository.findOneBy({ id });
+      if (!user) throw Error();
+      return {
+        isOk: true,
+        user,
+      };
+    } catch (errorMessage) {
+      return {
+        isOk: false,
+        errorMessage,
+      };
+    }
   }
 }

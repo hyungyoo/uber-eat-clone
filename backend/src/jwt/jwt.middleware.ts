@@ -10,16 +10,14 @@ export class JwtMiddleWare implements NestMiddleware {
     private readonly JwtService: JwtService
   ) {}
   async use(req: Request, res: Response, next: NextFunction) {
-    console.log(" i am in user in jwt middleware")
     try {
       if ("jwt" in req.headers) {
-        const id = this.JwtService.VerifyToken(req.headers["jwt"].toString());
-        const userInfo = await this.UsersService.FindUserById(id);
-        req["user"] = userInfo;
+        const id = this.JwtService.VerifyToken(req.headers.jwt.toString());
+        const { user, errorMessage } = await this.UsersService.FindUserById(id);
+        if (errorMessage) throw Error();
+        req["user"] = user;
       }
-      next();
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
+    next();
   }
 }

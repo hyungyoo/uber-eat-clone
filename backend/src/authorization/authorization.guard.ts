@@ -7,10 +7,8 @@ export class AuthorizationGuard implements CanActivate {
   canActivate(
     context: ExecutionContext
   ): boolean | Promise<boolean> | Observable<boolean> {
-    console.log("i am in authorization guard");
-    const gqlContext = GqlExecutionContext.create(context).getContext();
-    if (!gqlContext["user"]) return false;
-    return true;
-    // return false;
+    const gqlRequest = GqlExecutionContext.create(context).getContext();
+    if (gqlRequest.user) return true;
+    return false;
   }
 }

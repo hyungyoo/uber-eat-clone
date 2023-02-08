@@ -7,12 +7,15 @@ import { LoginDisplayResult, LoginDto } from "./dtos/login.dto";
 import { UseGuards } from "@nestjs/common";
 import { AuthorizationGuard } from "src/authorization/authorization.guard";
 import { AuthUser } from "src/authorization/auth-user.decorator";
+import { GetUsersOutput } from "./dtos/get-users.dto";
+import { GetUserInput, GetUserOutput } from "./dtos/get-user.dto";
 
 @Resolver((of) => User)
 export class UsersResolver {
   constructor(private readonly UsersService: UsersService) {}
 
-  @Query((returns) => [User])
+  @UseGuards(AuthorizationGuard)
+  @Query((returns) => GetUsersOutput)
   GetUsers() {
     return this.UsersService.GetUsers();
   }
@@ -27,11 +30,20 @@ export class UsersResolver {
     return await this.UsersService.CreateUser(CreateUserDto);
   }
 
+  /**
+   * with userGuard, always GetMyProfile return User
+   * @param User
+   * @returns
+   */
   @Query((returns) => User)
   @UseGuards(AuthorizationGuard)
-  Auth(@AuthUser() User: User) {
-    // console.log(AuthUser);
-    console.log(" i am in auth resolver");
+  GetMyProfile(@AuthUser() User: User) {
     return User;
+  }
+
+  @UseGuards(AuthorizationGuard)
+  @Query((returns) => GetUserOutput)
+  async GetUser(@Args("input") { id }: GetUserInput) {
+    return this.UsersService.FindUserById(id);
   }
 }
