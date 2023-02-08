@@ -8,6 +8,7 @@ import { LoginDisplayResult, LoginDto } from "./dtos/login.dto";
 import { JwtService } from "src/jwt/jwt.service";
 import { GetUsersOutput } from "./dtos/get-users.dto";
 import { GetUserOutput } from "./dtos/get-user.dto";
+import { EditUserInput } from "./dtos/edit-user.dto";
 
 @Injectable()
 export class UsersService {
@@ -59,6 +60,28 @@ export class UsersService {
       return { isOk: true };
     } catch (errorMessage) {
       return { isOk: false, errorMessage };
+    }
+  }
+
+  async EditUser(
+    id: number,
+    EditUserInput: EditUserInput
+  ): Promise<DisplayResult> {
+    try {
+      const user = await this.UserRepository.findOne({ where: { id } });
+      const userChanged = this.UserRepository.create({
+        ...user,
+        ...EditUserInput,
+      });
+      await this.UserRepository.save(userChanged);
+      return {
+        isOk: true,
+      };
+    } catch (errorMessage) {
+      return {
+        isOk: false,
+        errorMessage,
+      };
     }
   }
 

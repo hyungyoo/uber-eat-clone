@@ -9,12 +9,12 @@ import { AuthorizationGuard } from "src/authorization/authorization.guard";
 import { AuthUser } from "src/authorization/auth-user.decorator";
 import { GetUsersOutput } from "./dtos/get-users.dto";
 import { GetUserInput, GetUserOutput } from "./dtos/get-user.dto";
+import { EditUserInput } from "./dtos/edit-user.dto";
 
 @Resolver((of) => User)
 export class UsersResolver {
   constructor(private readonly UsersService: UsersService) {}
 
-  @UseGuards(AuthorizationGuard)
   @Query((returns) => GetUsersOutput)
   GetUsers() {
     return this.UsersService.GetUsers();
@@ -30,6 +30,14 @@ export class UsersResolver {
     return await this.UsersService.CreateUser(CreateUserDto);
   }
 
+  @Mutation((returns) => DisplayResult)
+  @UseGuards(AuthorizationGuard)
+  async EditUser(
+    @AuthUser() { id }: User,
+    @Args("input") EditUserInput: EditUserInput
+  ): Promise<DisplayResult> {
+    return this.UsersService.EditUser(id, EditUserInput);
+  }
   /**
    * with userGuard, always GetMyProfile return User
    * @param User
@@ -41,7 +49,6 @@ export class UsersResolver {
     return User;
   }
 
-  @UseGuards(AuthorizationGuard)
   @Query((returns) => GetUserOutput)
   async GetUser(@Args("input") { id }: GetUserInput) {
     return this.UsersService.FindUserById(id);

@@ -6,7 +6,7 @@ import {
 } from "@nestjs/graphql";
 import { IsEmail, IsEnum, IsString } from "class-validator";
 import { ParentEntity } from "src/baseData/base.entity";
-import { BeforeInsert, Column, Entity } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity } from "typeorm";
 import * as bcrypt from "bcryptjs";
 import { HttpException, HttpStatus } from "@nestjs/common";
 
@@ -43,6 +43,7 @@ export class User extends ParentEntity {
   role: UserRole;
 
   @BeforeInsert()
+  @BeforeUpdate()
   async MakeHashedPW(): Promise<void> {
     try {
       const saltRounds = 10;
