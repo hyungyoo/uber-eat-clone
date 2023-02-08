@@ -1,5 +1,4 @@
-import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { DisplayResult } from "src/baseData/base.display.result";
+import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { CreateUserInput, CreateUserOutput } from "./dtos/create-user.dto";
 import { User } from "./entities/users.entity";
 import { UsersService } from "./users.service";
@@ -45,11 +44,6 @@ export class UsersResolver {
     return await this.UsersService.DeleteUserById(id);
   }
 
-  /**
-   * with userGuard, always GetMyProfile return User
-   * @param User
-   * @returns
-   */
   @Query((returns) => User)
   @UseGuards(AuthorizationGuard)
   GetMyProfile(@AuthUser() User: User) {

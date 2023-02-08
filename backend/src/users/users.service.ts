@@ -17,6 +17,10 @@ export class UsersService {
     private readonly JwtService: JwtService
   ) {}
 
+  /**
+   * get all users in database of users
+   * @return return status code, info of all users
+   */
   async GetUsers(): Promise<GetUsersOutput> {
     try {
       const users = await this.UserRepository.find();
@@ -39,6 +43,7 @@ export class UsersService {
    *  en dexieme, creation nouveau user
    *  en troiseme, hash de la PW
    * @param param0 email, password, role
+   * @return status code, User info of the created user
    */
   async CreateUser(
     CreateUserInput: CreateUserInput
@@ -58,6 +63,13 @@ export class UsersService {
     }
   }
 
+  /**
+   * get id and email / password
+   * edit profile of user who has same id
+   * @param id
+   * @param EditUserInput
+   * @returns status code, user info of the changed user
+   */
   async EditUser(
     id: number,
     EditUserInput: EditUserInput
@@ -81,6 +93,11 @@ export class UsersService {
     }
   }
 
+  /**
+   * delete user with id
+   * @param id
+   * @returns status code, user info of the deleted user
+   */
   async DeleteUserById(id: number): Promise<DeleteUserOutput> {
     try {
       const user = await this.UserRepository.findOne({ where: { id } });
@@ -103,7 +120,7 @@ export class UsersService {
    * 2. comparer with password in users entitie class function for access user password
    * 3. generate token
    * @param param0 email, password
-   * @returns DisplayResult with token
+   * @returns status code, token
    */
   async Login({ email, password }: LoginDto): Promise<LoginDisplayResult> {
     try {
@@ -124,7 +141,7 @@ export class UsersService {
   /**
    * find user from id
    * @param id
-   * @returns
+   * @returns status code, user info of the requested user
    */
   async FindUserById(id: number): Promise<GetUserOutput> {
     try {
