@@ -5,11 +5,13 @@ import { Repository } from "typeorm";
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { User } from "./entities/users.entity";
 import { LoginDisplayResult, LoginDto } from "./dtos/login.dto";
+import { JwtService } from "src/jwt/jwt.service";
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private readonly UserRepository: Repository<User>
+    @InjectRepository(User) private readonly UserRepository: Repository<User>,
+    private readonly JwtService: JwtService
   ) {}
 
   async GetUsers(): Promise<User[]> {
@@ -65,7 +67,7 @@ export class UsersService {
       const isCorrectPW = await IsUser.ValidatePW(password);
       return {
         isOk: isCorrectPW ? true : false,
-        token: isCorrectPW ? "token" : "",
+        token: isCorrectPW ? this.JwtService.SignToken({ id: IsUser.id }) : "",
         errorMessage: !isCorrectPW ? "password not correct" : "",
       };
     } catch (errorMessage) {
