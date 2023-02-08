@@ -6,6 +6,7 @@ import { UsersService } from "./users.service";
 import { LoginDisplayResult, LoginDto } from "./dtos/login.dto";
 import { UseGuards } from "@nestjs/common";
 import { AuthorizationGuard } from "src/authorization/authorization.guard";
+import { AuthUser } from "src/authorization/auth-user.decorator";
 
 @Resolver((of) => User)
 export class UsersResolver {
@@ -28,10 +29,9 @@ export class UsersResolver {
 
   @Query((returns) => User)
   @UseGuards(AuthorizationGuard)
-  Auth() {
+  Auth(@AuthUser() User: User) {
+    // console.log(AuthUser);
     console.log(" i am in auth resolver");
-    return {
-      name: "secc",
-    };
+    return User;
   }
 }

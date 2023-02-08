@@ -44,6 +44,7 @@ import { UsersModule } from "./users/users.module";
       driver: ApolloDriver,
       autoSchemaFile: true,
       context: async ({ req }) => {
+        console.log("i am in graphql module ");
         return { user: req["user"] };
       },
     }),
@@ -56,7 +57,7 @@ import { UsersModule } from "./users/users.module";
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    console.log("i amm in app module");
+    console.log("i am in app module");
     consumer.apply(JwtMiddleWare).forRoutes({
       path: "/graphql",
       method: RequestMethod.ALL,
