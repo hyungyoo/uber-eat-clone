@@ -1,19 +1,11 @@
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { UsersModule } from "./users/users.module";
 import * as Joi from "joi";
 import { User } from "./users/entities/users.entity";
-import { JwtModule } from "./jwt/jwt.module";
-import { JwtMiddleWare } from "./jwt/jwt.middleware";
-import { AuthModule } from './auth/auth.module';
+import { UsersModule } from "./users/users.module";
 
 @Module({
   imports: [
@@ -43,24 +35,10 @@ import { AuthModule } from './auth/auth.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
-      context: async ({ req }) => {
-        return { user: req["user"] };
-      },
     }),
     UsersModule,
-    JwtModule.forRoot({
-      isGlobal: true,
-    }),
-    AuthModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(JwtMiddleWare).forRoutes({
-      path: "/graphql",
-      method: RequestMethod.ALL,
-    });
-  }
-}
+export class AppModule {}

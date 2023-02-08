@@ -4,6 +4,7 @@ import { CreateUserDto } from "./dtos/create-user.dto";
 import { User } from "./entities/users.entity";
 import { UsersService } from "./users.service";
 import { LoginDisplayResult, LoginDto } from "./dtos/login.dto";
+import { UseGuards } from "@nestjs/common";
 
 @Resolver((of) => User)
 export class UsersResolver {
