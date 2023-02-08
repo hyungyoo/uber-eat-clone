@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DisplayResult } from "src/baseData/base.display.result";
 import { Repository } from "typeorm";
-import { CreateUserDto } from "./dtos/create-user.dto";
+import { CreateUserInput, CreateUserOutput } from "./dtos/create-user.dto";
 import { User } from "./entities/users.entity";
 import { LoginDisplayResult, LoginDto } from "./dtos/login.dto";
 import { JwtService } from "src/jwt/jwt.service";
 import { GetUsersOutput } from "./dtos/get-users.dto";
 import { GetUserOutput } from "./dtos/get-user.dto";
-import { EditUserInput } from "./dtos/edit-user.dto";
+import { EditUserInput, EditUserOutput } from "./dtos/edit-user.dto";
+import { DeleteUserOutput } from "./dtos/delete-user.dto";
 
 @Injectable()
 export class UsersService {
@@ -40,24 +40,19 @@ export class UsersService {
    *  en troiseme, hash de la PW
    * @param param0 email, password, role
    */
-  async CreateUser({
-    email,
-    name,
-    password,
-    role,
-  }: CreateUserDto): Promise<DisplayResult> {
+  async CreateUser(
+    CreateUserInput: CreateUserInput
+  ): Promise<CreateUserOutput> {
     try {
-      const IsUsertWithEmail = await this.UserRepository.findOneBy({ email });
-      if (IsUsertWithEmail)
-        return { isOk: false, errorMessage: "this email already exists" };
-      const EntityUser = this.UserRepository.create({
-        email,
-        name,
-        password,
-        role,
+      const IsUsertWithEmail = await this.UserRepository.findOneBy({
+        email: CreateUserInput.email,
       });
-      await this.UserRepository.save(EntityUser);
-      return { isOk: true };
+      if (IsUsertWithEmail) throw "this email already exists";
+      const EntityUser = this.UserRepository.create({
+        ...CreateUserInput,
+      });
+      const user = await this.UserRepository.save(EntityUser);
+      return { isOk: true, user };
     } catch (errorMessage) {
       return { isOk: false, errorMessage };
     }
@@ -66,16 +61,34 @@ export class UsersService {
   async EditUser(
     id: number,
     EditUserInput: EditUserInput
-  ): Promise<DisplayResult> {
+  ): Promise<EditUserOutput> {
     try {
-      const user = await this.UserRepository.findOne({ where: { id } });
-      const userChanged = this.UserRepository.create({
-        ...user,
+      const userEntity = await this.UserRepository.findOne({ where: { id } });
+      const user = this.UserRepository.create({
+        ...userEntity,
         ...EditUserInput,
       });
-      await this.UserRepository.save(userChanged);
+      await this.UserRepository.save(user);
       return {
         isOk: true,
+        user,
+      };
+    } catch (errorMessage) {
+      return {
+        isOk: false,
+        errorMessage,
+      };
+    }
+  }
+
+  async DeleteUserById(id: number): Promise<DeleteUserOutput> {
+    try {
+      const user = await this.UserRepository.findOne({ where: { id } });
+      if (!user) throw "this user not exists";
+      const deleteUser = await this.UserRepository.delete(id);
+      return {
+        isOk: true,
+        user,
       };
     } catch (errorMessage) {
       return {

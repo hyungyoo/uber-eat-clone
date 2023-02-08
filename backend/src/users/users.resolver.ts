@@ -1,6 +1,6 @@
 import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { DisplayResult } from "src/baseData/base.display.result";
-import { CreateUserDto } from "./dtos/create-user.dto";
+import { CreateUserInput, CreateUserOutput } from "./dtos/create-user.dto";
 import { User } from "./entities/users.entity";
 import { UsersService } from "./users.service";
 import { LoginDisplayResult, LoginDto } from "./dtos/login.dto";
@@ -9,7 +9,8 @@ import { AuthorizationGuard } from "src/authorization/authorization.guard";
 import { AuthUser } from "src/authorization/auth-user.decorator";
 import { GetUsersOutput } from "./dtos/get-users.dto";
 import { GetUserInput, GetUserOutput } from "./dtos/get-user.dto";
-import { EditUserInput } from "./dtos/edit-user.dto";
+import { EditUserInput, EditUserOutput } from "./dtos/edit-user.dto";
+import { DeleteUserInput, DeleteUserOutput } from "./dtos/delete-user.dto";
 
 @Resolver((of) => User)
 export class UsersResolver {
@@ -25,19 +26,25 @@ export class UsersResolver {
     return await this.UsersService.Login(LoginDto);
   }
 
-  @Mutation((returns) => DisplayResult)
-  async CreateUser(@Args("input") CreateUserDto: CreateUserDto) {
-    return await this.UsersService.CreateUser(CreateUserDto);
+  @Mutation((returns) => CreateUserOutput)
+  async CreateUser(@Args("input") CreateUserInput: CreateUserInput) {
+    return await this.UsersService.CreateUser(CreateUserInput);
   }
 
-  @Mutation((returns) => DisplayResult)
+  @Mutation((returns) => EditUserOutput)
   @UseGuards(AuthorizationGuard)
   async EditUser(
     @AuthUser() { id }: User,
     @Args("input") EditUserInput: EditUserInput
-  ): Promise<DisplayResult> {
+  ): Promise<EditUserOutput> {
     return this.UsersService.EditUser(id, EditUserInput);
   }
+
+  @Mutation((returns) => DeleteUserOutput)
+  async DeleteUser(@Args("input") { id }: DeleteUserInput) {
+    return await this.UsersService.DeleteUserById(id);
+  }
+
   /**
    * with userGuard, always GetMyProfile return User
    * @param User
