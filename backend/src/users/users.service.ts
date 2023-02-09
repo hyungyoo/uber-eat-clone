@@ -10,6 +10,7 @@ import { GetUserOutput } from "./dtos/get-user.dto";
 import { EditUserInput, EditUserOutput } from "./dtos/edit-user.dto";
 import { DeleteUserOutput } from "./dtos/delete-user.dto";
 import { EmailVerification } from "src/email/entities/email.verification.entity";
+import { EmailService } from "src/email/email.service";
 
 @Injectable()
 export class UsersService {
@@ -17,7 +18,8 @@ export class UsersService {
     @InjectRepository(User) private readonly UserRepository: Repository<User>,
     @InjectRepository(EmailVerification)
     private readonly EmailVerificationRepository: Repository<EmailVerification>,
-    private readonly JwtService: JwtService
+    private readonly JwtService: JwtService,
+    private readonly EmailService: EmailService
   ) {}
 
   /**
@@ -61,6 +63,11 @@ export class UsersService {
       const emailVerified = await this.EmailVerificationRepository.save(
         this.EmailVerificationRepository.create({ user })
       );
+      // this.EmailService.SendMail(
+      //   user.email,
+      //   user.name,
+      //   emailVerified.verificationCode
+      // );
       return { user, emailVerified };
     } catch (errorMessage) {
       return { isOk: false, errorMessage };
@@ -91,6 +98,11 @@ export class UsersService {
       const emailVerified = await this.EmailVerificationRepository.save(
         this.EmailVerificationRepository.create({ user })
       );
+      // this.EmailService.SendMail(
+      //   user.email,
+      //   user.name,
+      //   emailVerified.verificationCode
+      // );
       return {
         user,
       };
