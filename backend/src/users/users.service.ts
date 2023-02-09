@@ -52,8 +52,8 @@ export class UsersService {
     CreateUserInput: CreateUserInput
   ): Promise<CreateUserOutput> {
     try {
-      const isAleadyEmail = await this.IsUserWithEmail(CreateUserInput.email);
-      if (isAleadyEmail) throw "this email already exists";
+      if (await this.IsUserWithEmail(CreateUserInput.email))
+        throw "this email already exists";
       const EntityUser = this.UserRepository.create({
         ...CreateUserInput,
       });
@@ -79,8 +79,8 @@ export class UsersService {
     EditUserInput: EditUserInput
   ): Promise<EditUserOutput> {
     try {
-      const isAleadyEmail = await this.IsUserWithEmail(EditUserInput.email);
-      if (isAleadyEmail) throw "this email already exists";
+      if (await this.IsUserWithEmail(EditUserInput.email))
+        throw "this email already exists";
       const userEntity = await this.UserRepository.findOne({ where: { id } });
       const user = this.UserRepository.create({
         ...userEntity,

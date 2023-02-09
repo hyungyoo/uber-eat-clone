@@ -29,6 +29,9 @@ import { EmailVerification } from "./email/entities/email.verification.entity";
         POSTGRES_PASSWORD: Joi.string().required(),
         POSTGRES_DB: Joi.string().required(),
         PRIVATE_KEY_FOR_TOKEN: Joi.string().required(),
+        MAILGUN_API_KEY: Joi.string().required(),
+        MAILGUN_DOMAIN_NAME: Joi.string().required(),
+        MAILGUN_FROM: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({

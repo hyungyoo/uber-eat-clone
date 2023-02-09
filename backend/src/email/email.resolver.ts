@@ -15,4 +15,6 @@ export class EmailResolver {
   ) {
     return this.EmailService.VerifierEmailCode(verificationCode);
   }
+
+  
 }
