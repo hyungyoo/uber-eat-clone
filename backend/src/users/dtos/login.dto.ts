@@ -1,6 +1,5 @@
 import { Field, InputType, ObjectType, PickType } from "@nestjs/graphql";
 import { User } from "../entities/users.entity";
-import { basename } from "path";
 import { IsString } from "class-validator";
 import { DisplayResult } from "src/baseData/base.display.result";
 

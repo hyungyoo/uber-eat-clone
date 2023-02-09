@@ -2,21 +2,22 @@ import {
   Field,
   InputType,
   ObjectType,
+  OmitType,
   registerEnumType,
 } from "@nestjs/graphql";
 import { IsEmail, IsEnum, IsString } from "class-validator";
 import { ParentEntity } from "src/baseData/base.entity";
-import { BeforeInsert, BeforeUpdate, Column, Entity } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, IsNull } from "typeorm";
 import * as bcrypt from "bcryptjs";
 import { HttpException, HttpStatus } from "@nestjs/common";
 
-enum UserRole {
+export enum UserRole {
   CLIENT,
   RESTAURANT,
   DELIVERY,
 }
 
-registerEnumType(UserRole, { name: "UserRole" });
+export default registerEnumType(UserRole, { name: "UserRole" });
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -32,7 +33,7 @@ export class User extends ParentEntity {
   @Field((type) => String)
   name: string;
 
-  @Column()
+  @Column({ select: false })
   @IsString()
   @Field((type) => String)
   password: string;
@@ -46,6 +47,7 @@ export class User extends ParentEntity {
   @BeforeUpdate()
   async MakeHashedPW(): Promise<void> {
     try {
+      if (!this.password) return;
       const saltRounds = 10;
       const salt = await bcrypt.genSalt(saltRounds);
       this.password = await bcrypt.hash(this.password, salt);

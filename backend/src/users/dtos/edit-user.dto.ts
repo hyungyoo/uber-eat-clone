@@ -6,8 +6,8 @@ import {
   PickType,
 } from "@nestjs/graphql";
 import { DisplayResult } from "src/baseData/base.display.result";
+import { UserReturnType } from "../entities/user.return.entiy";
 import { User } from "../entities/users.entity";
-import { CreateUserOutput } from "./create-user.dto";
 
 @InputType()
 export class EditUserInput extends PartialType(
@@ -16,6 +16,6 @@ export class EditUserInput extends PartialType(
 
 @ObjectType()
 export class EditUserOutput extends DisplayResult {
-  @Field((type) => User, { nullable: true })
-  user?: User;
+  @Field((type) => UserReturnType, { nullable: true })
+  user?: UserReturnType;
 }

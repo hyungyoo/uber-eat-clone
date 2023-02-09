@@ -1,9 +1,9 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { DisplayResult } from "src/baseData/base.display.result";
-import { User } from "../entities/users.entity";
+import { UserReturnType } from "../entities/user.return.entiy";
 
 @ObjectType()
 export class GetUsersOutput extends DisplayResult {
-  @Field((type) => [User], { nullable: true })
-  users?: User[];
+  @Field((type) => [UserReturnType], { nullable: true })
+  users?: UserReturnType[];
 }

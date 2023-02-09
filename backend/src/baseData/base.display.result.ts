@@ -4,9 +4,9 @@ import { type } from "os";
 
 @ObjectType()
 export class DisplayResult {
-  @Field((type) => Boolean)
+  @Field((type) => Boolean, { defaultValue: true })
   @IsBoolean()
-  isOk: boolean;
+  isOk?: boolean;
 
   @Field((type) => String, { nullable: true })
   @IsString()

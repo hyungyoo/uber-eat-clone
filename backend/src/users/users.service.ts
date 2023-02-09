@@ -57,7 +57,7 @@ export class UsersService {
         ...CreateUserInput,
       });
       const user = await this.UserRepository.save(EntityUser);
-      return { isOk: true, user };
+      return { user };
     } catch (errorMessage) {
       return { isOk: false, errorMessage };
     }
@@ -82,7 +82,6 @@ export class UsersService {
       });
       await this.UserRepository.save(user);
       return {
-        isOk: true,
         user,
       };
     } catch (errorMessage) {
@@ -102,9 +101,8 @@ export class UsersService {
     try {
       const user = await this.UserRepository.findOne({ where: { id } });
       if (!user) throw "this user not exists";
-      const deleteUser = await this.UserRepository.delete(id);
+      await this.UserRepository.delete(id);
       return {
-        isOk: true,
         user,
       };
     } catch (errorMessage) {
@@ -124,14 +122,17 @@ export class UsersService {
    */
   async Login({ email, password }: LoginDto): Promise<LoginDisplayResult> {
     try {
-      const IsUser = await this.UserRepository.findOneBy({ email });
+      const IsUser = await this.UserRepository.findOne({
+        where: { email },
+        select: ["password"],
+      });
+      console.log(IsUser);
       if (!IsUser)
         return { isOk: false, errorMessage: "user not exists wtih this email" };
       const isCorrectPW = await IsUser.ValidatePW(password);
+      if (!isCorrectPW) throw "password not correct";
       return {
-        isOk: Boolean(isCorrectPW),
-        token: isCorrectPW ? this.JwtService.SignToken({ id: IsUser.id }) : "",
-        errorMessage: !isCorrectPW ? "password not correct" : "",
+        token: this.JwtService.SignToken({ id: IsUser.id }),
       };
     } catch (errorMessage) {
       return { isOk: false, errorMessage };
@@ -147,10 +148,7 @@ export class UsersService {
     try {
       const user = await this.UserRepository.findOneBy({ id });
       if (!user) throw Error();
-      return {
-        isOk: true,
-        user,
-      };
+      return { user };
     } catch (errorMessage) {
       return {
         isOk: false,
