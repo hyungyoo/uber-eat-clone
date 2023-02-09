@@ -14,11 +14,9 @@ export class EmailService {
     private readonly EmailVerificationRepository: Repository<EmailVerification>,
     @InjectRepository(User) private readonly UserRepository: Repository<User>,
     private readonly ConfigService: ConfigService
-  ) {
-    // this.SendMail("hjyoo901112@gmail.com");
-  }
+  ) {}
 
-  SendMail(to: string) {
+  SendMail(to: string, name: string, code: string) {
     if (!to) return;
     const api_key = this.ConfigService.get("MAILGUN_API_KEY");
     const domain = this.ConfigService.get("MAILGUN_DOMAIN_NAME");
@@ -28,7 +26,8 @@ export class EmailService {
       from: `Excited User <${fromEmail}>`,
       to,
       subject: "Verifiy email",
-      text: "Testing some Mailgun awesomeness!",
+      template: "uber_eat_email_verification",
+      "h:X-Mailgun-Variables": JSON.stringify({ name, code }),
     };
 
     mailgun.messages().send(data, function (error, body) {
