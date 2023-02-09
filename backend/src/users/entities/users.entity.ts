@@ -5,7 +5,7 @@ import {
   OmitType,
   registerEnumType,
 } from "@nestjs/graphql";
-import { IsEmail, IsEnum, IsString } from "class-validator";
+import { IsBoolean, IsEmail, IsEnum, IsString } from "class-validator";
 import { ParentEntity } from "src/baseData/base.entity";
 import { BeforeInsert, BeforeUpdate, Column, Entity, IsNull } from "typeorm";
 import * as bcrypt from "bcryptjs";
@@ -42,6 +42,11 @@ export class User extends ParentEntity {
   @IsEnum(UserRole)
   @Field((type) => UserRole)
   role: UserRole;
+
+  @Column({ name: "is_verified", default: false })
+  @IsBoolean()
+  @Field((type) => Boolean)
+  isVerified: boolean;
 
   @BeforeInsert()
   @BeforeUpdate()

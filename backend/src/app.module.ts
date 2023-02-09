@@ -14,6 +14,8 @@ import { JwtMiddleWare } from "./jwt/jwt.middleware";
 import { JwtModule } from "./jwt/jwt.module";
 import { User } from "./users/entities/users.entity";
 import { UsersModule } from "./users/users.module";
+import { EmailModule } from "./email/email.module";
+import { EmailVerification } from "./email/entities/email.verification.entity";
 
 @Module({
   imports: [
@@ -38,7 +40,7 @@ import { UsersModule } from "./users/users.module";
       database: process.env.POSTGRES_DB,
       synchronize: true,
       // logging: true,
-      entities: [User],
+      entities: [User, EmailVerification],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
@@ -50,6 +52,7 @@ import { UsersModule } from "./users/users.module";
     JwtModule.forRoot({ isGlobal: true }),
     UsersModule,
     AuthorizationModule,
+    EmailModule,
   ],
   controllers: [],
   providers: [],

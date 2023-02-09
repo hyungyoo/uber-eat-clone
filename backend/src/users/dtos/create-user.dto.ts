@@ -2,7 +2,7 @@ import { Field, InputType, ObjectType, PickType } from "@nestjs/graphql";
 import { DisplayResult } from "src/baseData/base.display.result";
 import { UserReturnType } from "../entities/user.return.entiy";
 import { User } from "../entities/users.entity";
-import { GetUserOutput } from "./get-user.dto";
+import { EmailVerification } from "src/email/entities/email.verification.entity";
 
 @InputType()
 export class CreateUserInput extends PickType(User, [
@@ -16,4 +16,7 @@ export class CreateUserInput extends PickType(User, [
 export class CreateUserOutput extends DisplayResult {
   @Field((type) => UserReturnType, { nullable: true })
   user?: UserReturnType;
+
+  @Field((type) => EmailVerification)
+  emailVerified?: EmailVerification;
 }
