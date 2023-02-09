@@ -52,10 +52,8 @@ export class UsersService {
     CreateUserInput: CreateUserInput
   ): Promise<CreateUserOutput> {
     try {
-      const IsUsertWithEmail = await this.UserRepository.findOneBy({
-        email: CreateUserInput.email,
-      });
-      if (IsUsertWithEmail) throw "this email already exists";
+      const isAleadyEmail = await this.IsUserWithEmail(CreateUserInput.email);
+      if (isAleadyEmail) throw "this email already exists";
       const EntityUser = this.UserRepository.create({
         ...CreateUserInput,
       });
@@ -81,6 +79,8 @@ export class UsersService {
     EditUserInput: EditUserInput
   ): Promise<EditUserOutput> {
     try {
+      const isAleadyEmail = await this.IsUserWithEmail(EditUserInput.email);
+      if (isAleadyEmail) throw "this email already exists";
       const userEntity = await this.UserRepository.findOne({ where: { id } });
       const user = this.UserRepository.create({
         ...userEntity,
@@ -164,6 +164,18 @@ export class UsersService {
         isOk: false,
         errorMessage,
       };
+    }
+  }
+
+  private async IsUserWithEmail(email: string): Promise<Boolean> {
+    try {
+      const isAleadyEmail = await this.UserRepository.findOne({
+        where: { email },
+      });
+      if (isAleadyEmail) throw "this email already exists";
+      return false;
+    } catch (e) {
+      return true;
     }
   }
 }

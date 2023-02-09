@@ -7,7 +7,7 @@ import { JwtService } from "./jwt.service";
 export class JwtModule {
   static forRoot(options?: JwtModuleOptions): DynamicModule {
     return {
-      global: options.isGlobal ? true : false,
+      global: Boolean(options.isGlobal),
       module: JwtModule,
       providers: [JwtService, ConfigService],
       exports: [JwtService],
