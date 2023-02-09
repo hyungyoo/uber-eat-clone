@@ -20,6 +20,6 @@ export class EditUserOutput extends DisplayResult {
   @Field((type) => UserReturnType, { nullable: true })
   user?: UserReturnType;
 
-  @Field((type) => EmailVerification)
+  @Field((type) => EmailVerification, { nullable: true })
   emailVerified?: EmailVerification;
 }

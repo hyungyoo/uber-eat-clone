@@ -63,11 +63,11 @@ export class UsersService {
       const emailVerified = await this.EmailVerificationRepository.save(
         this.EmailVerificationRepository.create({ user })
       );
-      // this.EmailService.SendMail(
-      //   user.email,
-      //   user.name,
-      //   emailVerified.verificationCode
-      // );
+      this.EmailService.SendMail(
+        user.email,
+        user.name,
+        emailVerified.verificationCode
+      );
       return { user, emailVerified };
     } catch (errorMessage) {
       return { isOk: false, errorMessage };
@@ -98,11 +98,11 @@ export class UsersService {
       const emailVerified = await this.EmailVerificationRepository.save(
         this.EmailVerificationRepository.create({ user })
       );
-      // this.EmailService.SendMail(
-      //   user.email,
-      //   user.name,
-      //   emailVerified.verificationCode
-      // );
+      this.EmailService.SendMail(
+        user.email,
+        user.name,
+        emailVerified.verificationCode
+      );
       return {
         user,
       };
