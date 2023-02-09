@@ -15,18 +15,19 @@ export class EmailService {
     @InjectRepository(User) private readonly UserRepository: Repository<User>,
     private readonly ConfigService: ConfigService
   ) {
-    // this.SendMail();
+    // this.SendMail("hjyoo901112@gmail.com");
   }
 
-  async SendMail() {
+  SendMail(to: string) {
+    if (!to) return;
     const api_key = this.ConfigService.get("MAILGUN_API_KEY");
     const domain = this.ConfigService.get("MAILGUN_DOMAIN_NAME");
     const fromEmail = this.ConfigService.get("MAILGUN_FROM");
     const mailgun = Mailgun({ apiKey: api_key, domain: domain });
     const data = {
       from: `Excited User <${fromEmail}>`,
-      to: "hjyoo901112@gmail.com",
-      subject: "Hello",
+      to,
+      subject: "Verifiy email",
       text: "Testing some Mailgun awesomeness!",
     };
 

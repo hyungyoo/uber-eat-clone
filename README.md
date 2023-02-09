@@ -6,6 +6,7 @@
 - graphQL
 - typeORM
 - data mappeed pattern + repository pattern + JPA
+- mailgun
 
 ## User
 
@@ -16,16 +17,22 @@
 - updateAt
 - email
 - password
-- role(client, restaurantOwner, delivery)
+- role(client, restaurant, delivery)
 
 ### user CRUD
 
-- create acount
+- create user
 - login
-- see profile
-- edit profile
-- verify email
+- see my profile
+- edit my profile
+- verify with email
 
 ## Auth
 
 ### JWT
+
+- https://www.npmjs.com/package/jsonwebtoken
+
+### EMAIL
+
+- https://www.npmjs.com/package/mailgun-js
