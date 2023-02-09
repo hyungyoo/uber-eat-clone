@@ -59,7 +59,6 @@ import { EmailVerification } from "./email/entities/email.verification.entity";
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    console.log("i am in app module");
     consumer.apply(JwtMiddleWare).forRoutes({
       path: "/graphql",
       method: RequestMethod.ALL,

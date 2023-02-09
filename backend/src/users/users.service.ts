@@ -86,7 +86,11 @@ export class UsersService {
         ...userEntity,
         ...EditUserInput,
       });
+      user.isVerified = false;
       await this.UserRepository.save(user);
+      const emailVerified = await this.EmailVerificationRepository.save(
+        this.EmailVerificationRepository.create({ user })
+      );
       return {
         user,
       };
