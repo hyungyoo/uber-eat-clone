@@ -54,8 +54,12 @@ export class UsersService {
     CreateUserInput: CreateUserInput
   ): Promise<CreateUserOutput> {
     try {
+      console.log("i am in here");
+      
       if (await this.isUserWithEmail(CreateUserInput.email))
         throw "this email already exists";
+      console.log("i am here");
+      
       const EntityUser = this.userRepository.create({
         ...CreateUserInput,
       });
