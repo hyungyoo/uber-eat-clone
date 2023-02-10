@@ -2,12 +2,11 @@ import {
   Field,
   InputType,
   ObjectType,
-  OmitType,
   registerEnumType,
 } from "@nestjs/graphql";
 import { IsBoolean, IsEmail, IsEnum, IsString } from "class-validator";
 import { ParentEntity } from "src/baseData/base.entity";
-import { BeforeInsert, BeforeUpdate, Column, Entity, IsNull } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity } from "typeorm";
 import * as bcrypt from "bcryptjs";
 import { HttpException, HttpStatus } from "@nestjs/common";
 

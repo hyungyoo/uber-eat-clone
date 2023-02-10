@@ -9,4 +9,8 @@ describe("UsersService", () => {
     }).compile();
     UsersTestingService = UsersTestingModule.get<UsersService>(UsersService);
   });
+
+  it("should be definde", () => {
+    expect(UsersTestingService).toBeDefined();
+  });
 });
