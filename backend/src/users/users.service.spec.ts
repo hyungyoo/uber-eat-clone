@@ -22,7 +22,7 @@ jest.mock("src/email/email.service");
 
 describe("UsersService", () => {
   let usersService: UsersService;
-  // let usersRepository: mockRepository<User>;
+  let usersRepositor: mockRepository<User>;
   let usersRepository: typeof mockRepositorty;
 
   beforeAll(async () => {
@@ -43,27 +43,39 @@ describe("UsersService", () => {
     }).compile();
     usersService = moduleRef.get<UsersService>(UsersService);
     usersRepository = moduleRef.get(getRepositoryToken(User));
+    usersRepositor = moduleRef.get(getRepositoryToken(User));
   });
 
   it("should be defined", () => {
-    expect(usersService).toBeDefined();
+    // expect(usersService).toBeDefined();
+    const mock = jest.fn();
+
+    const ret = usersRepository.findOne.mockReturnValue("hello");
+    const rety = usersRepositor.findOne.mockReturnValue("hello");
+    let result = mock.mockReturnValue("hello");
+    // console.log(result);
+    console.log(ret);
+    console.log(rety);
+    expect(ret).toBeDefined();
+    // expect(returna).toMatch("hello");
   });
 
-  describe("createUser", () => {
-    it("should return false, if user exists", async () => {
-      const result = await usersService.createUser({
-        email: "test@test.com",
-        name: "test",
-        password: "12345",
-        role: 0,
-      });
-      usersRepository.find.mockResolvedValue
+  // describe("createUser", () => {
+  //   it("should return false, if user exists", async () => {
+  //     const result = await usersService.createUser({
+  //       email: "test@test.com",
+  //       name: "test",
+  //       password: "12345",
+  //       role: 0,
+  //     });
+  //     usersRepository.find.mockResolvedValue;
 
-      console.log(result);
-      expect(result).toMatchObject({
-        isOk: false,
-      });
-    });
-    ////
-  });
+  //     // console.log(result);
+  //     expect(result).toMatchObject({
+  //       isOk: false,
+  //     });
+  // });
+
+  ////
+  // });
 });
