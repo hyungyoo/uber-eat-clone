@@ -25,22 +25,23 @@ export class EmailService {
    */
   async sendMail(to: string, name: string, code: string) {
     try {
-      const api_key = this.configService.get("MAILGUN_API_KEY");
-      const domain = this.configService.get("MAILGUN_DOMAIN_NAME");
-      const fromEmail = this.configService.get("MAILGUN_FROM");
-      const mailgun = Mailgun({ apiKey: api_key, domain: domain });
-      const data = {
-        from: `Excited User <${fromEmail}>`,
-        to: "hjyoo901112@gmail.com",
-        subject: "Verifiy email",
-        template: "uber_eat_email_verification",
-        "h:X-Mailgun-Variables": JSON.stringify({ name, code }),
-      };
-
-      mailgun.messages().send(data, function (error, body) {
-        if (error) throw error;
-        else console.log(body);
-      });
+      console.log('send mail in!')
+      // const api_key = this.configService.get("MAILGUN_API_KEY");
+      // const domain = this.configService.get("MAILGUN_DOMAIN_NAME");
+      // const fromEmail = this.configService.get("MAILGUN_FROM");
+      // const mailgun = Mailgun({ apiKey: api_key, domain: domain });
+      // const data = {
+      //   from: `Excited User <${fromEmail}>`,
+      //   to: "hjyoo901112@gmail.com",
+      //   subject: "Verifiy email",
+      //   template: "uber_eat_email_verification",
+      //   "h:X-Mailgun-Variables": JSON.stringify({ name, code }),
+      // };
+      // mailgun.messages().send(data, function (error, body) {
+      //   if (error) throw error;
+      //   else console.log(body);
+      // });
+      
     } catch (e) {
       console.log(e, " is error in SendMail");
     }

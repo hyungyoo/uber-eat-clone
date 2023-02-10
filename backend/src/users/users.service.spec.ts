@@ -46,17 +46,29 @@ describe("UsersService", () => {
     usersRepositor = moduleRef.get(getRepositoryToken(User));
   });
 
-  it("should be defined", () => {
+  it("should be defined", async () => {
     // expect(usersService).toBeDefined();
-    const mock = jest.fn();
+    // const mock = jest.fn();
 
-    const ret = usersRepository.findOne.mockReturnValue("hello");
-    const rety = usersRepositor.findOne.mockReturnValue("hello");
-    let result = mock.mockReturnValue("hello");
-    // console.log(result);
-    console.log(ret);
-    console.log(rety);
-    expect(ret).toBeDefined();
+    usersRepository.save.mockResolvedValue({
+      email: "hello",
+      name: "haha",
+      emailVerified: true,
+    }); 
+    const result = await usersService.createUser({
+      email: "helo",
+      name: "name",
+      password: "12345",
+      role: 0,
+    });
+    console.log(result);
+    // const ret = usersRepository.findOne.mockReturnValue("hello");
+    // const rety = usersRepositor.findOne.mockReturnValue("hello");
+    // let result = mock.mockReturnValue("hello");
+    // // console.log(result);
+    // console.log(ret);
+    // console.log(rety);
+    // expect(ret).toBeDefined();
     // expect(returna).toMatch("hello");
   });
 
