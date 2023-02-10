@@ -7,13 +7,13 @@ import {
 
 @Resolver()
 export class EmailResolver {
-  constructor(private readonly EmailService: EmailService) {}
+  constructor(private readonly emailService: EmailService) {}
 
   @Query((returns) => EmailVerificationOutput)
-  VerifierEmailCode(
+  verifierEmailCode(
     @Args("input") { verificationCode }: EmailVerificationInput
   ) {
-    return this.EmailService.VerifierEmailCode(verificationCode);
+    return this.emailService.verifierEmailCode(verificationCode);
   }
 
   

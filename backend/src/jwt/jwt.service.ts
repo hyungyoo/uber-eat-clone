@@ -4,15 +4,15 @@ import * as Jwt from "jsonwebtoken";
 
 @Injectable()
 export class JwtService {
-  constructor(private readonly ConfigService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {}
 
-  SignToken(payload: object): string {
-    return Jwt.sign(payload, this.ConfigService.get("PRIVATE_KEY_FOR_TOKEN"));
+  signToken(payload: object): string {
+    return Jwt.sign(payload, this.configService.get("PRIVATE_KEY_FOR_TOKEN"));
   }
 
-  VerifyToken(token: string) {
+  verifyToken(token: string) {
     try {
-      return Jwt.verify(token, this.ConfigService.get("PRIVATE_KEY_FOR_TOKEN"))[
+      return Jwt.verify(token, this.configService.get("PRIVATE_KEY_FOR_TOKEN"))[
         "id"
       ];
     } catch (e) {

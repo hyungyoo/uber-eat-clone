@@ -13,45 +13,45 @@ import { DeleteUserInput, DeleteUserOutput } from "./dtos/delete-user.dto";
 
 @Resolver((of) => User)
 export class UsersResolver {
-  constructor(private readonly UsersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Query((returns) => GetUsersOutput)
-  GetUsers() {
-    return this.UsersService.GetUsers();
+  users() {
+    return this.usersService.users();
   }
 
-  @Query((returns) => LoginDisplayResult)
-  async Login(@Args("input") LoginDto: LoginDto) {
-    return await this.UsersService.Login(LoginDto);
-  }
-
-  @Mutation((returns) => CreateUserOutput)
-  async CreateUser(@Args("input") CreateUserInput: CreateUserInput) {
-    return await this.UsersService.CreateUser(CreateUserInput);
-  }
-
-  @Mutation((returns) => EditUserOutput)
-  @UseGuards(AuthorizationGuard)
-  async EditUser(
-    @AuthUser() { id }: User,
-    @Args("input") EditUserInput: EditUserInput
-  ): Promise<EditUserOutput> {
-    return this.UsersService.EditUser(id, EditUserInput);
-  }
-
-  @Mutation((returns) => DeleteUserOutput)
-  async DeleteUser(@Args("input") { id }: DeleteUserInput) {
-    return await this.UsersService.DeleteUserById(id);
+  @Query((returns) => GetUserOutput)
+  async user(@Args("input") { id }: GetUserInput) {
+    return this.usersService.findUserById(id);
   }
 
   @Query((returns) => User)
   @UseGuards(AuthorizationGuard)
-  GetMyProfile(@AuthUser() User: User) {
+  myProfile(@AuthUser() User: User) {
     return User;
   }
 
-  @Query((returns) => GetUserOutput)
-  async GetUser(@Args("input") { id }: GetUserInput) {
-    return this.UsersService.FindUserById(id);
+  @Query((returns) => LoginDisplayResult)
+  async login(@Args("input") LoginDto: LoginDto) {
+    return await this.usersService.login(LoginDto);
+  }
+
+  @Mutation((returns) => CreateUserOutput)
+  async createUser(@Args("input") CreateUserInput: CreateUserInput) {
+    return await this.usersService.createUser(CreateUserInput);
+  }
+
+  @Mutation((returns) => EditUserOutput)
+  @UseGuards(AuthorizationGuard)
+  async updateUser(
+    @AuthUser() { id }: User,
+    @Args("input") EditUserInput: EditUserInput
+  ): Promise<EditUserOutput> {
+    return this.usersService.updateUser(id, EditUserInput);
+  }
+
+  @Mutation((returns) => DeleteUserOutput)
+  async deleteUser(@Args("input") { id }: DeleteUserInput) {
+    return await this.usersService.deleteUserById(id);
   }
 }

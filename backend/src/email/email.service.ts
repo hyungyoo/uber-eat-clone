@@ -11,9 +11,9 @@ import * as Mailgun from "mailgun-js";
 export class EmailService {
   constructor(
     @InjectRepository(EmailVerification)
-    private readonly EmailVerificationRepository: Repository<EmailVerification>,
-    @InjectRepository(User) private readonly UserRepository: Repository<User>,
-    private readonly ConfigService: ConfigService
+    private readonly emailVerificationRepository: Repository<EmailVerification>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly configService: ConfigService
   ) {}
 
   /**
@@ -23,11 +23,11 @@ export class EmailService {
    * @param name user name
    * @param code user code in email_verification table
    */
-  async SendMail(to: string, name: string, code: string) {
+  async sendMail(to: string, name: string, code: string) {
     try {
-      const api_key = this.ConfigService.get("MAILGUN_API_KEY");
-      const domain = this.ConfigService.get("MAILGUN_DOMAIN_NAME");
-      const fromEmail = this.ConfigService.get("MAILGUN_FROM");
+      const api_key = this.configService.get("MAILGUN_API_KEY");
+      const domain = this.configService.get("MAILGUN_DOMAIN_NAME");
+      const fromEmail = this.configService.get("MAILGUN_FROM");
       const mailgun = Mailgun({ apiKey: api_key, domain: domain });
       const data = {
         from: `Excited User <${fromEmail}>`,
@@ -53,12 +53,12 @@ export class EmailService {
    * @param verificationCode
    * @returns
    */
-  async VerifierEmailCode(
+  async verifierEmailCode(
     verificationCode: string
   ): Promise<EmailVerificationOutput> {
     try {
       const EmailVerificationEntity =
-        await this.EmailVerificationRepository.findOne({
+        await this.emailVerificationRepository.findOne({
           where: {
             verificationCode,
           },
@@ -67,8 +67,8 @@ export class EmailService {
       if (!EmailVerificationEntity) throw "no corresponding code";
       const user = EmailVerificationEntity.user;
       user.isVerified = true;
-      await this.UserRepository.save(this.UserRepository.create(user));
-      await this.EmailVerificationRepository.delete(EmailVerificationEntity.id);
+      await this.userRepository.save(this.userRepository.create(user));
+      await this.emailVerificationRepository.delete(EmailVerificationEntity.id);
       return {
         user,
       };

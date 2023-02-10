@@ -15,20 +15,20 @@ import { EmailService } from "src/email/email.service";
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private readonly UserRepository: Repository<User>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(EmailVerification)
-    private readonly EmailVerificationRepository: Repository<EmailVerification>,
-    private readonly JwtService: JwtService,
-    private readonly EmailService: EmailService
+    private readonly emailVerificationRepository: Repository<EmailVerification>,
+    private readonly jwtService: JwtService,
+    private readonly emailService: EmailService
   ) {}
 
   /**
    * get all users in database of users
    * @return return status code, info of all users
    */
-  async GetUsers(): Promise<GetUsersOutput> {
+  async users(): Promise<GetUsersOutput> {
     try {
-      const users = await this.UserRepository.find();
+      const users = await this.userRepository.find();
       if (!users) throw Error();
       return {
         isOk: true,
@@ -50,20 +50,20 @@ export class UsersService {
    * @param param0 email, password, role
    * @return status code, User info of the created user
    */
-  async CreateUser(
+  async createUser(
     CreateUserInput: CreateUserInput
   ): Promise<CreateUserOutput> {
     try {
-      if (await this.IsUserWithEmail(CreateUserInput.email))
+      if (await this.isUserWithEmail(CreateUserInput.email))
         throw "this email already exists";
-      const EntityUser = this.UserRepository.create({
+      const EntityUser = this.userRepository.create({
         ...CreateUserInput,
       });
-      const user = await this.UserRepository.save(EntityUser);
-      const emailVerified = await this.EmailVerificationRepository.save(
-        this.EmailVerificationRepository.create({ user })
+      const user = await this.userRepository.save(EntityUser);
+      const emailVerified = await this.emailVerificationRepository.save(
+        this.emailVerificationRepository.create({ user })
       );
-      this.EmailService.SendMail(
+      this.emailService.sendMail(
         user.email,
         user.name,
         emailVerified.verificationCode
@@ -81,24 +81,24 @@ export class UsersService {
    * @param EditUserInput
    * @returns status code, user info of the changed user
    */
-  async EditUser(
+  async updateUser(
     id: number,
     EditUserInput: EditUserInput
   ): Promise<EditUserOutput> {
     try {
-      if (await this.IsUserWithEmail(EditUserInput.email))
+      if (await this.isUserWithEmail(EditUserInput.email))
         throw "this email already exists";
-      const userEntity = await this.UserRepository.findOne({ where: { id } });
-      const user = this.UserRepository.create({
+      const userEntity = await this.userRepository.findOne({ where: { id } });
+      const user = this.userRepository.create({
         ...userEntity,
         ...EditUserInput,
       });
       user.isVerified = false;
-      await this.UserRepository.save(user);
-      const emailVerified = await this.EmailVerificationRepository.save(
-        this.EmailVerificationRepository.create({ user })
+      await this.userRepository.save(user);
+      const emailVerified = await this.emailVerificationRepository.save(
+        this.emailVerificationRepository.create({ user })
       );
-      this.EmailService.SendMail(
+      this.emailService.sendMail(
         user.email,
         user.name,
         emailVerified.verificationCode
@@ -119,11 +119,11 @@ export class UsersService {
    * @param id
    * @returns status code, user info of the deleted user
    */
-  async DeleteUserById(id: number): Promise<DeleteUserOutput> {
+  async deleteUserById(id: number): Promise<DeleteUserOutput> {
     try {
-      const user = await this.UserRepository.findOne({ where: { id } });
+      const user = await this.userRepository.findOne({ where: { id } });
       if (!user) throw "this user not exists";
-      await this.UserRepository.delete(id);
+      await this.userRepository.delete(id);
       return {
         user,
       };
@@ -142,9 +142,9 @@ export class UsersService {
    * @param param0 email, password
    * @returns status code, token
    */
-  async Login({ email, password }: LoginDto): Promise<LoginDisplayResult> {
+  async login({ email, password }: LoginDto): Promise<LoginDisplayResult> {
     try {
-      const IsUser = await this.UserRepository.findOne({
+      const IsUser = await this.userRepository.findOne({
         where: { email },
         select: ["password"],
       });
@@ -154,7 +154,7 @@ export class UsersService {
       const isCorrectPW = await IsUser.ValidatePW(password);
       if (!isCorrectPW) throw "password not correct";
       return {
-        token: this.JwtService.SignToken({ id: IsUser.id }),
+        token: this.jwtService.signToken({ id: IsUser.id }),
       };
     } catch (errorMessage) {
       return { isOk: false, errorMessage };
@@ -166,9 +166,9 @@ export class UsersService {
    * @param id
    * @returns status code, user info of the requested user
    */
-  async FindUserById(id: number): Promise<GetUserOutput> {
+  async findUserById(id: number): Promise<GetUserOutput> {
     try {
-      const user = await this.UserRepository.findOneBy({ id });
+      const user = await this.userRepository.findOne({ where: { id } });
       if (!user) throw Error();
       return { user };
     } catch (errorMessage) {
@@ -179,9 +179,9 @@ export class UsersService {
     }
   }
 
-  private async IsUserWithEmail(email: string): Promise<Boolean> {
+  private async isUserWithEmail(email: string): Promise<Boolean> {
     try {
-      const isAleadyEmail = await this.UserRepository.findOne({
+      const isAleadyEmail = await this.userRepository.findOne({
         where: { email },
       });
       if (isAleadyEmail) throw "this email already exists";
