@@ -54,15 +54,8 @@ export class UsersService {
     CreateUserInput: CreateUserInput
   ): Promise<CreateUserOutput> {
     try {
-      console.log("1");
-      console.log(CreateUserInput);
-      // console.log("i am in here");
-
       if (await this.isUserWithEmail(CreateUserInput.email))
         throw "this email already exists";
-      // console.log("i am here");
-
-      console.log("2");
       const EntityUser = this.userRepository.create({
         ...CreateUserInput,
       });
@@ -70,13 +63,11 @@ export class UsersService {
       const emailVerified = await this.emailVerificationRepository.save(
         this.emailVerificationRepository.create({ user })
       );
-      console.log("3");
       this.emailService.sendMail(
         user.email,
         user.name,
         emailVerified.verificationCode
       );
-      console.log("4");
       return { user, emailVerified };
     } catch (errorMessage) {
       console.log("error");
