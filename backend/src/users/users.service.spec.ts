@@ -5,6 +5,7 @@ import { User } from "./entities/users.entity";
 import { EmailVerification } from "src/email/entities/email.verification.entity";
 import { JwtService } from "src/jwt/jwt.service";
 import { EmailService } from "src/email/email.service";
+import { Repository } from "typeorm";
 
 /**
  * Mock Types
@@ -28,14 +29,19 @@ const MockEmailService = {
 };
 
 /**
+ * type for MockRespository
+ */
+type MockTypeRepository<T> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+
+/**
  * UsersService test
  */
 describe("UsersService", () => {
   /**
    * variables
    */
-  let userRepository;
-  let emailVerificationRepository;
+  let userRepository: MockTypeRepository<User>;
+  let emailVerificationRepository: MockTypeRepository<EmailVerification>;
   let jwtService: JwtService;
   let emailService: EmailService;
 
