@@ -60,9 +60,11 @@ export class UsersService {
         ...CreateUserInput,
       });
       const user = await this.userRepository.save(EntityUser);
+      if (!user) throw "fail save user";
       const emailVerified = await this.emailVerificationRepository.save(
         this.emailVerificationRepository.create({ user })
       );
+      if (!emailVerified) throw "fail save email verified entity";
       this.emailService.sendMail(
         user.email,
         user.name,
