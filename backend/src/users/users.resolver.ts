@@ -8,7 +8,7 @@ import { AuthorizationGuard } from "src/authorization/authorization.guard";
 import { AuthUser } from "src/authorization/auth-user.decorator";
 import { GetUsersOutput } from "./dtos/get-users.dto";
 import { GetUserInput, GetUserOutput } from "./dtos/get-user.dto";
-import { EditUserInput, EditUserOutput } from "./dtos/edit-user.dto";
+import { UpdateUserInput, UpdateUserOutput } from "./dtos/update-user.dto";
 import { DeleteUserInput, DeleteUserOutput } from "./dtos/delete-user.dto";
 
 @Resolver((of) => User)
@@ -41,13 +41,13 @@ export class UsersResolver {
     return await this.usersService.createUser(CreateUserInput);
   }
 
-  @Mutation((returns) => EditUserOutput)
+  @Mutation((returns) => UpdateUserOutput)
   @UseGuards(AuthorizationGuard)
   async updateUser(
     @AuthUser() { id }: User,
-    @Args("input") EditUserInput: EditUserInput
-  ): Promise<EditUserOutput> {
-    return this.usersService.updateUser(id, EditUserInput);
+    @Args("input") UpdateUserInput: UpdateUserInput
+  ): Promise<UpdateUserOutput> {
+    return this.usersService.updateUser(id, UpdateUserInput);
   }
 
   @Mutation((returns) => DeleteUserOutput)

@@ -7,7 +7,7 @@ import { LoginDisplayResult, LoginDto } from "./dtos/login.dto";
 import { JwtService } from "src/jwt/jwt.service";
 import { GetUsersOutput } from "./dtos/get-users.dto";
 import { GetUserOutput } from "./dtos/get-user.dto";
-import { EditUserInput, EditUserOutput } from "./dtos/edit-user.dto";
+import { UpdateUserInput, UpdateUserOutput } from "./dtos/update-user.dto";
 import { DeleteUserOutput } from "./dtos/delete-user.dto";
 import { EmailVerification } from "src/email/entities/email.verification.entity";
 import { EmailService } from "src/email/email.service";
@@ -80,20 +80,20 @@ export class UsersService {
    * get id and email / password
    * edit profile of user who has same id
    * @param id
-   * @param EditUserInput
+   * @param UpdateUserInput
    * @returns status code, user info of the changed user
    */
   async updateUser(
     id: number,
-    EditUserInput: EditUserInput
-  ): Promise<EditUserOutput> {
+    UpdateUserInput: UpdateUserInput
+  ): Promise<UpdateUserOutput> {
     try {
-      if (await this.isUserWithEmail(EditUserInput.email))
+      if (await this.isUserWithEmail(UpdateUserInput.email))
         throw "this email already exists";
       const userEntity = await this.userRepository.findOne({ where: { id } });
       const user = this.userRepository.create({
         ...userEntity,
-        ...EditUserInput,
+        ...UpdateUserInput,
       });
       user.isVerified = false;
       await this.userRepository.save(user);
