@@ -34,10 +34,10 @@ export class UsersService {
         isOk: true,
         users,
       };
-    } catch (errorMessage) {
+    } catch (e) {
       return {
         isOk: false,
-        errorMessage,
+        errorMessage: "fail to get users infos",
       };
     }
   }
@@ -72,7 +72,6 @@ export class UsersService {
       );
       return { user, emailVerified };
     } catch (errorMessage) {
-      console.log("error");
       return { isOk: false, errorMessage };
     }
   }

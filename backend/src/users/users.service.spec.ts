@@ -6,6 +6,7 @@ import { EmailVerification } from "src/email/entities/email.verification.entity"
 import { JwtService } from "src/jwt/jwt.service";
 import { EmailService } from "src/email/email.service";
 import { Repository } from "typeorm";
+import { CreateUserInput } from "./dtos/create-user.dto";
 
 /**
  * Mock Types
@@ -96,14 +97,112 @@ describe("UsersService", () => {
    * get users
    */
   describe("users", () => {
-    it("testing with fake values", async () => {
-      userRepository.find.mockResolvedValue({ name: "haha" });
+    it("should be return empty array and not return errro", async () => {
+      userRepository.find.mockResolvedValue([]);
       const result = await usersService.users();
+      expect(userRepository.find).toHaveBeenCalledTimes(1);
+      expect(userRepository.find).toHaveBeenCalledWith();
+      expect(result).toEqual({ isOk: true, users: [] });
     });
-    it.todo("should be error, if userRepository not found users");
-    it.todo("should be success");
+
+    it("should fail if find throw error", async () => {
+      userRepository.find.mockRejectedValue(Promise.reject);
+      const result = await usersService.users();
+      expect(userRepository.find).toHaveBeenCalledTimes(1);
+      expect(userRepository.find).toHaveBeenCalledWith();
+      expect(result).toEqual({
+        isOk: false,
+        errorMessage: "fail to get users infos",
+      });
+    });
+
+    it("should be success", async () => {
+      userRepository.find.mockResolvedValue(expect.any(Array<User>));
+      const result = await usersService.users();
+      expect(userRepository.find).toHaveBeenCalledWith();
+      expect(userRepository.find).toHaveBeenCalledTimes(1);
+      expect(result).toEqual({ isOk: true, users: expect.any(Array<User>) });
+    });
   });
 
+  /**
+   * create user
+   */
+  describe("createUser", () => {
+    const createUserInput: CreateUserInput = {
+      name: "hyungyoo",
+      email: "hyungoo@gmail.com",
+      password: "12345",
+      role: 0,
+    };
+    it("should be fail if email already exists", async () => {
+      userRepository.findOne.mockResolvedValue(expect.any(Object));
+      const result = await usersService.createUser(createUserInput);
+      expect(userRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { email: createUserInput.email },
+      });
+      expect(result).toEqual({
+        isOk: false,
+        errorMessage: "this email already exists",
+      });
+    });
+    it("should be fail if user cannot created", async () => {
+      userRepository.findOne.mockResolvedValue(undefined);
+      userRepository.create.mockReturnValue(createUserInput);
+      userRepository.save.mockResolvedValue(undefined);
+      const result = await usersService.createUser(createUserInput);
+      expect(result).toEqual({ isOk: false, errorMessage: "fail save user" });
+      expect(userRepository.create).toHaveBeenCalledTimes(1);
+      expect(userRepository.create).toHaveBeenCalledWith(createUserInput);
+      expect(userRepository.save).toHaveBeenCalledTimes(1);
+      expect(userRepository.save).toHaveBeenCalledWith(createUserInput);
+    });
+    it("should be fail if emailVerified cannot created", async () => {
+      userRepository.findOne.mockResolvedValue(undefined);
+      userRepository.create.mockReturnValue(createUserInput);
+      userRepository.save.mockResolvedValue(createUserInput);
+      emailVerificationRepository.create.mockReturnValue(undefined);
+      emailVerificationRepository.save.mockResolvedValue(undefined);
+      const result = await usersService.createUser(createUserInput);
+      expect(result).toEqual({
+        isOk: false,
+        errorMessage: "fail save email verified entity",
+      });
+      expect(userRepository.create).toHaveBeenCalledTimes(1);
+      expect(userRepository.create).toHaveBeenCalledWith(createUserInput);
+      expect(userRepository.save).toHaveBeenCalledTimes(1);
+      expect(userRepository.save).toHaveBeenCalledWith(createUserInput);
+    });
+
+    it("should be work", async () => {
+      userRepository.findOne.mockResolvedValue(undefined);
+      userRepository.create.mockReturnValue(createUserInput);
+      userRepository.save.mockResolvedValue(createUserInput);
+      emailVerificationRepository.create.mockReturnValue(expect.any(Object));
+      emailVerificationRepository.save.mockResolvedValue(expect.any(Object));
+      const result = await usersService.createUser(createUserInput);
+      expect(result).toEqual({
+        user: createUserInput,
+        emailVerified: expect.any(Object),
+      });
+      expect(userRepository.create).toHaveBeenCalledTimes(1);
+      expect(userRepository.create).toHaveBeenCalledWith(createUserInput);
+      expect(userRepository.save).toHaveBeenCalledTimes(1);
+      expect(userRepository.save).toHaveBeenCalledWith(createUserInput);
+      expect(emailVerificationRepository.create).toHaveBeenCalledTimes(1);
+      expect(emailVerificationRepository.create).toHaveBeenCalledWith({
+        user: createUserInput,
+      });
+      expect(emailVerificationRepository.save).toHaveBeenCalledTimes(1);
+      expect(emailVerificationRepository.save).toHaveBeenCalledWith({
+        user: createUserInput,
+      });
+      expect(emailService.sendMail).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  // it("", async () => {});
   // describe("updateUser", () => {
   //   it("", () => {});
   // });
