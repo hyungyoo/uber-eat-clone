@@ -1,7 +1,7 @@
 import { Field, InputType, ObjectType, PickType } from "@nestjs/graphql";
 import { DisplayResult } from "src/baseData/base.display.result";
 import { EmailVerification } from "../entities/email.verification.entity";
-import { UserReturnType } from "src/users/entities/user.return.entiy";
+import { UserReturnType } from "src/users/entities/user.return.entity";
 
 @InputType()
 export class EmailVerificationInput extends PickType(EmailVerification, [

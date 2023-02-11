@@ -10,13 +10,13 @@ import { Repository } from "typeorm";
 /**
  * Mock Types
  */
-const MockRepository = {
+const MockRepository = () => ({
   find: jest.fn(),
   create: jest.fn(),
   findOne: jest.fn(),
   save: jest.fn(),
   delete: jest.fn(),
-};
+});
 
 const MockJwtService = {
   signToken: jest.fn(),
@@ -44,22 +44,23 @@ describe("UsersService", () => {
   let emailVerificationRepository: MockTypeRepository<EmailVerification>;
   let jwtService: JwtService;
   let emailService: EmailService;
+  let usersService: UsersService;
 
   /**
    * make mock modoule and mock providers
    * set variables
    */
-  beforeAll(async () => {
+  beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         UsersService,
         {
           provide: getRepositoryToken(User),
-          useValue: MockRepository,
+          useValue: MockRepository(),
         },
         {
           provide: getRepositoryToken(EmailVerification),
-          useValue: MockRepository,
+          useValue: MockRepository(),
         },
         {
           provide: JwtService,
@@ -78,6 +79,7 @@ describe("UsersService", () => {
     );
     jwtService = moduleRef.get(JwtService);
     emailService = moduleRef.get(EmailService);
+    usersService = moduleRef.get(UsersService);
   });
 
   /**
@@ -94,37 +96,36 @@ describe("UsersService", () => {
    * get users
    */
   describe("users", () => {
+    it("testing with fake values", async () => {
+      userRepository.find.mockResolvedValue({ name: "haha" });
+      const result = await usersService.users();
+    });
     it.todo("should be error, if userRepository not found users");
     it.todo("should be success");
   });
-  describe("createUser", () => {
-    it.todo("should be error, if userRepository cannot save user");
-    it.todo(
-      "should be error, if emailVerificationRepository cannot save emailVerified"
-    );
-  });
-  describe("updateUser", () => {
-    it("", () => {});
-  });
-  describe("deleteUserById", () => {
-    it("", () => {});
-    it("", () => {});
-    it("", () => {});
-    it("", () => {});
-    it("", () => {});
-  });
-  describe("login", () => {
-    it("", () => {});
-    it("", () => {});
-    it("", () => {});
-    it("", () => {});
-    it("", () => {});
-  });
-  describe("findUserById", () => {
-    it("", () => {});
-    it("", () => {});
-    it("", () => {});
-    it("", () => {});
-    it("", () => {});
-  });
+
+  // describe("updateUser", () => {
+  //   it("", () => {});
+  // });
+  // describe("deleteUserById", () => {
+  //   it("", () => {});
+  //   it("", () => {});
+  //   it("", () => {});
+  //   it("", () => {});
+  //   it("", () => {});
+  // });
+  // describe("login", () => {
+  //   it("", () => {});
+  //   it("", () => {});
+  //   it("", () => {});
+  //   it("", () => {});
+  //   it("", () => {});
+  // });
+  // describe("findUserById", () => {
+  //   it("", () => {});
+  //   it("", () => {});
+  //   it("", () => {});
+  //   it("", () => {});
+  //   it("", () => {});
+  // });
 });

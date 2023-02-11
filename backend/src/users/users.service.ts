@@ -29,7 +29,7 @@ export class UsersService {
   async users(): Promise<GetUsersOutput> {
     try {
       const users = await this.userRepository.find();
-      if (!users) throw Error();
+      if (!users) throw "fail to get users infos";
       return {
         isOk: true,
         users,

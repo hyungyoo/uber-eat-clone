@@ -1,6 +1,6 @@
 import { Field, InputType, ObjectType, PickType } from "@nestjs/graphql";
 import { DisplayResult } from "src/baseData/base.display.result";
-import { UserReturnType } from "../entities/user.return.entiy";
+import { UserReturnType } from "../entities/user.return.entity";
 import { User } from "../entities/users.entity";
 
 @InputType()
