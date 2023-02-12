@@ -59,12 +59,11 @@ export class UsersService {
       const EntityUser = this.userRepository.create({
         ...CreateUserInput,
       });
+      // console.log(EntityUser, " is user in entity");
       const user = await this.userRepository.save(EntityUser);
-      if (!user) throw "fail save user";
       const emailVerified = await this.emailVerificationRepository.save(
         this.emailVerificationRepository.create({ user })
       );
-      if (!emailVerified) throw "fail save email verified entity";
       this.emailService.sendMail(
         user.email,
         user.name,
@@ -91,12 +90,10 @@ export class UsersService {
       if (await this.isUserWithEmail(UpdateUserInput.email))
         throw "this email already exists";
       const userEntity = await this.userRepository.findOne({ where: { id } });
-      if (!userEntity) throw "fail for userEntity";
       const user = this.userRepository.create({
         ...userEntity,
         ...UpdateUserInput,
       });
-      if (!user) throw "fail for user";
       user.isVerified = false;
       await this.userRepository.save(user);
       const emailVerified = await this.emailVerificationRepository.save(
