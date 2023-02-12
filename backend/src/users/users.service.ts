@@ -91,10 +91,12 @@ export class UsersService {
       if (await this.isUserWithEmail(UpdateUserInput.email))
         throw "this email already exists";
       const userEntity = await this.userRepository.findOne({ where: { id } });
+      if (!userEntity) throw "fail for userEntity";
       const user = this.userRepository.create({
         ...userEntity,
         ...UpdateUserInput,
       });
+      if (!user) throw "fail for user";
       user.isVerified = false;
       await this.userRepository.save(user);
       const emailVerified = await this.emailVerificationRepository.save(

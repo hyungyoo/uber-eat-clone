@@ -7,6 +7,7 @@ import { JwtService } from "src/jwt/jwt.service";
 import { EmailService } from "src/email/email.service";
 import { Repository } from "typeorm";
 import { CreateUserInput } from "./dtos/create-user.dto";
+import { UpdateUserInput } from "./dtos/update-user.dto";
 
 /**
  * Mock Types
@@ -202,10 +203,74 @@ describe("UsersService", () => {
     });
   });
 
-  // it("", async () => {});
-  // describe("updateUser", () => {
-  //   it("", () => {});
-  // });
+  it("", async () => {});
+  describe("updateUser", () => {
+    const updateUserInput: UpdateUserInput = {
+      name: "mokedName",
+      email: "mokedEmail@mock.com",
+      password: "12345",
+    };
+    const USER_ID: number = 1;
+    it("should be fail if email already exists", async () => {
+      userRepository.findOne.mockResolvedValue(expect.any(Object));
+      const result = await usersService.updateUser(USER_ID, updateUserInput);
+      expect(userRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { email: updateUserInput.email },
+      });
+      expect(result).toEqual({
+        isOk: false,
+        errorMessage: "this email already exists",
+      });
+    });
+
+    it("should be fail if userEntiy is undefined", async () => {
+      userRepository.findOne.mockImplementationOnce(() => {
+        return undefined;
+      });
+      const result = await usersService.updateUser(USER_ID, updateUserInput);
+      expect(result).toEqual({
+        isOk: false,
+        errorMessage: "fail for userEntity",
+      });
+      expect(userRepository.findOne).toHaveBeenCalledTimes(2);
+    });
+
+    it("should be fail if user is undefined", async () => {
+      userRepository.findOne.mockImplementationOnce(() => {
+        return undefined;
+      });
+      userRepository.findOne.mockImplementationOnce(() => {
+        return expect.any(Object);
+      });
+      const result = await usersService.updateUser(USER_ID, updateUserInput);
+      expect(result).toEqual({
+        isOk: false,
+        errorMessage: "fail for user",
+      });
+      expect(userRepository.findOne).toHaveBeenCalledTimes(2);
+      expect(userRepository.create).toHaveBeenCalledTimes(1);
+    });
+
+    it("should be ...", async () => {
+      userRepository.findOne.mockImplementationOnce(() => {
+        return undefined;
+      });
+      userRepository.findOne.mockImplementationOnce(() => {
+        return expect.any(Object);
+      });
+      userRepository.create.mockResolvedValue(updateUserInput);
+      const result = await usersService.updateUser(USER_ID, updateUserInput);
+      // => verification code
+      // expect(result).toEqual({
+      //   isOk: false,
+      //   errorMessage: "fail for user",
+      // });
+      console.log(result);
+      expect(userRepository.findOne).toHaveBeenCalledTimes(2);
+      expect(userRepository.create).toHaveBeenCalledTimes(1);
+    });
+  });
   // describe("deleteUserById", () => {
   //   it("", () => {});
   //   it("", () => {});
