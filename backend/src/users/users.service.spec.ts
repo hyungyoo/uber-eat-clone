@@ -89,14 +89,14 @@ describe("UsersService", () => {
   });
 
   const createUserArgs: CreateUserInput = {
-    email: "hyungyoo@gmail.com",
+    email: "hjyoo901112@gmail.com",
     name: "hyungyoo",
     password: "12345",
     role: 0,
   };
 
   const updateUserArgs: UpdateUserInput = {
-    email: "hyungyoo@gmail.com",
+    email: "hjyoo901112@gmail.com",
     password: "12345",
     name: "hyungyoo",
   };
@@ -196,6 +196,9 @@ describe("UsersService", () => {
       });
 
       expect(userRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { email: createUserArgs.email },
+      });
       expect(userRepository.create).toHaveBeenCalledTimes(1);
       expect(userRepository.create).toHaveBeenCalledWith(createUserArgs);
       expect(userRepository.save).toHaveBeenCalledTimes(1);
@@ -205,15 +208,33 @@ describe("UsersService", () => {
         user: createUserArgs,
       });
       expect(emailVerificationRepository.save).toHaveBeenCalledTimes(1);
+      expect(emailVerificationRepository.save).toHaveBeenCalledWith({
+        user: createUserArgs,
+      });
     });
   });
 
-  describe("updateUser", async () => {
-    it("", () => {});
-    it("", () => {});
-    it("", () => {});
-    it("", () => {});
-    it("", () => {});
+  describe("updateUser", () => {
+    it("should be fail if email already exists", async () => {
+      userRepository.findOne.mockRejectedValueOnce(updateUserArgs);
+      const result = await usersService.updateUser(1, updateUserArgs);
+      expect(result).toEqual({
+        isOk: false,
+        errorMessage: "this email already exists",
+      });
+      expect(userRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { email: updateUserArgs.email },
+      });
+    });
+
+    it("should update user", async () => {
+      // userRepository.findOne
+    });
+    // it("", () => {});
+    // it("", () => {});
+    // it("", () => {});
+    // it("", () => {});
   });
 
   // describe("deleteUserById", () => {
