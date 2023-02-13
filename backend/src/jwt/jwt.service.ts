@@ -11,12 +11,8 @@ export class JwtService {
   }
 
   verifyToken(token: string) {
-    try {
-      return Jwt.verify(token, this.configService.get("PRIVATE_KEY_FOR_TOKEN"))[
-        "id"
-      ];
-    } catch (e) {
-      throw new InternalServerErrorException(e);
-    }
+    return Jwt.verify(token, this.configService.get("PRIVATE_KEY_FOR_TOKEN"))[
+      "id"
+    ];
   }
 }

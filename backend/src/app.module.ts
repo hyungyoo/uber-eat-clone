@@ -9,7 +9,6 @@ import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import * as Joi from "joi";
-import { AuthorizationModule } from "./authorization/authorization.module";
 import { JwtMiddleWare } from "./jwt/jwt.middleware";
 import { JwtModule } from "./jwt/jwt.module";
 import { User } from "./users/entities/users.entity";
@@ -55,7 +54,6 @@ import { EmailVerification } from "./email/entities/email.verification.entity";
     JwtModule.forRoot({ isGlobal: true }),
     EmailModule.forRoot({ isGlobal: true }),
     UsersModule,
-    AuthorizationModule,
   ],
   controllers: [],
   providers: [],
