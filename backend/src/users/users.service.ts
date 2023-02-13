@@ -56,11 +56,10 @@ export class UsersService {
     try {
       if (await this.isUserWithEmail(CreateUserInput.email))
         throw "this email already exists";
-      const EntityUser = this.userRepository.create({
+      const entityUser = this.userRepository.create({
         ...CreateUserInput,
       });
-      // console.log(EntityUser, " is user in entity");
-      const user = await this.userRepository.save(EntityUser);
+      const user = await this.userRepository.save(entityUser);
       const emailVerified = await this.emailVerificationRepository.save(
         this.emailVerificationRepository.create({ user })
       );
@@ -69,7 +68,7 @@ export class UsersService {
         user.name,
         emailVerified.verificationCode
       );
-      return { user, emailVerified };
+      return { emailVerified };
     } catch (errorMessage) {
       return { isOk: false, errorMessage };
     }
