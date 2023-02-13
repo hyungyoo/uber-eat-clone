@@ -31,9 +31,9 @@ export class EmailService {
     code: string
   ) {
     try {
-      const api_key = await this.configService.get("MAILGUN_API_KEY");
-      const domain = await this.configService.get("MAILGUN_DOMAIN_NAME");
-      const fromEmail = await this.configService.get("MAILGUN_FROM");
+      const api_key = this.configService.get("MAILGUN_API_KEY");
+      const domain = this.configService.get("MAILGUN_DOMAIN_NAME");
+      const fromEmail = this.configService.get("MAILGUN_FROM");
       const mailgun = Mailgun({ apiKey: api_key, domain: domain });
       const data = {
         from: `Excited User <${fromEmail}>`,
@@ -42,12 +42,13 @@ export class EmailService {
         template,
         "h:X-Mailgun-Variables": JSON.stringify({ name, code }),
       };
-      await mailgun.messages().send(data, function (error, body) {
-        if (error) throw error;
-        else console.log(body);
-      });
-    } catch (e) {
-      console.log(e, " is error in SendMail");
+      const resultSendmail = await mailgun.messages().send(data);
+      // for test message
+      // console.log(resultSendmail);
+      return resultSendmail;
+    } catch (error) {
+      // console.log(error);
+      return error;
     }
   }
 
