@@ -11,7 +11,6 @@ import { UpdateUserInput } from "./dtos/update-user.dto";
 import { LoginInput } from "./dtos/login.dto";
 import { GetUserInput } from "./dtos/get-user.dto";
 import { DeleteUserInput } from "./dtos/delete-user.dto";
-import { create } from "domain";
 
 /**
  * Mock Types
@@ -24,15 +23,15 @@ const MockRepository = () => ({
   delete: jest.fn(),
 });
 
-const MockJwtService = {
+const MockJwtService = () => ({
   signToken: jest.fn(),
   verifyToken: jest.fn(),
-};
+});
 
-const MockEmailService = {
+const MockEmailService = () => ({
   sendMail: jest.fn(),
   verifierEmailCode: jest.fn(),
-};
+});
 
 /**
  * type for MockRespository
@@ -70,11 +69,11 @@ describe("UsersService", () => {
         },
         {
           provide: JwtService,
-          useValue: MockJwtService,
+          useValue: MockJwtService(),
         },
         {
           provide: EmailService,
-          useValue: MockEmailService,
+          useValue: MockEmailService(),
         },
       ],
     }).compile();
@@ -88,11 +87,28 @@ describe("UsersService", () => {
     usersService = moduleRef.get(UsersService);
   });
 
+  /**
+   * dummy user
+   */
+
+  const ID: number = 1;
+
+  const ROLE: number = 0;
+
+  const dummyUser = {
+    id: ID,
+    email: "hjyoo901112@gmail.com",
+    name: "hyungyoo",
+    password: "12345",
+    isVerified: false,
+    role: ROLE,
+  };
+
   const createUserArgs: CreateUserInput = {
     email: "hjyoo901112@gmail.com",
     name: "hyungyoo",
     password: "12345",
-    role: 0,
+    role: ROLE,
   };
 
   const updateUserArgs: UpdateUserInput = {
@@ -107,11 +123,11 @@ describe("UsersService", () => {
   };
 
   const getUserArgs: GetUserInput = {
-    id: 1,
+    id: ID,
   };
 
   const deleteUserArgs: DeleteUserInput = {
-    id: 1,
+    id: ID,
   };
 
   /**
@@ -171,25 +187,20 @@ describe("UsersService", () => {
 
     it("should create user", async () => {
       userRepository.findOne.mockResolvedValueOnce(undefined);
-      userRepository.create.mockReturnValue(createUserArgs);
-      userRepository.save.mockResolvedValue(createUserArgs);
+      userRepository.create.mockReturnValue(dummyUser);
+      userRepository.save.mockResolvedValue(dummyUser);
       emailVerificationRepository.create.mockReturnValue({
         user: createUserArgs,
       });
       emailVerificationRepository.save.mockResolvedValue({
-        id: expect.any(Number),
+        id: ID,
         verificationCode: expect.any(String),
         user: createUserArgs,
       });
-      emailService.sendMail(
-        createUserArgs.email,
-        createUserArgs.name,
-        expect.any(String)
-      );
       const result = await usersService.createUser(createUserArgs);
       expect(result).toEqual({
         emailVerified: {
-          id: expect.any(Number),
+          id: ID,
           verificationCode: expect.any(String),
           user: createUserArgs,
         },
@@ -202,15 +213,23 @@ describe("UsersService", () => {
       expect(userRepository.create).toHaveBeenCalledTimes(1);
       expect(userRepository.create).toHaveBeenCalledWith(createUserArgs);
       expect(userRepository.save).toHaveBeenCalledTimes(1);
-      expect(userRepository.save).toHaveBeenCalledWith(createUserArgs);
+      expect(userRepository.save).toHaveBeenCalledWith(dummyUser);
       expect(emailVerificationRepository.create).toHaveBeenCalledTimes(1);
       expect(emailVerificationRepository.create).toHaveBeenCalledWith({
-        user: createUserArgs,
+        user: dummyUser,
       });
       expect(emailVerificationRepository.save).toHaveBeenCalledTimes(1);
       expect(emailVerificationRepository.save).toHaveBeenCalledWith({
         user: createUserArgs,
       });
+      expect(emailService.sendMail).toHaveBeenCalledTimes(1);
+      expect(emailService.sendMail).toHaveBeenCalledWith(
+        createUserArgs.email,
+        createUserArgs.name,
+        "verification for create",
+        "uber_eat_email_verification",
+        expect.any(String)
+      );
     });
   });
 
@@ -229,7 +248,42 @@ describe("UsersService", () => {
     });
 
     it("should update user", async () => {
-      // userRepository.findOne
+      userRepository.findOne.mockResolvedValueOnce(undefined);
+      userRepository.findOne.mockResolvedValueOnce(dummyUser);
+      userRepository.create.mockReturnValue(dummyUser);
+      userRepository.save.mockResolvedValue(dummyUser);
+
+      emailVerificationRepository.create({ user: dummyUser });
+      emailVerificationRepository.save(dummyUser);
+
+      const result = await usersService.updateUser(ID, updateUserArgs);
+
+      expect(userRepository.findOne).toHaveBeenCalledTimes(2);
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { email: updateUserArgs.email },
+      });
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { id: ID },
+      });
+
+      expect(userRepository.create).toHaveBeenCalledTimes(1);
+      expect(userRepository.create).toHaveBeenCalledWith(dummyUser);
+      expect(userRepository.save).toHaveBeenCalledTimes(1);
+      expect(userRepository.save).toHaveBeenCalledWith(dummyUser);
+      expect(emailVerificationRepository.create).toHaveBeenCalledTimes(1);
+      expect(emailVerificationRepository.create).toHaveBeenCalledWith({
+        user: dummyUser,
+      });
+      // expect(emailVerificationRepository.save).toHaveBeenCalledTimes(2);
+      // expect(emailVerificationRepository.save).toHaveBeenCalledWith(dummyUser);
+      // expect(emailService.sendMail).toHaveBeenCalledTimes(1);
+      // expect(emailService.sendMail).toHaveBeenCalledWith(
+      //   updateUserArgs.email,
+      //   updateUserArgs.name,
+      //   "verification for update",
+      //   "uber_eat_email_verification",
+      //   expect.any(String)
+      // );
     });
     // it("", () => {});
     // it("", () => {});

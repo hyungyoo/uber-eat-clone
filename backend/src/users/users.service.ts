@@ -63,9 +63,11 @@ export class UsersService {
       const emailVerified = await this.emailVerificationRepository.save(
         this.emailVerificationRepository.create({ user })
       );
-      this.emailService.sendMail(
+      await this.emailService.sendMail(
         user.email,
         user.name,
+        "verification for create",
+        "uber_eat_email_verification",
         emailVerified.verificationCode
       );
       return { emailVerified };
@@ -98,9 +100,11 @@ export class UsersService {
       const emailVerified = await this.emailVerificationRepository.save(
         this.emailVerificationRepository.create({ user })
       );
-      this.emailService.sendMail(
+      await this.emailService.sendMail(
         user.email,
         user.name,
+        "verification for update",
+        "uber_eat_email_verification",
         emailVerified.verificationCode
       );
       return {
