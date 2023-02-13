@@ -24,7 +24,7 @@ const MockRepository = () => ({
 });
 
 const MockJwtService = () => ({
-  signToken: jest.fn(),
+  signToken: jest.fn(() => "fake-token"),
   verifyToken: jest.fn(),
 });
 
@@ -187,8 +187,10 @@ describe("UsersService", () => {
 
     it("should create user", async () => {
       userRepository.findOne.mockResolvedValueOnce(undefined);
+
       userRepository.create.mockReturnValue(dummyUser);
       userRepository.save.mockResolvedValue(dummyUser);
+
       emailVerificationRepository.create.mockReturnValue({
         user: createUserArgs,
       });
@@ -197,6 +199,7 @@ describe("UsersService", () => {
         verificationCode: expect.any(String),
         user: createUserArgs,
       });
+
       const result = await usersService.createUser(createUserArgs);
       expect(result).toEqual({
         emailVerified: {
@@ -210,10 +213,12 @@ describe("UsersService", () => {
       expect(userRepository.findOne).toHaveBeenCalledWith({
         where: { email: createUserArgs.email },
       });
+
       expect(userRepository.create).toHaveBeenCalledTimes(1);
       expect(userRepository.create).toHaveBeenCalledWith(createUserArgs);
       expect(userRepository.save).toHaveBeenCalledTimes(1);
       expect(userRepository.save).toHaveBeenCalledWith(dummyUser);
+
       expect(emailVerificationRepository.create).toHaveBeenCalledTimes(1);
       expect(emailVerificationRepository.create).toHaveBeenCalledWith({
         user: dummyUser,
@@ -222,6 +227,7 @@ describe("UsersService", () => {
       expect(emailVerificationRepository.save).toHaveBeenCalledWith({
         user: createUserArgs,
       });
+
       expect(emailService.sendMail).toHaveBeenCalledTimes(1);
       expect(emailService.sendMail).toHaveBeenCalledWith(
         createUserArgs.email,
@@ -250,13 +256,21 @@ describe("UsersService", () => {
     it("should update user", async () => {
       userRepository.findOne.mockResolvedValueOnce(undefined);
       userRepository.findOne.mockResolvedValueOnce(dummyUser);
+
       userRepository.create.mockReturnValue(dummyUser);
       userRepository.save.mockResolvedValue(dummyUser);
 
-      emailVerificationRepository.create({ user: dummyUser });
-      emailVerificationRepository.save(dummyUser);
+      emailVerificationRepository.create.mockReturnValue({
+        user: dummyUser,
+      });
+      emailVerificationRepository.save.mockResolvedValue({
+        id: ID,
+        verificationCode: expect.any(String),
+        user: dummyUser,
+      });
 
       const result = await usersService.updateUser(ID, updateUserArgs);
+      expect(result).toEqual({ user: dummyUser });
 
       expect(userRepository.findOne).toHaveBeenCalledTimes(2);
       expect(userRepository.findOne).toHaveBeenCalledWith({
@@ -270,46 +284,147 @@ describe("UsersService", () => {
       expect(userRepository.create).toHaveBeenCalledWith(dummyUser);
       expect(userRepository.save).toHaveBeenCalledTimes(1);
       expect(userRepository.save).toHaveBeenCalledWith(dummyUser);
+
       expect(emailVerificationRepository.create).toHaveBeenCalledTimes(1);
       expect(emailVerificationRepository.create).toHaveBeenCalledWith({
         user: dummyUser,
       });
-      // expect(emailVerificationRepository.save).toHaveBeenCalledTimes(2);
-      // expect(emailVerificationRepository.save).toHaveBeenCalledWith(dummyUser);
-      // expect(emailService.sendMail).toHaveBeenCalledTimes(1);
-      // expect(emailService.sendMail).toHaveBeenCalledWith(
-      //   updateUserArgs.email,
-      //   updateUserArgs.name,
-      //   "verification for update",
-      //   "uber_eat_email_verification",
-      //   expect.any(String)
-      // );
+      expect(emailVerificationRepository.save).toHaveBeenCalledTimes(1);
+      expect(emailVerificationRepository.save).toHaveBeenCalledWith({
+        user: dummyUser,
+      });
+
+      expect(emailService.sendMail).toHaveBeenCalledTimes(1);
+      expect(emailService.sendMail).toHaveBeenCalledWith(
+        updateUserArgs.email,
+        updateUserArgs.name,
+        "verification for update",
+        "uber_eat_email_verification",
+        expect.any(String)
+      );
     });
-    // it("", () => {});
-    // it("", () => {});
-    // it("", () => {});
-    // it("", () => {});
   });
 
-  // describe("deleteUserById", () => {
-  //   it("", () => {});
-  //   it("", () => {});
-  //   it("", () => {});
-  //   it("", () => {});
-  //   it("", () => {});
-  // });
-  // describe("login", () => {
-  //   it("", () => {});
-  //   it("", () => {});
-  //   it("", () => {});
-  //   it("", () => {});
-  //   it("", () => {});
-  // });
-  // describe("findUserById", () => {
-  //   it("", () => {});
-  //   it("", () => {});
-  //   it("", () => {});
-  //   it("", () => {});
-  //   it("", () => {});
-  // });
+  describe("deleteUserById", () => {
+    it("should be fail it user not found", async () => {
+      userRepository.findOne.mockResolvedValue(undefined);
+      const result = await usersService.deleteUserById(deleteUserArgs);
+      expect(result).toEqual({
+        isOk: false,
+        errorMessage: "this user not exists",
+      });
+      expect(userRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { id: ID },
+      });
+    });
+    it("should be deleted user", async () => {
+      userRepository.findOne.mockResolvedValue(dummyUser);
+      userRepository.delete.mockResolvedValue(dummyUser);
+
+      const result = await usersService.deleteUserById(deleteUserArgs);
+      expect(result).toEqual({ user: dummyUser });
+
+      expect(userRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { id: ID },
+      });
+
+      expect(userRepository.delete).toHaveBeenCalledTimes(1);
+      expect(userRepository.delete).toHaveBeenCalledWith(ID);
+    });
+  });
+
+  describe("login", () => {
+    it("should be fail if user not found", async () => {
+      userRepository.findOne.mockResolvedValue(undefined);
+
+      const result = await usersService.login(loginArgs);
+      expect(result).toEqual({
+        isOk: false,
+        errorMessage: "user not exists wtih this email",
+      });
+
+      expect(userRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { email: loginArgs.email },
+        select: ["password"],
+      });
+    });
+
+    it("should be fail if password not correct", async () => {
+      const mockWrongPWUser = {
+        ValidatePW: jest.fn(() => false),
+      };
+      userRepository.findOne.mockResolvedValue(mockWrongPWUser);
+
+      const result = await usersService.login(loginArgs);
+      expect(result).toEqual({
+        isOk: false,
+        errorMessage: "password not correct",
+      });
+
+      expect(userRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { email: loginArgs.email },
+        select: ["password"],
+      });
+      expect(mockWrongPWUser.ValidatePW).toHaveBeenCalledTimes(1);
+      expect(mockWrongPWUser.ValidatePW).toHaveBeenCalledWith(
+        loginArgs.password
+      );
+    });
+
+    it("should be login and return a signed token", async () => {
+      const mockCorrectPWUser = {
+        id: ID,
+        ValidatePW: jest.fn(() => true),
+      };
+      userRepository.findOne.mockResolvedValue(mockCorrectPWUser);
+
+      const result = await usersService.login(loginArgs);
+      expect(result).toEqual({
+        token: "fake-token",
+      });
+
+      expect(userRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { email: loginArgs.email },
+        select: ["password"],
+      });
+      expect(mockCorrectPWUser.ValidatePW).toHaveBeenCalledTimes(1);
+      expect(mockCorrectPWUser.ValidatePW).toHaveBeenCalledWith(
+        loginArgs.password
+      );
+      expect(jwtService.signToken).toHaveBeenCalledTimes(1);
+      expect(jwtService.signToken).toHaveBeenCalledWith({
+        id: mockCorrectPWUser.id,
+      });
+    });
+  });
+
+  describe("findUserById", () => {
+    it("should be fail if user not found", async () => {
+      userRepository.findOne.mockResolvedValue(undefined);
+
+      const result = await usersService.findUserById(getUserArgs);
+      expect(result).toEqual({ isOk: false, errorMessage: "user not found" });
+
+      expect(userRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { id: getUserArgs.id },
+      });
+    });
+    it("should find user", async () => {
+      userRepository.findOne.mockResolvedValue(dummyUser);
+
+      const result = await usersService.findUserById(getUserArgs);
+      expect(result).toEqual({ user: dummyUser });
+
+      expect(userRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { id: getUserArgs.id },
+      });
+    });
+  });
 });

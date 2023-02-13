@@ -152,7 +152,6 @@ export class UsersService {
         where: { email },
         select: ["password"],
       });
-      console.log(IsUser);
       if (!IsUser)
         return { isOk: false, errorMessage: "user not exists wtih this email" };
       const isCorrectPW = await IsUser.ValidatePW(password);
@@ -173,7 +172,7 @@ export class UsersService {
   async findUserById({ id }: GetUserInput): Promise<GetUserOutput> {
     try {
       const user = await this.userRepository.findOne({ where: { id } });
-      if (!user) throw Error();
+      if (!user) throw "user not found";
       return { user };
     } catch (errorMessage) {
       return {
