@@ -29,15 +29,15 @@ const mockConfigService = () => ({
 /**
  * mock Mailgun
  */
-jest.mock("mailgun-js", () => {
-  return {
-    message: jest.fn(() => {
-      console.log("message ");
-    }),
-  };
-});
 
-// Mailgun.message();
+jest.mock("mailgun-js", () => {
+  const mMailgun = {
+    messages: jest.fn().mockReturnThis(),
+    send: jest.fn(),
+  };
+  return jest.fn(() => mMailgun);
+});
+// const mailgun = Mailgun({} as any);
 
 type MockTypeRepository<T> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
