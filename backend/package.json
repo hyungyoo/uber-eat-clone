@@ -97,7 +97,7 @@
       ".result.ts",
       ".decorator.ts",
       "main.ts",
-      "middlewarie.ts"
+      "middleware.ts"
     ]
   }
 }

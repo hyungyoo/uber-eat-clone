@@ -67,8 +67,8 @@ describe("JwtService", () => {
 
   describe("JwtService", () => {
     describe("signToken", () => {
-      it("should  return signed token", async () => {
-        const result = await jwtService.signToken(payLoad);
+      it("should  return signed token", () => {
+        const result = jwtService.signToken(payLoad);
         expect(result).toEqual(TOKEN);
 
         expect(configService.get).toHaveBeenCalledTimes(1);
@@ -82,7 +82,7 @@ describe("JwtService", () => {
       it("should return id of user", async () => {
         const result = await jwtService.verifyToken(TOKEN);
         expect(result).toEqual(ID);
-        
+
         expect(configService.get).toHaveBeenCalledTimes(1);
         expect(configService.get).toHaveBeenCalledWith("PRIVATE_KEY_FOR_TOKEN");
         expect(Jwt.verify).toHaveBeenCalledTimes(1);
