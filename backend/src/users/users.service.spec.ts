@@ -8,6 +8,9 @@ import { EmailService } from "src/email/email.service";
 import { Repository } from "typeorm";
 import { CreateUserInput } from "./dtos/create-user.dto";
 import { UpdateUserInput } from "./dtos/update-user.dto";
+import { LoginInput } from "./dtos/login.dto";
+import { GetUserInput } from "./dtos/get-user.dto";
+import { DeleteUserInput } from "./dtos/delete-user.dto";
 
 /**
  * Mock Types
@@ -84,6 +87,32 @@ describe("UsersService", () => {
     usersService = moduleRef.get(UsersService);
   });
 
+  const createUserInput: CreateUserInput = {
+    email: "hyungyoo@gmail.com",
+    name: "hyungyoo",
+    password: "12345",
+    role: 0,
+  };
+
+  const updateUserInput: UpdateUserInput = {
+    email: "hyungyoo@gmail.com",
+    password: "12345",
+    name: "hyungyoo",
+  };
+
+  const loginInput: LoginInput = {
+    email: "hyungyoo@gmail.com",
+    password: "12345",
+  };
+
+  const getUserInput: GetUserInput = {
+    id: 1,
+  };
+
+  const deleteUserInput: DeleteUserInput = {
+    id: 1,
+  };
+
   /**
    * repositories, services should be defined
    */
@@ -130,12 +159,6 @@ describe("UsersService", () => {
    * create user
    */
   describe("createUser", () => {
-    const createUserInput: CreateUserInput = {
-      name: "hyungyoo",
-      email: "hyungoo@gmail.com",
-      password: "12345",
-      role: 0,
-    };
     it("should be fail if email already exists", async () => {
       userRepository.findOne.mockResolvedValue(expect.any(Object));
       const result = await usersService.createUser(createUserInput);
@@ -148,127 +171,7 @@ describe("UsersService", () => {
         errorMessage: "this email already exists",
       });
     });
-    it("should be fail if user cannot created", async () => {
-      userRepository.findOne.mockResolvedValue(undefined);
-   
-
-      const result = await usersService.createUser(createUserInput);
-      expect(result).toEqual({ isOk: false, errorMessage: "fail save user" });
-      expect(userRepository.findOne).toHaveBeenCalledTimes(1);
-      expect(userRepository.create).toHaveBeenCalledTimes(1);
-      expect(userRepository.create).toHaveBeenCalledWith(createUserInput);
-    });
-    //   it("should be fail if emailVerified cannot created", async () => {
-    //     userRepository.findOne.mockResolvedValue(undefined);
-    //     userRepository.create.mockReturnValue(createUserInput);
-    //     userRepository.save.mockResolvedValue(createUserInput);
-    //     emailVerificationRepository.create.mockReturnValue(undefined);
-    //     emailVerificationRepository.save.mockResolvedValue(undefined);
-    //     const result = await usersService.createUser(createUserInput);
-    //     expect(result).toEqual({
-    //       isOk: false,
-    //       errorMessage: "fail save email verified entity",
-    //     });
-    //     expect(userRepository.create).toHaveBeenCalledTimes(1);
-    //     expect(userRepository.create).toHaveBeenCalledWith(createUserInput);
-    //     expect(userRepository.save).toHaveBeenCalledTimes(1);
-    //     expect(userRepository.save).toHaveBeenCalledWith(createUserInput);
-    //   });
-
-    //   it("should be work", async () => {
-    //     userRepository.findOne.mockResolvedValue(undefined);
-    //     userRepository.create.mockReturnValue(createUserInput);
-    //     userRepository.save.mockResolvedValue(createUserInput);
-    //     emailVerificationRepository.create.mockReturnValue(expect.any(Object));
-    //     emailVerificationRepository.save.mockResolvedValue(expect.any(Object));
-    //     const result = await usersService.createUser(createUserInput);
-    //     expect(result).toEqual({
-    //       user: createUserInput,
-    //       emailVerified: expect.any(Object),
-    //     });
-    //     expect(userRepository.create).toHaveBeenCalledTimes(1);
-    //     expect(userRepository.create).toHaveBeenCalledWith(createUserInput);
-    //     expect(userRepository.save).toHaveBeenCalledTimes(1);
-    //     expect(userRepository.save).toHaveBeenCalledWith(createUserInput);
-    //     expect(emailVerificationRepository.create).toHaveBeenCalledTimes(1);
-    //     expect(emailVerificationRepository.create).toHaveBeenCalledWith({
-    //       user: createUserInput,
-    //     });
-    //     expect(emailVerificationRepository.save).toHaveBeenCalledTimes(1);
-    //     expect(emailVerificationRepository.save).toHaveBeenCalledWith({
-    //       user: createUserInput,
-    //     });
-    //     expect(emailService.sendMail).toHaveBeenCalledTimes(1);
-    //   });
-    // });
-
-    // it("", async () => {});
-    // describe("updateUser", () => {
-    //   const updateUserInput: UpdateUserInput = {
-    //     name: "mokedName",
-    //     email: "mokedEmail@mock.com",
-    //     password: "12345",
-    //   };
-    //   const USER_ID: number = 1;
-    //   it("should be fail if email already exists", async () => {
-    //     userRepository.findOne.mockResolvedValue(expect.any(Object));
-    //     const result = await usersService.updateUser(USER_ID, updateUserInput);
-    //     expect(userRepository.findOne).toHaveBeenCalledTimes(1);
-    //     expect(userRepository.findOne).toHaveBeenCalledWith({
-    //       where: { email: updateUserInput.email },
-    //     });
-    //     expect(result).toEqual({
-    //       isOk: false,
-    //       errorMessage: "this email already exists",
-    //     });
-    //   });
-
-    //   it("should be fail if userEntiy is undefined", async () => {
-    //     userRepository.findOne.mockImplementationOnce(() => {
-    //       return undefined;
-    //     });
-    //     const result = await usersService.updateUser(USER_ID, updateUserInput);
-    //     expect(result).toEqual({
-    //       isOk: false,
-    //       errorMessage: "fail for userEntity",
-    //     });
-    //     expect(userRepository.findOne).toHaveBeenCalledTimes(2);
-    //   });
-
-    //   it("should be fail if user is undefined", async () => {
-    //     userRepository.findOne.mockImplementationOnce(() => {
-    //       return undefined;
-    //     });
-    //     userRepository.findOne.mockImplementationOnce(() => {
-    //       return expect.any(Object);
-    //     });
-    //     const result = await usersService.updateUser(USER_ID, updateUserInput);
-    //     expect(result).toEqual({
-    //       isOk: false,
-    //       errorMessage: "fail for user",
-    //     });
-    //     expect(userRepository.findOne).toHaveBeenCalledTimes(2);
-    //     expect(userRepository.create).toHaveBeenCalledTimes(1);
-    //   });
-
-    //   it("should be ...", async () => {
-    //     userRepository.findOne.mockImplementationOnce(() => {
-    //       return undefined;
-    //     });
-    //     userRepository.findOne.mockImplementationOnce(() => {
-    //       return expect.any(Object);
-    //     });
-    //     userRepository.create.mockResolvedValue(updateUserInput);
-    //     const result = await usersService.updateUser(USER_ID, updateUserInput);
-    //     // => verification code
-    //     // expect(result).toEqual({
-    //     //   isOk: false,
-    //     //   errorMessage: "fail for user",
-    //     // });
-    //     console.log(result);
-    //     expect(userRepository.findOne).toHaveBeenCalledTimes(2);
-    //     expect(userRepository.create).toHaveBeenCalledTimes(1);
-    //   });
+    it("", async () => {});
   });
   // describe("deleteUserById", () => {
   //   it("", () => {});

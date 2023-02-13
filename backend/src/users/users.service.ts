@@ -3,12 +3,12 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateUserInput, CreateUserOutput } from "./dtos/create-user.dto";
 import { User } from "./entities/users.entity";
-import { LoginDisplayResult, LoginDto } from "./dtos/login.dto";
+import { LoginOutput, LoginInput } from "./dtos/login.dto";
 import { JwtService } from "src/jwt/jwt.service";
 import { GetUsersOutput } from "./dtos/get-users.dto";
-import { GetUserOutput } from "./dtos/get-user.dto";
+import { GetUserInput, GetUserOutput } from "./dtos/get-user.dto";
 import { UpdateUserInput, UpdateUserOutput } from "./dtos/update-user.dto";
-import { DeleteUserOutput } from "./dtos/delete-user.dto";
+import { DeleteUserInput, DeleteUserOutput } from "./dtos/delete-user.dto";
 import { EmailVerification } from "src/email/entities/email.verification.entity";
 import { EmailService } from "src/email/email.service";
 
@@ -120,7 +120,7 @@ export class UsersService {
    * @param id
    * @returns status code, user info of the deleted user
    */
-  async deleteUserById(id: number): Promise<DeleteUserOutput> {
+  async deleteUserById({ id }: DeleteUserInput): Promise<DeleteUserOutput> {
     try {
       const user = await this.userRepository.findOne({ where: { id } });
       if (!user) throw "this user not exists";
@@ -143,7 +143,7 @@ export class UsersService {
    * @param param0 email, password
    * @returns status code, token
    */
-  async login({ email, password }: LoginDto): Promise<LoginDisplayResult> {
+  async login({ email, password }: LoginInput): Promise<LoginOutput> {
     try {
       const IsUser = await this.userRepository.findOne({
         where: { email },
@@ -167,7 +167,7 @@ export class UsersService {
    * @param id
    * @returns status code, user info of the requested user
    */
-  async findUserById(id: number): Promise<GetUserOutput> {
+  async findUserById({ id }: GetUserInput): Promise<GetUserOutput> {
     try {
       const user = await this.userRepository.findOne({ where: { id } });
       if (!user) throw Error();

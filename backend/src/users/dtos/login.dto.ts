@@ -4,10 +4,10 @@ import { IsString } from "class-validator";
 import { DisplayResult } from "src/baseData/base.display.result";
 
 @InputType()
-export class LoginDto extends PickType(User, ["email", "password"]) {}
+export class LoginInput extends PickType(User, ["email", "password"]) {}
 
 @ObjectType()
-export class LoginDisplayResult extends DisplayResult {
+export class LoginOutput extends DisplayResult {
   @Field((type) => String, { nullable: true })
   @IsString()
   token?: string;
