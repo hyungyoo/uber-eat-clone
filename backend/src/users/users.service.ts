@@ -150,7 +150,7 @@ export class UsersService {
     try {
       const IsUser = await this.userRepository.findOne({
         where: { email },
-        select: ["password"],
+        select: ["password", "id"],
       });
       if (!IsUser)
         return { isOk: false, errorMessage: "user not exists wtih this email" };

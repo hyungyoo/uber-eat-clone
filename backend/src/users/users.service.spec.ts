@@ -348,7 +348,7 @@ describe("UsersService", () => {
       expect(userRepository.findOne).toHaveBeenCalledTimes(1);
       expect(userRepository.findOne).toHaveBeenCalledWith({
         where: { email: loginArgs.email },
-        select: ["password"],
+        select: ["password", "id"],
       });
     });
 
@@ -367,7 +367,7 @@ describe("UsersService", () => {
       expect(userRepository.findOne).toHaveBeenCalledTimes(1);
       expect(userRepository.findOne).toHaveBeenCalledWith({
         where: { email: loginArgs.email },
-        select: ["password"],
+        select: ["password", "id"],
       });
       expect(mockWrongPWUser.ValidatePW).toHaveBeenCalledTimes(1);
       expect(mockWrongPWUser.ValidatePW).toHaveBeenCalledWith(
@@ -390,7 +390,7 @@ describe("UsersService", () => {
       expect(userRepository.findOne).toHaveBeenCalledTimes(1);
       expect(userRepository.findOne).toHaveBeenCalledWith({
         where: { email: loginArgs.email },
-        select: ["password"],
+        select: ["password", "id"],
       });
       expect(mockCorrectPWUser.ValidatePW).toHaveBeenCalledTimes(1);
       expect(mockCorrectPWUser.ValidatePW).toHaveBeenCalledWith(
