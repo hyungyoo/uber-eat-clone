@@ -153,7 +153,7 @@ describe("UsersService", () => {
     });
 
     it("should fail if find throw error", async () => {
-      userRepository.find.mockRejectedValue(Promise.reject);
+      userRepository.find.mockRejectedValue(new Error());
       const result = await usersService.users();
       expect(userRepository.find).toHaveBeenCalledTimes(1);
       expect(userRepository.find).toHaveBeenCalledWith();
@@ -177,7 +177,7 @@ describe("UsersService", () => {
    */
   describe("createUser", () => {
     it("should be fail if email already exists", async () => {
-      userRepository.findOne.mockRejectedValue(new Error());
+      userRepository.findOne.mockResolvedValue(dummyUser);
       const result = await usersService.createUser(createUserArgs);
       expect(result).toEqual({
         isOk: false,
@@ -241,7 +241,7 @@ describe("UsersService", () => {
 
   describe("updateUser", () => {
     it("should be fail if email already exists", async () => {
-      userRepository.findOne.mockRejectedValueOnce(updateUserArgs);
+      userRepository.findOne.mockResolvedValueOnce(dummyUser);
       const result = await usersService.updateUser(1, updateUserArgs);
       expect(result).toEqual({
         isOk: false,

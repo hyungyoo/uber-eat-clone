@@ -29,12 +29,11 @@ export class UsersService {
   async users(): Promise<GetUsersOutput> {
     try {
       const users = await this.userRepository.find();
-      if (!users) throw "fail to get users infos";
       return {
         isOk: true,
         users,
       };
-    } catch (e) {
+    } catch {
       return {
         isOk: false,
         errorMessage: "fail to get users infos",
@@ -51,13 +50,15 @@ export class UsersService {
    * @return status code, User info of the created user
    */
   async createUser(
-    CreateUserInput: CreateUserInput
+    createUserInput: CreateUserInput
   ): Promise<CreateUserOutput> {
     try {
-      if (await this.isUserWithEmail(CreateUserInput.email))
-        throw "this email already exists";
+      const isAleadyEmail = await this.userRepository.findOne({
+        where: { email: createUserInput.email },
+      });
+      if (isAleadyEmail) throw "this email already exists";
       const entityUser = this.userRepository.create({
-        ...CreateUserInput,
+        ...createUserInput,
       });
       const user = await this.userRepository.save(entityUser);
       const emailVerified = await this.emailVerificationRepository.save(
@@ -85,15 +86,17 @@ export class UsersService {
    */
   async updateUser(
     id: number,
-    UpdateUserInput: UpdateUserInput
+    updateUserInput: UpdateUserInput
   ): Promise<UpdateUserOutput> {
     try {
-      if (await this.isUserWithEmail(UpdateUserInput.email))
-        throw "this email already exists";
+      const isAleadyEmail = await this.userRepository.findOne({
+        where: { email: updateUserInput.email },
+      });
+      if (isAleadyEmail) throw "this email already exists";
       const userEntity = await this.userRepository.findOne({ where: { id } });
       const user = this.userRepository.create({
         ...userEntity,
-        ...UpdateUserInput,
+        ...updateUserInput,
       });
       user.isVerified = false;
       await this.userRepository.save(user);
@@ -179,18 +182,6 @@ export class UsersService {
         isOk: false,
         errorMessage,
       };
-    }
-  }
-
-  private async isUserWithEmail(email: string): Promise<Boolean> {
-    try {
-      const isAleadyEmail = await this.userRepository.findOne({
-        where: { email },
-      });
-      if (isAleadyEmail) throw "this email already exists";
-      return false;
-    } catch (e) {
-      return true;
     }
   }
 }
