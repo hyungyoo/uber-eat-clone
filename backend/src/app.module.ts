@@ -20,7 +20,7 @@ import { EmailVerification } from "./email/entities/email.verification.entity";
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ".env",
+      envFilePath: process.env.ENV === "e2e" ? ".test.env" : ".env",
       validationSchema: Joi.object({
         POSTGRES_HOST: Joi.string().required(),
         POSTGRES_PORT: Joi.string().required(),
@@ -41,7 +41,7 @@ import { EmailVerification } from "./email/entities/email.verification.entity";
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
       synchronize: true,
-      // logging: true,
+      logging: Boolean(process.env.ENV === "dev"),
       entities: [User, EmailVerification],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
