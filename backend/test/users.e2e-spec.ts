@@ -366,7 +366,56 @@ describe("Users resolver test (e2e)", () => {
     });
   });
 
-  it.todo("verifierEmailCode");
-  it.todo("updateUser");
+  describe("updateUser", () => {
+    const gqlQeury = `
+      mutation {
+        updateUser(input: {
+          name: "${dummyForUpdate.name}", 
+          email: "${dummyForUpdate.email}", 
+          password: "${dummyForUpdate.password}"}) {
+          isOk
+          errorMessage
+          user {
+            id
+            email
+            name
+          }
+        }
+      }
+    `;
+    it("should be fail if jwt token is incorrect", () => {
+      return postRequest(gqlQeury, TOKEN__INCORRECT)
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              errors: [messages],
+              data,
+            },
+          } = res;
+          expect(data).toBeNull();
+          expect(messages.message).toBe("Forbidden resource");
+        });
+    });
+    it("should update user", () => {
+      return postRequest(gqlQeury, jwtToken)
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                updateUser: { isOk, errorMessage, user },
+              },
+            },
+          } = res;
+          expect(isOk).toBeTruthy();
+          expect(errorMessage).toBeNull();
+          expect(user.email).toBe(dummyForUpdate.email);
+          expect(user.name).toBe(dummyForUpdate.name);
+        });
+    });
+  });
+
   it.todo("deleteUser");
+  it.todo("verifierEmailCode");
 });
