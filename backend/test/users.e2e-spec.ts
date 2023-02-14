@@ -1,8 +1,11 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { INestApplication } from "@nestjs/common";
 import { AppModule } from "../src/app.module";
-import { DataSource } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 import * as request from "supertest";
+import { User } from "src/users/entities/users.entity";
+import { EmailVerification } from "src/email/entities/email.verification.entity";
+import { getRepositoryToken } from "@nestjs/typeorm";
 
 /**
  * for mocking mailgun
@@ -10,7 +13,7 @@ import * as request from "supertest";
 jest.mock("mailgun-js", () => {
   const mMailgun = {
     messages: jest.fn().mockReturnThis(),
-    send: jest.fn(() => {}),
+    send: jest.fn(() => "mock test send mail fn"),
   };
   return jest.fn(() => mMailgun);
 });
@@ -20,6 +23,8 @@ jest.mock("mailgun-js", () => {
  */
 describe("UsersService (e2e)", () => {
   let app: INestApplication;
+  let userRepository: Repository<User>;
+  let emailVerificationRepository: Repository<EmailVerification>;
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
@@ -27,6 +32,10 @@ describe("UsersService (e2e)", () => {
     }).compile();
 
     app = moduleRef.createNestApplication();
+    userRepository = moduleRef.get<Repository<User>>(getRepositoryToken(User));
+    emailVerificationRepository = moduleRef.get<Repository<EmailVerification>>(
+      getRepositoryToken(EmailVerification)
+    );
     await app.init();
   });
 

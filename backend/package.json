@@ -98,7 +98,8 @@
       ".result.ts",
       ".decorator.ts",
       "main.ts",
-      "middleware.ts"
+      "middleware.ts",
+      "consts.ts"
     ]
   }
 }
