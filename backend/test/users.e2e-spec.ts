@@ -160,6 +160,42 @@ describe("Users resolver test (e2e)", () => {
     });
   });
 
+  describe("users", () => {
+    const gqlQeury = `
+    {
+      users {
+        isOk
+        errorMessage
+        users {
+          name
+          email
+          id
+          role
+        }
+      }
+    }`;
+    it.todo("should be fail if user id is not exists");
+    it(`should get user email name is ${dummy.email}`, () => {
+      return postRequest(gqlQeury)
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                users: { isOk, errorMessage, users },
+              },
+            },
+          } = res;
+          expect(isOk).toBeTruthy();
+          expect(errorMessage).toBeNull();
+          const [user] = users;
+          expect(user.email).toBe(dummy.email);
+          expect(user.name).toBe(dummy.name);
+          expect(user.role).toBe(dummy.role);
+        });
+    });
+  });
+
   /**
    * to do
    */ /**
@@ -189,50 +225,13 @@ describe("Users resolver test (e2e)", () => {
    */ /**
    * todo
    */
-  describe("users", () => {
-    const gqlQeury = `
-    {
-      users {
-        isOk
-        errorMessage
-        users {
-          name
-          email
-          id
-          role
-        }
-      }
-    }`;
-    it.todo("should be fail if user id is not exists");
-    it(`should get user email name is ${dummy.email}`, () => {
-      return postRequest(gqlQeury)
-        .expect(200)
-        .expect((res) => {
-          const {
-            body: {
-              data: {
-                users: { isOk, errorMessage, users },
-              },
-            },
-          } = res;
-          /**
-           * isok가 없음..
-           */
-          expect(isOk).toBeTruthy();
-          expect(errorMessage).toBeNull();
-          const [user] = users;
-          expect(user.email).toBe(dummy.email);
-          expect(user.name).toBe(dummy.name);
-          expect(user.role).toBe(dummy.role);
-        });
-    });
-  });
-
-  describe("myProfile", () => {
+  describe("user", () => {
     const gqlQeury = (userId: number) => {
       return `
     {
       user (input: {id : ${userId}}) {
+        isOk
+        errorMessage
         user{
           id
           name
@@ -246,7 +245,7 @@ describe("Users resolver test (e2e)", () => {
       const [User] = await userRepository.find({
         where: { email: dummy.email },
       });
-      return postRequest(gqlQeury(User.id), jwtToken)
+      return postRequest(gqlQeury(5), jwtToken)
         .expect(200)
         .expect((res) => {
           const {
@@ -258,6 +257,8 @@ describe("Users resolver test (e2e)", () => {
         });
     });
   });
+
+  it.todo("myProfile");
   /**
    * todo
    */ /**
