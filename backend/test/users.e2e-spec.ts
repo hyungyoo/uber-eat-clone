@@ -182,7 +182,6 @@ describe("Users resolver test (e2e)", () => {
         }
       }
     }`;
-    it.todo("should be fail if user id is not exists");
     it(`should get user email name is ${dummy.email}`, () => {
       return postRequest(gqlQeury)
         .expect(200)
@@ -256,58 +255,15 @@ describe("Users resolver test (e2e)", () => {
     });
   });
 
-  describe("myProfile", () => {
-    const gqlQeury = `
-    `;
-    it("should be fail if jwt token is incorrect", () => {
-      return postRequest(gqlQeury, TOKEN__INCORRECT)
-        .expect(200)
-        .expect((res) => {
-          const {
-            body: {
-              data: {
-                user: { isOk, errorMessage, user },
-              },
-            },
-          } = res;
-          expect(isOk).toBeFalsy();
-          expect(errorMessage).toBe("user not found");
-          expect(user).toBeNull();
-        });
-    });
-    it("should be success", async () => {
-      const [User] = await userRepository.find({
-        where: { email: dummy.email },
-      });
-      /**
-       * jwtToken from login test
-       */
-      return postRequest(gqlQeury, jwtToken)
-        .expect(200)
-        .expect((res) => {
-          const {
-            body: {
-              data: {
-                user: { isOk, errorMessage, user },
-              },
-            },
-          } = res;
-          expect(isOk).toBeTruthy();
-          expect(errorMessage).toBeNull();
-          expect(user.id).toBe(User.id);
-        });
-    });
-  });
-
   describe("login", () => {
     const gqlQeury = (
       email: string = dummy.email,
       password: string = dummy.password
     ) => {
       return `
-        {
+      {
           login(input: {
-        email: "${email}"
+            email: "${email}"
         password: "${password}"
       }) {
         isOk
@@ -369,7 +325,46 @@ describe("Users resolver test (e2e)", () => {
     });
   });
 
-  it.todo("user");
+  describe("myProfile", () => {
+    const gqlQeury = `
+        {
+          myProfile {
+            id
+            name
+            email
+          }
+        }
+      `;
+    it("should be fail if jwt token is incorrect", () => {
+      return postRequest(gqlQeury, TOKEN__INCORRECT)
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              errors: [messages],
+              data,
+            },
+          } = res;
+          expect(data).toBeNull();
+          expect(messages.message).toBe("Forbidden resource");
+        });
+    });
+    it("should be success", async () => {
+      return postRequest(gqlQeury, jwtToken)
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                myProfile: { id, name, email },
+              },
+            },
+          } = res;
+          expect(email).toBe(dummy.email);
+          expect(name).toBe(dummy.name);
+        });
+    });
+  });
 
   it.todo("verifierEmailCode");
   it.todo("updateUser");
