@@ -5,9 +5,9 @@ import {
   EmailVerificationOutput,
 } from "./dtos/email.verification.dto";
 import { INPUT_ARG } from "src/baseData/consts/base.consts";
-import { User } from "src/users/entities/users.entity";
+import { EmailVerification } from "./entities/email.verification.entity";
 
-@Resolver()
+@Resolver((of) => EmailVerification)
 export class EmailResolver {
   constructor(private readonly emailService: EmailService) {}
 
