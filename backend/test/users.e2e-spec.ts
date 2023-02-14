@@ -7,6 +7,7 @@ import { User } from "src/users/entities/users.entity";
 import { EmailVerification } from "src/email/entities/email.verification.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { JWT } from "src/jwt/consts/jwt.consts";
+import { exec } from "child_process";
 
 /**
  * for mocking mailgun
@@ -99,12 +100,12 @@ describe("Users resolver test (e2e)", () => {
 
   describe("createUser", () => {
     const gqlQeury = `
-    mutation {
-      createUser(
-        input: {
-          name: "${dummy.name}",
-          email: "${dummy.email}"
-          password: "${dummy.password}"
+      mutation {
+        createUser(
+          input: {
+            name: "${dummy.name}",
+            email: "${dummy.email}"
+            password: "${dummy.password}"
           role: ${dummy.role}
         }
       ) {
@@ -156,6 +157,41 @@ describe("Users resolver test (e2e)", () => {
           expect(isOk).toBeFalsy();
           expect(errorMessage).toBe("this email already exists");
           expect(emailVerified).toBeNull();
+        });
+    });
+  });
+
+  describe("users", () => {
+    const gqlQeury = `
+    {
+      users {
+        isOk
+        errorMessage
+        users {
+          name
+          email
+          id
+          role
+        }
+      }
+    }`;
+    it(`should get user email name is ${dummy.email}`, () => {
+      return postRequest(gqlQeury)
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                users: { isOk, errorMessage, users },
+              },
+            },
+          } = res;
+          expect(isOk).toBeTruthy();
+          expect(errorMessage).toBeNull();
+          const [user] = users;
+          expect(user.email).toBe(dummy.email);
+          expect(user.name).toBe(dummy.name);
+          expect(user.role).toBe(dummy.role);
         });
     });
   });
@@ -230,10 +266,10 @@ describe("Users resolver test (e2e)", () => {
     });
   });
 
-  it.todo("updateUser");
-  it.todo("verifierEmailCode");
-  it.todo("users");
-  it.todo("user");
   it.todo("myProfile");
+  it.todo("user");
+
+  it.todo("verifierEmailCode");
+  it.todo("updateUser");
   it.todo("deleteUser");
 });
