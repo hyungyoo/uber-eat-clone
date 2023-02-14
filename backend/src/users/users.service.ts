@@ -24,7 +24,7 @@ export class UsersService {
 
   /**
    * get all users in database of users
-   * @return return status code, info of all users
+   * @return status, errorMessage, info of all users
    */
   async users(): Promise<GetUsersOutput> {
     try {
@@ -47,7 +47,7 @@ export class UsersService {
    *  en dexieme, creation nouveau user
    *  en troiseme, hash de la PW
    * @param param0 email, password, role
-   * @return status code, User info of the created user
+   * @return status, errorMessage, User info of the created user
    */
   async createUser(
     createUserInput: CreateUserInput
@@ -82,7 +82,7 @@ export class UsersService {
    * edit profile of user who has same id
    * @param id
    * @param UpdateUserInput
-   * @returns status code, user info of the changed user
+   * @returns status, errorMessage, user info of the changed user
    */
   async updateUser(
     id: number,
@@ -126,7 +126,7 @@ export class UsersService {
   /**
    * delete user with id
    * @param id
-   * @returns status code, user info of the deleted user
+   * @returns status, errorMessage, user info of the deleted user
    */
   async deleteUserById({ id }: DeleteUserInput): Promise<DeleteUserOutput> {
     try {
@@ -149,7 +149,7 @@ export class UsersService {
    * 2. comparer with password in users entitie class function for access user password
    * 3. generate token
    * @param param0 email, password
-   * @returns status code, token
+   * @returns status, errorMessage, token
    */
   async login({ email, password }: LoginInput): Promise<LoginOutput> {
     try {
@@ -172,7 +172,7 @@ export class UsersService {
   /**
    * find user from id
    * @param id
-   * @returns status code, user info of the requested user
+   * @returns status, errorMessage, user info of the requested user
    */
   async findUserById({ id }: GetUserInput): Promise<GetUserOutput> {
     try {

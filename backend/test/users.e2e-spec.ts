@@ -7,7 +7,6 @@ import { User } from "src/users/entities/users.entity";
 import { EmailVerification } from "src/email/entities/email.verification.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { JWT } from "src/jwt/consts/jwt.consts";
-import { exec } from "child_process";
 
 /**
  * for mocking mailgun
@@ -72,11 +71,11 @@ describe("Users resolver test (e2e)", () => {
     }).compile();
 
     app = moduleRef.createNestApplication();
+    await app.init();
     userRepository = moduleRef.get<Repository<User>>(getRepositoryToken(User));
     emailVerificationRepository = moduleRef.get<Repository<EmailVerification>>(
       getRepositoryToken(EmailVerification)
     );
-    await app.init();
   });
 
   /**
@@ -161,6 +160,35 @@ describe("Users resolver test (e2e)", () => {
     });
   });
 
+  /**
+   * to do
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */
   describe("users", () => {
     const gqlQeury = `
     {
@@ -175,6 +203,7 @@ describe("Users resolver test (e2e)", () => {
         }
       }
     }`;
+    it.todo("should be fail if user id is not exists");
     it(`should get user email name is ${dummy.email}`, () => {
       return postRequest(gqlQeury)
         .expect(200)
@@ -186,6 +215,9 @@ describe("Users resolver test (e2e)", () => {
               },
             },
           } = res;
+          /**
+           * isok가 없음..
+           */
           expect(isOk).toBeTruthy();
           expect(errorMessage).toBeNull();
           const [user] = users;
@@ -196,14 +228,74 @@ describe("Users resolver test (e2e)", () => {
     });
   });
 
+  describe("myProfile", () => {
+    const gqlQeury = (userId: number) => {
+      return `
+    {
+      user (input: {id : ${userId}}) {
+        user{
+          id
+          name
+          email
+        }
+      }
+    }`;
+    };
+    it("should be fail if jwt token is incorrect", async () => {});
+    it("should be success", async () => {
+      const [User] = await userRepository.find({
+        where: { email: dummy.email },
+      });
+      return postRequest(gqlQeury(User.id), jwtToken)
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: { user },
+            },
+          } = res;
+          console.log(user);
+        });
+    });
+  });
+  /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */ /**
+   * todo
+   */
+
   describe("login", () => {
     const gqlQeury = (
       email: string = dummy.email,
       password: string = dummy.password
     ) => {
       return `
-    {
-      login(input: {
+        {
+          login(input: {
         email: "${email}"
         password: "${password}"
       }) {
@@ -266,7 +358,6 @@ describe("Users resolver test (e2e)", () => {
     });
   });
 
-  it.todo("myProfile");
   it.todo("user");
 
   it.todo("verifierEmailCode");
