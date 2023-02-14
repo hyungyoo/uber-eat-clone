@@ -158,7 +158,7 @@ export class UsersService {
         select: ["password", "id"],
       });
       if (!IsUser)
-        return { isOk: false, errorMessage: "user not exists wtih this email" };
+        return { isOk: false, errorMessage: "user not exists with this email" };
       const isCorrectPW = await IsUser.ValidatePW(password);
       if (!isCorrectPW) throw "password not correct";
       return {

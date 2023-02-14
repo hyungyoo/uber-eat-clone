@@ -45,7 +45,7 @@ describe("Users resolver test (e2e)", () => {
    */
   let userRepository: Repository<User>;
   let emailVerificationRepository: Repository<EmailVerification>;
-
+  let jwtToken: string;
   /**
    * funtion for request
    * @param query query for send
@@ -127,7 +127,6 @@ describe("Users resolver test (e2e)", () => {
       return postRequest(gqlQeury)
         .expect(200)
         .expect(async (res) => {
-          // console.log(res.body);
           const {
             body: {
               data: {
@@ -160,11 +159,81 @@ describe("Users resolver test (e2e)", () => {
         });
     });
   });
+
+  describe("login", () => {
+    const gqlQeury = (
+      email: string = dummy.email,
+      password: string = dummy.password
+    ) => {
+      return `
+    {
+      login(input: {
+        email: "${email}"
+        password: "${password}"
+      }) {
+        isOk
+        errorMessage
+        token
+      }
+    }`;
+    };
+    it("should be fail if email not exist", () => {
+      return postRequest(gqlQeury("email@not.found"))
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                login: { isOk, errorMessage, token },
+              },
+            },
+          } = res;
+          expect(isOk).toBeFalsy();
+          expect(errorMessage).toBe("user not exists with this email");
+          expect(token).toBeNull();
+        });
+    });
+    it("should be fail if password incorrect", () => {
+      return postRequest(gqlQeury(undefined, "wrongPW"))
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                login: { isOk, errorMessage, token },
+              },
+            },
+          } = res;
+          expect(isOk).toBeFalsy();
+          expect(errorMessage).toBe("password not correct");
+          expect(token).toBeNull();
+        });
+    });
+    it("should be success and return token", () => {
+      return postRequest(gqlQeury())
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                login: { isOk, errorMessage, token },
+              },
+            },
+          } = res;
+          expect(isOk).toBeTruthy();
+          expect(errorMessage).toBeNull();
+          expect(token).toBeDefined();
+        })
+        .then((res) => {
+          jwtToken = res.body.data.login.token;
+        });
+    });
+  });
+
+  it.todo("updateUser");
   it.todo("verifierEmailCode");
   it.todo("users");
   it.todo("user");
   it.todo("myProfile");
-  it.todo("login");
-  it.todo("updateUser");
   it.todo("deleteUser");
 });
