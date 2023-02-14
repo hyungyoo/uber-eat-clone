@@ -26,12 +26,6 @@ export class UsersResolver {
     return this.usersService.findUserById(getUserInput);
   }
 
-  @Query((returns) => User)
-  @UseGuards(AuthorizationGuard)
-  myProfile(@AuthUser() User: User) {
-    return User;
-  }
-
   @Query((returns) => LoginOutput)
   async login(@Args(INPUT_ARG) loginInput: LoginInput) {
     return await this.usersService.login(loginInput);
@@ -40,6 +34,12 @@ export class UsersResolver {
   @Mutation((returns) => CreateUserOutput)
   async createUser(@Args(INPUT_ARG) CreateUserInput: CreateUserInput) {
     return await this.usersService.createUser(CreateUserInput);
+  }
+  
+  @Query((returns) => User)
+  @UseGuards(AuthorizationGuard)
+  myProfile(@AuthUser() User: User) {
+    return User;
   }
 
   @Mutation((returns) => UpdateUserOutput)

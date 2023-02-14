@@ -342,7 +342,7 @@ describe("UsersService", () => {
       const result = await usersService.login(loginArgs);
       expect(result).toEqual({
         isOk: false,
-        errorMessage: "user not exists wtih this email",
+        errorMessage: "user not exists with this email",
       });
 
       expect(userRepository.findOne).toHaveBeenCalledTimes(1);
