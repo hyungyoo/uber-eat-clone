@@ -25,6 +25,16 @@ jest.mock("mailgun-js", () => {
 const URL = "/graphql";
 
 /**
+ * dummy for test
+ */
+const dummy = {
+  email: "dummy@test.com",
+  password: "12345",
+  name: "dummy",
+  role: "CLIENT",
+};
+
+/**
  * User resolver testing e2e
  */
 describe("Users resolver test (e2e)", () => {
@@ -45,9 +55,9 @@ describe("Users resolver test (e2e)", () => {
     return request(app.getHttpServer()).post(URL);
   };
   const postRequest = (query: string, jwtToken?: string | undefined) => {
-    console.log(jwtToken);
-    if (jwtToken) return coreRequest().set(JWT, jwtToken).send({ query });
-    else return coreRequest().send({ query });
+    return jwtToken
+      ? coreRequest().set(JWT, jwtToken).send({ query })
+      : coreRequest().send({ query });
   };
 
   /**
@@ -88,7 +98,67 @@ describe("Users resolver test (e2e)", () => {
   });
 
   describe("createUser", () => {
-    it("should create user", () => {});
+    const gqlQeury = `
+    mutation {
+      createUser(
+        input: {
+          name: "${dummy.name}",
+          email: "${dummy.email}"
+          password: "${dummy.password}"
+          role: ${dummy.role}
+        }
+      ) {
+        isOk
+        errorMessage
+        emailVerified {
+          id
+          verificationCode
+          user {
+            id
+            email
+            name
+            role
+          }
+        }
+      }
+    }
+    `;
+    it("should create user", async () => {
+      return postRequest(gqlQeury)
+        .expect(200)
+        .expect(async (res) => {
+          // console.log(res.body);
+          const {
+            body: {
+              data: {
+                createUser: { isOk, errorMessage, emailVerified },
+              },
+            },
+          } = res;
+          expect(isOk).toBeTruthy();
+          expect(errorMessage).toBeNull();
+          expect(emailVerified.user.email).toBe(dummy.email);
+          expect(emailVerified.user.name).toBe(dummy.name);
+          expect(emailVerified.user.role).toBe(dummy.role);
+          expect(emailVerified.verificationCode).toBeDefined();
+        });
+    });
+    it("should fail create user with email exists", async () => {
+      return postRequest(gqlQeury)
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                createUser: { isOk, errorMessage, emailVerified },
+              },
+            },
+          } = res;
+          expect(isOk).toBeFalsy();
+          expect(errorMessage).toBe("this email already exists");
+          expect(emailVerified).toBeNull();
+        });
+    });
   });
   it.todo("verifierEmailCode");
   it.todo("users");
