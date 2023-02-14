@@ -98,7 +98,11 @@ export class UsersService {
         ...userEntity,
         ...updateUserInput,
       });
-      user.isVerified = false;
+      if (user.isVerified === true) user.isVerified = false;
+      else
+        await this.emailVerificationRepository.delete({
+          user: { id: user.id },
+        });
       await this.userRepository.save(user);
       const emailVerified = await this.emailVerificationRepository.save(
         this.emailVerificationRepository.create({ user })

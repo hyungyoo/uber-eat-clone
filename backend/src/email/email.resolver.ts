@@ -4,6 +4,7 @@ import {
   EmailVerificationInput,
   EmailVerificationOutput,
 } from "./dtos/email.verification.dto";
+import { INPUT_ARG } from "src/baseData/consts/base.consts";
 
 @Resolver()
 export class EmailResolver {
@@ -11,10 +12,8 @@ export class EmailResolver {
 
   @Query((returns) => EmailVerificationOutput)
   verifierEmailCode(
-    @Args("input") { verificationCode }: EmailVerificationInput
+    @Args(INPUT_ARG) { verificationCode }: EmailVerificationInput
   ) {
     return this.emailService.verifierEmailCode(verificationCode);
   }
-
-  
 }

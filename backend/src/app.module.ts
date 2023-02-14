@@ -41,7 +41,7 @@ import { EmailVerification } from "./email/entities/email.verification.entity";
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
       synchronize: true,
-      logging: Boolean(process.env.ENV === "dev"),
+      logging: false,
       entities: [User, EmailVerification],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({

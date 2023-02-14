@@ -2,7 +2,22 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { INestApplication } from "@nestjs/common";
 import { AppModule } from "../src/app.module";
 import { DataSource } from "typeorm";
+import * as request from "supertest";
 
+/**
+ * for mocking mailgun
+ */
+jest.mock("mailgun-js", () => {
+  const mMailgun = {
+    messages: jest.fn().mockReturnThis(),
+    send: jest.fn(() => {}),
+  };
+  return jest.fn(() => mMailgun);
+});
+
+/**
+ * test e2e
+ */
 describe("UsersService (e2e)", () => {
   let app: INestApplication;
 
@@ -15,6 +30,10 @@ describe("UsersService (e2e)", () => {
     await app.init();
   });
 
+  /**
+   * for drop the database,
+   * and close app after e2e test
+   */
   afterAll(async () => {
     const dataSource = new DataSource({
       type: "postgres",
@@ -30,12 +49,46 @@ describe("UsersService (e2e)", () => {
     app.close();
   });
 
+  describe("createUser", () => {
+    it("should create user", () => {
+      return request(app.getHttpServer())
+        .post("/graphql")
+        .send({
+          query: `mutation {
+          createUser(
+            input: {
+              name: "test"
+              email: "hjyoo912112@gmail.com"
+              password: "12345"
+              role: CLIENT
+            }
+          ) {
+            isOk
+            errorMessage
+            emailVerified {
+              id
+              verificationCode
+              user {
+                id
+                email
+                name
+                role
+              }
+            }
+          }
+        }
+        `,
+        })
+        .expect((res) => {
+          // console.log(res);
+        });
+    });
+  });
   it.todo("verifierEmailCode");
   it.todo("users");
   it.todo("user");
   it.todo("myProfile");
   it.todo("login");
-  it.todo("createUser");
   it.todo("updateUser");
   it.todo("deleteUser");
 });
