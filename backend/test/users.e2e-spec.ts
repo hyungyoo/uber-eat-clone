@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { INestApplication } from "@nestjs/common";
 import { AppModule } from "../src/app.module";
-import { getConnection } from "typeorm";
+import { DataSource } from "typeorm";
 
 describe("UsersService (e2e)", () => {
   let app: INestApplication;
@@ -16,7 +16,17 @@ describe("UsersService (e2e)", () => {
   });
 
   afterAll(async () => {
-    await getConnection().dropDatabase();
+    const dataSource = new DataSource({
+      type: "postgres",
+      host: process.env.POSTGRES_HOST,
+      port: +process.env.POSTGRES_PORT,
+      username: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DB,
+    });
+    const connection = await dataSource.initialize();
+    await connection.dropDatabase();
+    await connection.destroy();
     app.close();
   });
 

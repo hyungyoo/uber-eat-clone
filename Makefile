@@ -28,3 +28,7 @@ nginx :
 .PHONY: down
 down :
 	docker-compose down
+
+.PHONY: sclean
+sclean: 
+	docker system prune -a -f
