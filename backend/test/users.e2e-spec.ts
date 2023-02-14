@@ -34,6 +34,14 @@ const dummy = {
   role: "CLIENT",
 };
 
+const TOKEN__INCORRECT = "token-incorrect";
+
+const dummyForUpdate = {
+  email: "dummyChanged@test.com",
+  password: "54321",
+  name: "dummyChanged",
+};
+
 /**
  * User resolver testing e2e
  */
@@ -196,35 +204,6 @@ describe("Users resolver test (e2e)", () => {
     });
   });
 
-  /**
-   * to do
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */
   describe("user", () => {
     const gqlQeury = (userId: number) => {
       return `
@@ -240,54 +219,85 @@ describe("Users resolver test (e2e)", () => {
       }
     }`;
     };
-    it("should be fail if jwt token is incorrect", async () => {});
-    it("should be success", async () => {
-      const [User] = await userRepository.find({
-        where: { email: dummy.email },
-      });
-      return postRequest(gqlQeury(5), jwtToken)
+    it("should be fail if user id not exists", () => {
+      return postRequest(gqlQeury(5))
         .expect(200)
         .expect((res) => {
           const {
             body: {
-              data: { user },
+              data: {
+                user: { isOk, errorMessage, user },
+              },
             },
           } = res;
-          console.log(user);
+          expect(isOk).toBeFalsy();
+          expect(errorMessage).toBe("user not found");
+          expect(user).toBeNull();
+        });
+    });
+    it("should be success", async () => {
+      const [User] = await userRepository.find({
+        where: { email: dummy.email },
+      });
+      return postRequest(gqlQeury(User.id))
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                user: { isOk, errorMessage, user },
+              },
+            },
+          } = res;
+          expect(isOk).toBeTruthy();
+          expect(errorMessage).toBeNull();
+          expect(user.id).toBe(User.id);
         });
     });
   });
 
-  it.todo("myProfile");
-  /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */ /**
-   * todo
-   */
+  describe("myProfile", () => {
+    const gqlQeury = `
+    `;
+    it("should be fail if jwt token is incorrect", () => {
+      return postRequest(gqlQeury, TOKEN__INCORRECT)
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                user: { isOk, errorMessage, user },
+              },
+            },
+          } = res;
+          expect(isOk).toBeFalsy();
+          expect(errorMessage).toBe("user not found");
+          expect(user).toBeNull();
+        });
+    });
+    it("should be success", async () => {
+      const [User] = await userRepository.find({
+        where: { email: dummy.email },
+      });
+      /**
+       * jwtToken from login test
+       */
+      return postRequest(gqlQeury, jwtToken)
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                user: { isOk, errorMessage, user },
+              },
+            },
+          } = res;
+          expect(isOk).toBeTruthy();
+          expect(errorMessage).toBeNull();
+          expect(user.id).toBe(User.id);
+        });
+    });
+  });
 
   describe("login", () => {
     const gqlQeury = (
