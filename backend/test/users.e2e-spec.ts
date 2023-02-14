@@ -6,6 +6,7 @@ import * as request from "supertest";
 import { User } from "src/users/entities/users.entity";
 import { EmailVerification } from "src/email/entities/email.verification.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
+import { JWT } from "src/jwt/consts/jwt.consts";
 
 /**
  * for mocking mailgun
@@ -19,13 +20,41 @@ jest.mock("mailgun-js", () => {
 });
 
 /**
- * test e2e
+ * url
  */
-describe("UsersService (e2e)", () => {
+const URL = "/graphql";
+
+/**
+ * User resolver testing e2e
+ */
+describe("Users resolver test (e2e)", () => {
   let app: INestApplication;
+
+  /**
+   * repositorty for get data
+   */
   let userRepository: Repository<User>;
   let emailVerificationRepository: Repository<EmailVerification>;
 
+  /**
+   * funtion for request
+   * @param query query for send
+   * @returns request result
+   */
+  const coreRequest = () => {
+    return request(app.getHttpServer()).post(URL);
+  };
+  const postRequest = (query: string, jwtToken?: string | undefined) => {
+    console.log(jwtToken);
+    if (jwtToken) return coreRequest().set(JWT, jwtToken).send({ query });
+    else return coreRequest().send({ query });
+  };
+
+  /**
+   * setting before test
+   * get app, userRepository and emailVerificationRepository from moduleRef
+   * app initial
+   */
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -59,39 +88,7 @@ describe("UsersService (e2e)", () => {
   });
 
   describe("createUser", () => {
-    it("should create user", () => {
-      return request(app.getHttpServer())
-        .post("/graphql")
-        .send({
-          query: `mutation {
-          createUser(
-            input: {
-              name: "test"
-              email: "hjyoo912112@gmail.com"
-              password: "12345"
-              role: CLIENT
-            }
-          ) {
-            isOk
-            errorMessage
-            emailVerified {
-              id
-              verificationCode
-              user {
-                id
-                email
-                name
-                role
-              }
-            }
-          }
-        }
-        `,
-        })
-        .expect((res) => {
-          // console.log(res);
-        });
-    });
+    it("should create user", () => {});
   });
   it.todo("verifierEmailCode");
   it.todo("users");
