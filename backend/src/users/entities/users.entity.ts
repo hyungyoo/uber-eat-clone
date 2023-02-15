@@ -6,12 +6,9 @@ import {
 } from "@nestjs/graphql";
 import { IsBoolean, IsEmail, IsEnum, IsString } from "class-validator";
 import { ParentEntity } from "src/baseData/base.entity";
-import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity } from "typeorm";
 import * as bcrypt from "bcryptjs";
 import { HttpException, HttpStatus } from "@nestjs/common";
-import { Restaurant } from "src/restaurants/entities/restaurant.entity";
-import { Order } from "src/orders/entities/order.entity";
-import { Payment } from "src/payment/entites/payment.entity";
 
 export enum UserRole {
   CLIENT,
@@ -49,23 +46,6 @@ export class User extends ParentEntity {
   @IsBoolean()
   @Field((type) => Boolean)
   isVerified: boolean;
-
-  // @Field((type) => [Restaurant])
-  // @OneToMany((type) => Restaurant, (restaurant) => restaurant.owner)
-  // restaurants: Restaurant[];
-
-  // @Field((type) => [Order])
-  // @OneToMany((type) => Order, (order) => order.customer)
-  // orders: Order[];
-
-  // @Field((type) => [Payment])
-  // @OneToMany((type) => Payment, (payment) => payment.user, { eager: true })
-  // payments: Payment[];
-
-  // @Field((type) => [Order])
-  // @OneToMany((type) => Order, (order) => order.driver)
-  // rides: Order[];
-
   @BeforeInsert()
   @BeforeUpdate()
   async MakeHashedPW(): Promise<void> {
@@ -86,4 +66,20 @@ export class User extends ParentEntity {
       throw { isOk: false, errorMessage };
     }
   }
+
+  // @Field((type) => [Restaurant])
+  // @OneToMany((type) => Restaurant, (restaurant) => restaurant.owner)
+  // restaurants: Restaurant[];
+
+  // @Field((type) => [Order])
+  // @OneToMany((type) => Order, (order) => order.customer)
+  // orders: Order[];
+
+  // @Field((type) => [Payment])
+  // @OneToMany((type) => Payment, (payment) => payment.user, { eager: true })
+  // payments: Payment[];
+
+  // @Field((type) => [Order])
+  // @OneToMany((type) => Order, (order) => order.driver)
+  // rides: Order[];
 }

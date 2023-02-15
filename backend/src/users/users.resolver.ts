@@ -35,7 +35,7 @@ export class UsersResolver {
   async createUser(@Args(INPUT_ARG) CreateUserInput: CreateUserInput) {
     return await this.usersService.createUser(CreateUserInput);
   }
-  
+
   @Query((returns) => User)
   @UseGuards(AuthorizationGuard)
   myProfile(@AuthUser() User: User) {
