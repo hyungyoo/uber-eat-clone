@@ -15,6 +15,12 @@ import { User } from "./users/entities/users.entity";
 import { UsersModule } from "./users/users.module";
 import { EmailModule } from "./email/email.module";
 import { EmailVerification } from "./email/entities/email.verification.entity";
+import { Restaurant } from "./restaurants/entities/restaurant.entity";
+import { Category } from "./restaurants/entities/category.entity";
+import { Food } from "./restaurants/entities/food.entity";
+import { Order } from "./orders/entities/order.entity";
+import { OrderFood } from "./orders/entities/order.food.option.entity";
+import { Payment } from "./payment/entites/payment.entity";
 
 @Module({
   imports: [
@@ -42,7 +48,16 @@ import { EmailVerification } from "./email/entities/email.verification.entity";
       database: process.env.POSTGRES_DB,
       synchronize: true,
       logging: false,
-      entities: [User, EmailVerification],
+      entities: [
+        User,
+        EmailVerification,
+        Restaurant,
+        Category,
+        Food,
+        Order,
+        OrderFood,
+        Payment,
+      ],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
