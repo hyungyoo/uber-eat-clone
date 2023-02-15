@@ -3,7 +3,6 @@ import { IsString } from "class-validator";
 import { ParentEntity } from "src/baseData/base.entity";
 import { Column, Entity } from "typeorm";
 
-@InputType("RestaurantInputType", { isAbstract: true })
 @ObjectType()
 @Entity()
 export class Restaurant extends ParentEntity {

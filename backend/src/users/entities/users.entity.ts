@@ -12,7 +12,7 @@ import { HttpException, HttpStatus } from "@nestjs/common";
 
 export enum UserRole {
   CLIENT,
-  RESTAURANT,
+  RESTAURANT_OWNER,
   DELIVERY,
 }
 

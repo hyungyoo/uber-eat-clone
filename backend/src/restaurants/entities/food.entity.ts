@@ -2,7 +2,6 @@ import { InputType, ObjectType } from "@nestjs/graphql";
 import { ParentEntity } from "src/baseData/base.entity";
 import { Entity } from "typeorm";
 
-@InputType("FoodInputType", { isAbstract: true })
 @ObjectType()
 @Entity()
 export class Food extends ParentEntity {}
