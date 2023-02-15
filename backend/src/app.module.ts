@@ -21,6 +21,7 @@ import { Food } from "./restaurants/entities/food.entity";
 import { Order } from "./orders/entities/order.entity";
 import { OrderFood } from "./orders/entities/order.food.option.entity";
 import { Payment } from "./payment/entites/payment.entity";
+import { RestaurantModule } from "./restaurants/restaurants.module";
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { Payment } from "./payment/entites/payment.entity";
     JwtModule.forRoot({ isGlobal: true }),
     EmailModule.forRoot({ isGlobal: true }),
     UsersModule,
+    RestaurantModule,
   ],
   controllers: [],
   providers: [],
