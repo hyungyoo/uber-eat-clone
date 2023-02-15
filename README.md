@@ -1,38 +1,32 @@
 # user-eat-clone
 
-# Backend
+- dockerization
+  - back-end
+  - front-end
+  - reverse proxy server
+    </br>
+    </br>
+
+## Backend
 
 - nestjs
-- graphQL
-- typeORM
-- data mappeed pattern + repository pattern + JPA
+- graphql API to avoid over / under fetching
+- typeORM (data mapper pattern)
+- JPA API
 - mailgun
+- e2e, unit test with jest
 
-## User
+</br>
+</br>
 
-### user entitie
+## frontend
 
-- id
-- createAt
-- updateAt
-- email
-- password
-- role(client, restaurant, delivery)
+- reactjs or nextjs
+- SWR for caching
 
-### user CRUD
+</br>
+</br>
 
-- create user
-- login
-- see my profile
-- edit my profile
-- verify with email
+## reverse proxy server
 
-## Auth
-
-### JWT
-
-- https://www.npmjs.com/package/jsonwebtoken
-
-### EMAIL
-
-- https://www.npmjs.com/package/mailgun-js
+- nginx
