@@ -26,35 +26,29 @@ export class FoodOption {
 @ObjectType()
 @Entity()
 export class Food extends ParentEntity {
-  @Field((type) => String)
-  @Column()
-  @IsString()
-  name: string;
-
-  @Field((type) => Int)
-  @Column()
-  @IsNumber()
-  price: number;
-
-  @Field((type) => String, { nullable: true })
-  @Column({ nullable: true })
-  @IsString()
-  foodImg: string;
-
-  @Field((type) => String)
-  @Column()
-  description: string;
-
-  @Field((type) => Restaurant)
-  @ManyToOne((type) => Restaurant, (restaurant) => restaurant.menu, {
-    onDelete: "CASCADE",
-  })
-  restaurant: Restaurant;
-
-  @RelationId((food: Food) => food.restaurant)
-  restaurantId: number;
-
-  @Field((type) => [FoodOption], { nullable: true })
-  @Column({ type: "json", nullable: true })
-  options?: FoodOption[];
+  // @Field((type) => String)
+  // @Column()
+  // @IsString()
+  // name: string;
+  // @Field((type) => Int)
+  // @Column()
+  // @IsNumber()
+  // price: number;
+  // @Field((type) => String, { nullable: true })
+  // @Column({ nullable: true })
+  // @IsString()
+  // foodImg: string;
+  // @Field((type) => String)
+  // @Column()
+  // description: string;
+  // @Field((type) => Restaurant)
+  // @ManyToOne((type) => Restaurant, (restaurant) => restaurant.menu, {
+  //   onDelete: "CASCADE",
+  // })
+  // restaurant: Restaurant;
+  // @RelationId((food: Food) => food.restaurant)
+  // restaurantId: number;
+  // @Field((type) => [FoodOption], { nullable: true })
+  // @Column({ type: "json", nullable: true })
+  // options?: FoodOption[];
 }

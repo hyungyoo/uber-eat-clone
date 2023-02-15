@@ -50,21 +50,21 @@ export class User extends ParentEntity {
   @Field((type) => Boolean)
   isVerified: boolean;
 
-  @Field((type) => [Restaurant])
-  @OneToMany((type) => Restaurant, (restaurant) => restaurant.owner)
-  restaurants: Restaurant[];
+  // @Field((type) => [Restaurant])
+  // @OneToMany((type) => Restaurant, (restaurant) => restaurant.owner)
+  // restaurants: Restaurant[];
 
-  @Field((type) => [Order])
-  @OneToMany((type) => Order, (order) => order.customer)
-  orders: Order[];
+  // @Field((type) => [Order])
+  // @OneToMany((type) => Order, (order) => order.customer)
+  // orders: Order[];
 
-  @Field((type) => [Payment])
-  @OneToMany((type) => Payment, (payment) => payment.user, { eager: true })
-  payments: Payment[];
+  // @Field((type) => [Payment])
+  // @OneToMany((type) => Payment, (payment) => payment.user, { eager: true })
+  // payments: Payment[];
 
-  @Field((type) => [Order])
-  @OneToMany((type) => Order, (order) => order.driver)
-  rides: Order[];
+  // @Field((type) => [Order])
+  // @OneToMany((type) => Order, (order) => order.driver)
+  // rides: Order[];
 
   @BeforeInsert()
   @BeforeUpdate()
