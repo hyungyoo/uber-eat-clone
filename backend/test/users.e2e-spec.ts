@@ -28,6 +28,7 @@ const URL = "/graphql";
  * dummy for test
  */
 const dummy = {
+  id: 1,
   email: "dummy@test.com",
   password: "12345",
   name: "dummy",
@@ -416,6 +417,53 @@ describe("Users resolver test (e2e)", () => {
     });
   });
 
-  it.todo("deleteUser");
-  it.todo("verifierEmailCode");
+  describe("deleteUser", () => {
+    const gqlQeury = (id: number) => {
+      return `
+      mutation{
+        deleteUser(input: {
+          id : ${id}
+        }) {
+          isOk
+          errorMessage
+          user {
+            id
+          }
+        }
+      }
+      `;
+    };
+    it("should be fail if user is not exists with id", () => {
+      return postRequest(gqlQeury(10))
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                deleteUser: { isOk, errorMessage, user },
+              },
+            },
+          } = res;
+          expect(isOk).toBeFalsy();
+          expect(errorMessage).toBe("this user not exists");
+          expect(user).toBeNull();
+        });
+    });
+    it("should delete user by id", async () => {
+      return postRequest(gqlQeury(dummy.id))
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                deleteUser: { isOk, errorMessage, user },
+              },
+            },
+          } = res;
+          expect(isOk).toBeTruthy();
+          expect(errorMessage).toBeNull();
+          expect(user.id).toBe(dummy.id);
+        });
+    });
+  });
 });

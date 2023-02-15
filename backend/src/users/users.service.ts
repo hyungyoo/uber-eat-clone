@@ -130,7 +130,9 @@ export class UsersService {
    */
   async deleteUserById({ id }: DeleteUserInput): Promise<DeleteUserOutput> {
     try {
-      const user = await this.userRepository.findOne({ where: { id } });
+      const user = await this.userRepository.findOne({
+        where: { id },
+      });
       if (!user) throw "this user not exists";
       await this.userRepository.delete(id);
       return {
