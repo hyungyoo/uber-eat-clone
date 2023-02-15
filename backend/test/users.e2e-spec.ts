@@ -235,7 +235,7 @@ describe("Users resolver test (e2e)", () => {
           expect(user).toBeNull();
         });
     });
-    it("should be success", async () => {
+    it("should succeed", async () => {
       const [User] = await userRepository.find({
         where: { email: dummy.email },
       });
@@ -305,7 +305,7 @@ describe("Users resolver test (e2e)", () => {
           expect(token).toBeNull();
         });
     });
-    it("should be success and return token", () => {
+    it("should succeed and return token", () => {
       return postRequest(gqlQeury())
         .expect(200)
         .expect((res) => {
@@ -350,7 +350,7 @@ describe("Users resolver test (e2e)", () => {
           expect(messages.message).toBe("Forbidden resource");
         });
     });
-    it("should be success", async () => {
+    it("should succeed", async () => {
       return postRequest(gqlQeury, jwtToken)
         .expect(200)
         .expect((res) => {
@@ -413,6 +413,61 @@ describe("Users resolver test (e2e)", () => {
           expect(errorMessage).toBeNull();
           expect(user.email).toBe(dummyForUpdate.email);
           expect(user.name).toBe(dummyForUpdate.name);
+        });
+    });
+  });
+
+  describe("verifierEmailCode", () => {
+    const gqlQeury = (verificationCode: string) => {
+      return `
+      {
+        verifierEmailCode(input: {
+          verificationCode: "${verificationCode}"
+        }) {
+          isOk
+          errorMessage
+          user {
+            isVerified
+          }
+        }
+      }`;
+    };
+    it("should fail", async () => {
+      const verficationCode = "fake-verficationCode";
+      return postRequest(gqlQeury(verficationCode))
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                verifierEmailCode: { isOk, errorMessage, user },
+              },
+            },
+          } = res;
+          expect(isOk).toBeFalsy();
+          expect(errorMessage).toBe("no corresponding code");
+          expect(user).toBeNull();
+        });
+    });
+    it("should succeed", async () => {
+      const verficationCode = await emailVerificationRepository
+        .findOne({
+          where: { user: { email: dummyForUpdate.email } },
+        })
+        .then((res) => res.verificationCode);
+      return postRequest(gqlQeury(verficationCode))
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                verifierEmailCode: { isOk, errorMessage, user },
+              },
+            },
+          } = res;
+          expect(isOk).toBeTruthy();
+          expect(errorMessage).toBeNull();
+          expect(user.isVerified).toBeTruthy();
         });
     });
   });

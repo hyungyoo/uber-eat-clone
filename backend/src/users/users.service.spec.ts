@@ -163,7 +163,7 @@ describe("UsersService", () => {
       });
     });
 
-    it("should be success", async () => {
+    it("should succeed", async () => {
       userRepository.find.mockResolvedValue(expect.any(Array<User>));
       const result = await usersService.users();
       expect(userRepository.find).toHaveBeenCalledWith();
