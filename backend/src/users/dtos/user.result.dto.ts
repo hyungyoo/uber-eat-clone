@@ -1,6 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { ParentEntity } from "src/baseData/base.entity";
-import { UserRole } from "./users.entity";
+import { UserRole } from "../entities/users.entity";
 
 @ObjectType()
 export class UserReturnType extends ParentEntity {

@@ -1,5 +1,5 @@
 import { Field, InputType, Int, ObjectType } from "@nestjs/graphql";
-import { IsNumber, IsString, Length } from "class-validator";
+import { IsNumber, IsString } from "class-validator";
 import { ParentEntity } from "src/baseData/base.entity";
 import { Column, Entity, ManyToOne, RelationId } from "typeorm";
 import { Restaurant } from "./restaurant.entity";
@@ -29,7 +29,6 @@ export class Food extends ParentEntity {
   @Field((type) => String)
   @Column()
   @IsString()
-  @Length(5)
   name: string;
 
   @Field((type) => Int)
@@ -44,7 +43,6 @@ export class Food extends ParentEntity {
 
   @Field((type) => String)
   @Column()
-  @Length(5, 140)
   description: string;
 
   @Field((type) => Restaurant)
