@@ -20,7 +20,7 @@ import { EmailVerification } from "./email/entities/email.verification.entity";
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: process.env.ENV === "e2e" ? ".test.env" : ".env",
+      envFilePath: process.env.ENV === "e2e" || "local" ? ".test.env" : ".env",
       validationSchema: Joi.object({
         POSTGRES_HOST: Joi.string().required(),
         POSTGRES_PORT: Joi.string().required(),

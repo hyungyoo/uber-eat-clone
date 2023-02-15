@@ -7,6 +7,18 @@
     </br>
     </br>
 
+# start
+
+- dev
+
+  - npm run start:dev : nest start --wath in docker container
+  - npm run start:local: nest start --watch in local with Dbeaver, Postico2
+
+- test
+  - npm run test:watch : jest --watch
+  - npm run test:cov
+  - npm run test:e2e
+
 ## Backend
 
 - nestjs
@@ -23,6 +35,7 @@
 
 - reactjs or nextjs
 - SWR for caching
+- css with tailwind framework
 
 </br>
 </br>
