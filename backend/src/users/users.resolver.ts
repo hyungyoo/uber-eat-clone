@@ -4,8 +4,8 @@ import { User } from "./entities/users.entity";
 import { UsersService } from "./users.service";
 import { LoginOutput, LoginInput } from "./dtos/login.dto";
 import { UseGuards } from "@nestjs/common";
-import { AuthorizationGuard } from "src/authorization/authorization.guard";
-import { AuthUser } from "src/authorization/auth-user.decorator";
+import { AuthGuard } from "src/auth/auth.guard";
+import { AuthUser } from "src/auth/auth-user.decorator";
 import { GetUsersOutput } from "./dtos/get-users.dto";
 import { GetUserInput, GetUserOutput } from "./dtos/get-user.dto";
 import { UpdateUserInput, UpdateUserOutput } from "./dtos/update-user.dto";
@@ -14,7 +14,9 @@ import { INPUT_ARG } from "src/baseData/consts/base.consts";
 
 @Resolver((of) => User)
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {
+    console.log("user resolver called")
+  }
 
   @Query((returns) => GetUsersOutput)
   users() {
@@ -37,13 +39,13 @@ export class UsersResolver {
   }
 
   @Query((returns) => User)
-  @UseGuards(AuthorizationGuard)
+  @UseGuards(AuthGuard)
   myProfile(@AuthUser() User: User) {
     return User;
   }
 
   @Mutation((returns) => UpdateUserOutput)
-  @UseGuards(AuthorizationGuard)
+  @UseGuards(AuthGuard)
   async updateUser(
     @AuthUser() { id }: User,
     @Args(INPUT_ARG) UpdateUserInput: UpdateUserInput

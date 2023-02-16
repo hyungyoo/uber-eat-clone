@@ -50,6 +50,7 @@ import { RestaurantModule } from "./restaurants/restaurants.module";
       driver: ApolloDriver,
       autoSchemaFile: true,
       context: async ({ req }) => {
+        console.log("graph ql module with context called");
         return { user: req["user"] };
       },
     }),
@@ -63,6 +64,7 @@ import { RestaurantModule } from "./restaurants/restaurants.module";
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
+    console.log("App module called");
     consumer.apply(JwtMiddleWare).forRoutes({
       path: "/graphql",
       method: RequestMethod.ALL,

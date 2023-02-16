@@ -20,7 +20,9 @@ export class UsersService {
     private readonly emailVerificationRepository: Repository<EmailVerification>,
     private readonly jwtService: JwtService,
     private readonly emailService: EmailService
-  ) {}
+  ) {
+    console.log("user service called");
+  }
 
   /**
    * get all users in database of users

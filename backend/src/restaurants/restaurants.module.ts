@@ -9,4 +9,8 @@ import { Restaurant } from "./entities/restaurant.entity";
   providers: [RestaurantResolver, RestaurantService],
   exports: [RestaurantService],
 })
-export class RestaurantModule {}
+export class RestaurantModule {
+  constructor() {
+    console.log("restaurant module called");
+  }
+}
