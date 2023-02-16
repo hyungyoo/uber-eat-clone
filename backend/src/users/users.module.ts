@@ -13,6 +13,6 @@ import { EmailVerification } from "src/email/entities/email.verification.entity"
 })
 export class UsersModule {
   constructor() {
-    console.log("user module called");
+    console.log("constuctor user module called");
   }
 }

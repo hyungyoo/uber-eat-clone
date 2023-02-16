@@ -8,6 +8,6 @@ export class RestaurantService {
   constructor(
     @InjectRepository(Restaurant) private readonly test1: Repository<Restaurant>
   ) {
-    console.log("restaurant service called");
+    console.log("constructor restaurant service called");
   }
 }

@@ -5,7 +5,7 @@ import { RestaurantService } from "./restaurants.service";
 @Resolver((of) => Restaurant)
 export class RestaurantResolver {
   constructor(private readonly restaurantService: RestaurantService) {
-    console.log("restarurant resovler called");
+    console.log("constructor restarurant resovler called");
   }
 
   @Query((returns) => Restaurant)

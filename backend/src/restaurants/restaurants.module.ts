@@ -11,6 +11,6 @@ import { Restaurant } from "./entities/restaurant.entity";
 })
 export class RestaurantModule {
   constructor() {
-    console.log("restaurant module called");
+    console.log("constructor restaurant module called");
   }
 }

@@ -15,7 +15,7 @@ import { INPUT_ARG } from "src/baseData/consts/base.consts";
 @Resolver((of) => User)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {
-    console.log("user resolver called")
+    console.log("constructor user resolver called");
   }
 
   @Query((returns) => GetUsersOutput)

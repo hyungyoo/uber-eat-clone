@@ -21,7 +21,7 @@ export class UsersService {
     private readonly jwtService: JwtService,
     private readonly emailService: EmailService
   ) {
-    console.log("user service called");
+    console.log("constructor user service called");
   }
 
   /**
