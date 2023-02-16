@@ -16,13 +16,13 @@ export class AuthGuard implements CanActivate {
       "userRole",
       context.getHandler()
     );
+    // for create and update, so return true
     if (!userRole) return true;
+    // comparer userRole and role from gqlRequest.user.role,
+    // if not comparere, no right for access!
+    // return false
     const gqlRequest = GqlExecutionContext.create(context).getContext();
-    console.log(
-      userRole,
-      gqlRequest.user.role,
-      " comparer!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    );
+    // comparer with userRole, and user.role, but diff!
     if (gqlRequest.user) return true;
     return false;
   }
