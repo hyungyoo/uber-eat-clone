@@ -18,7 +18,7 @@ export class UsersResolver {
   }
 
   @Query((returns) => GetUsersOutput)
-  @UserRole("USER")
+  @UserRole("CLIENT")
   users() {
     return this.usersService.users();
   }

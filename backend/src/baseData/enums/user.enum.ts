@@ -2,7 +2,7 @@ import { registerEnumType } from "@nestjs/graphql";
 
 export enum AllowedUserRole {
   CLIENT = "client",
-  RESTAURANT_OWNER = "owner",
+  RESTAURANT_OWNER = "restaurant_owner",
   DELIVERY = "delivery",
 }
 
