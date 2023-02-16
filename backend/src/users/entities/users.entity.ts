@@ -1,23 +1,11 @@
-import {
-  Field,
-  InputType,
-  ObjectType,
-  registerEnumType,
-} from "@nestjs/graphql";
+import { Field, InputType, ObjectType } from "@nestjs/graphql";
 import { IsBoolean, IsEmail, IsEnum, IsString } from "class-validator";
 import { BasedEntity } from "src/baseData/base.entity";
 import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from "typeorm";
 import * as bcrypt from "bcryptjs";
 import { HttpException, HttpStatus } from "@nestjs/common";
 import { Restaurant } from "src/restaurants/entities/restaurant.entity";
-
-export enum UserRole {
-  CLIENT,
-  RESTAURANT_OWNER,
-  DELIVERY,
-}
-
-export default registerEnumType(UserRole, { name: "UserRole" });
+import { AllowedUserRole } from "src/baseData/enums/user.enum";
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -38,10 +26,10 @@ export class User extends BasedEntity {
   @Field((type) => String)
   password: string;
 
-  @Column({ type: "enum", enum: UserRole })
-  @IsEnum(UserRole)
-  @Field((type) => UserRole)
-  role: UserRole;
+  @Column({ type: "enum", enum: AllowedUserRole })
+  @IsEnum(AllowedUserRole)
+  @Field((type) => AllowedUserRole)
+  role: AllowedUserRole;
 
   @Column({ name: "is_verified", default: false })
   @IsBoolean()
@@ -72,10 +60,6 @@ export class User extends BasedEntity {
       throw { isOk: false, errorMessage };
     }
   }
-
-  // @Field((type) => [Restaurant])
-  // @OneToMany((type) => Restaurant, (restaurant) => restaurant.owner)
-  // restaurants: Restaurant[];
 
   // @Field((type) => [Order])
   // @OneToMany((type) => Order, (order) => order.customer)

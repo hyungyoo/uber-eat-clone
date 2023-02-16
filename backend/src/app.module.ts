@@ -18,6 +18,7 @@ import { EmailVerification } from "./email/entities/email.verification.entity";
 import { Restaurant } from "./restaurants/entities/restaurant.entity";
 import { RestaurantModule } from "./restaurants/restaurants.module";
 import { Category } from "./restaurants/entities/category.entity";
+import { AuthModule } from "./auth/auth.module";
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { Category } from "./restaurants/entities/category.entity";
     EmailModule.forRoot({ isGlobal: true }),
     UsersModule,
     RestaurantModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
