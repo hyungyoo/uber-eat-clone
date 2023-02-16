@@ -96,7 +96,7 @@
       ".module.ts",
       ".guard.ts",
       ".resolver.ts",
-      ".result.ts",
+      ".output.ts",
       ".decorator.ts",
       "main.ts",
       "middleware.ts",

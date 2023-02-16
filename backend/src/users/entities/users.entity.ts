@@ -5,7 +5,7 @@ import {
   registerEnumType,
 } from "@nestjs/graphql";
 import { IsBoolean, IsEmail, IsEnum, IsString } from "class-validator";
-import { Content } from "src/baseData/base.entity";
+import { CoreEntity } from "src/baseData/base.entity";
 import { BeforeInsert, BeforeUpdate, Column, Entity } from "typeorm";
 import * as bcrypt from "bcryptjs";
 import { HttpException, HttpStatus } from "@nestjs/common";
@@ -21,7 +21,7 @@ export default registerEnumType(UserRole, { name: "UserRole" });
 @InputType({ isAbstract: true })
 @ObjectType()
 @Entity()
-export class User extends Content {
+export class User extends CoreEntity {
   @Column({ unique: true })
   @IsEmail()
   @Field((type) => String)

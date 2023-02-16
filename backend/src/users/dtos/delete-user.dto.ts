@@ -1,5 +1,5 @@
 import { Field, InputType, ObjectType, PickType } from "@nestjs/graphql";
-import { DisplayResult } from "src/baseData/base.display.result";
+import { CoreOutput } from "src/baseData/base.output";
 import { User } from "../entities/users.entity";
 import { UserOutputType } from "./user.result.dto";
 
@@ -7,7 +7,7 @@ import { UserOutputType } from "./user.result.dto";
 export class DeleteUserInput extends PickType(User, ["id"]) {}
 
 @ObjectType()
-export class DeleteUserOutput extends DisplayResult {
+export class DeleteUserOutput extends CoreOutput {
   @Field((type) => UserOutputType, { nullable: true })
   user?: UserOutputType;
 }

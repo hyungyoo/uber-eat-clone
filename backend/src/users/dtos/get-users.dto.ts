@@ -1,9 +1,9 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { DisplayResult } from "src/baseData/base.display.result";
+import { CoreOutput } from "src/baseData/base.output";
 import { UserOutputType } from "./user.result.dto";
 
 @ObjectType()
-export class GetUsersOutput extends DisplayResult {
+export class GetUsersOutput extends CoreOutput {
   @Field((type) => [UserOutputType], { nullable: true })
   users?: UserOutputType[];
 }
