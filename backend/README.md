@@ -58,6 +58,11 @@
 ### restaurant model
 
 - name
-- category
 - address
 - image
+- category
+
+### category model
+
+- name
+- image 

@@ -16,11 +16,6 @@ import { UsersModule } from "./users/users.module";
 import { EmailModule } from "./email/email.module";
 import { EmailVerification } from "./email/entities/email.verification.entity";
 import { Restaurant } from "./restaurants/entities/restaurant.entity";
-import { Category } from "./restaurants/entities/category.entity";
-import { Food } from "./restaurants/entities/food.entity";
-import { Order } from "./orders/entities/order.entity";
-import { OrderFood } from "./orders/entities/order.food.option.entity";
-import { Payment } from "./payment/entites/payment.entity";
 import { RestaurantModule } from "./restaurants/restaurants.module";
 
 @Module({
@@ -31,7 +26,7 @@ import { RestaurantModule } from "./restaurants/restaurants.module";
       validationSchema: Joi.object({
         POSTGRES_HOST: Joi.string().required(),
         POSTGRES_PORT: Joi.string().required(),
-        POSTGRES_USER: Joi.string().required(),
+        POSTGRES_USERNAME: Joi.string().required(),
         POSTGRES_PASSWORD: Joi.string().required(),
         POSTGRES_DB: Joi.string().required(),
         PRIVATE_KEY_FOR_TOKEN: Joi.string().required(),
@@ -44,21 +39,12 @@ import { RestaurantModule } from "./restaurants/restaurants.module";
       type: "postgres",
       host: process.env.POSTGRES_HOST,
       port: +process.env.POSTGRES_PORT,
-      username: process.env.POSTGRES_USER,
+      username: process.env.POSTGRES_USERNAME,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      synchronize: true,
+      synchronize: process.env.ENV !== "prod",
       logging: false,
-      entities: [
-        User,
-        EmailVerification,
-        Restaurant,
-        Category,
-        Food,
-        Order,
-        OrderFood,
-        Payment,
-      ],
+      entities: [User, EmailVerification, Restaurant],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,

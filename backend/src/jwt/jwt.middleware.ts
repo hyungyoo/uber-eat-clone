@@ -18,7 +18,9 @@ export class JwtMiddleWare implements NestMiddleware {
         if (errorMessage) throw Error();
         req["user"] = user;
       }
-    } catch (e) {}
-    next();
+    } catch {
+    } finally {
+      next();
+    }
   }
 }

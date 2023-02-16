@@ -2,14 +2,12 @@ import { Field, ObjectType } from "@nestjs/graphql";
 import { IsNumber, IsString } from "class-validator";
 import {
   CreateDateColumn,
-  Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 
-@Entity()
 @ObjectType()
-export class ParentEntity {
+export abstract class Content {
   @PrimaryGeneratedColumn()
   @IsNumber()
   @Field((type) => Number)
