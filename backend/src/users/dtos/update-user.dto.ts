@@ -5,7 +5,7 @@ import {
   PartialType,
   PickType,
 } from "@nestjs/graphql";
-import { CoreOutput } from "src/baseData/base.output";
+import { BaseOutput } from "src/baseData/base.output";
 import { User } from "../entities/users.entity";
 import { EmailVerification } from "src/email/entities/email.verification.entity";
 import { UserOutputType } from "./user.result.dto";
@@ -16,7 +16,7 @@ export class UpdateUserInput extends PartialType(
 ) {}
 
 @ObjectType()
-export class UpdateUserOutput extends CoreOutput {
+export class UpdateUserOutput extends BaseOutput {
   @Field((type) => UserOutputType, { nullable: true })
   user?: UserOutputType;
 

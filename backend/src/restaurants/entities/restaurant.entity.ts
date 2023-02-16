@@ -1,11 +1,11 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { IsString } from "class-validator";
-import { CoreEntity } from "src/baseData/base.entity";
+import { BasedEntity } from "src/baseData/base.entity";
 import { Column, Entity } from "typeorm";
 
 @ObjectType()
 @Entity()
-export class Restaurant extends CoreEntity {
+export class Restaurant extends BasedEntity {
   @Field((type) => String)
   @Column()
   @IsString()

@@ -7,7 +7,7 @@ import {
 } from "typeorm";
 
 @ObjectType()
-export abstract class CoreEntity {
+export abstract class BasedEntity {
   @PrimaryGeneratedColumn()
   @IsNumber()
   @Field((type) => Number)

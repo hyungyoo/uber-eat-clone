@@ -2,7 +2,7 @@ import { Field, InputType, ObjectType, PickType } from "@nestjs/graphql";
 import { User } from "../entities/users.entity";
 import { EmailVerification } from "src/email/entities/email.verification.entity";
 import { UserOutputType } from "./user.result.dto";
-import { CoreOutput } from "src/baseData/base.output";
+import { BaseOutput } from "src/baseData/base.output";
 
 @InputType()
 export class CreateUserInput extends PickType(User, [
@@ -13,7 +13,7 @@ export class CreateUserInput extends PickType(User, [
 ]) {}
 
 @ObjectType()
-export class CreateUserOutput extends CoreOutput {
+export class CreateUserOutput extends BaseOutput {
   @Field((type) => UserOutputType, { nullable: true })
   user?: UserOutputType;
 
