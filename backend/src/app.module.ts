@@ -17,6 +17,7 @@ import { EmailModule } from "./email/email.module";
 import { EmailVerification } from "./email/entities/email.verification.entity";
 import { Restaurant } from "./restaurants/entities/restaurant.entity";
 import { RestaurantModule } from "./restaurants/restaurants.module";
+import { Category } from "./restaurants/entities/category.entity";
 
 @Module({
   imports: [
@@ -44,7 +45,7 @@ import { RestaurantModule } from "./restaurants/restaurants.module";
       database: process.env.POSTGRES_DB,
       synchronize: process.env.ENV !== "prod",
       logging: false,
-      entities: [User, EmailVerification, Restaurant],
+      entities: [User, EmailVerification, Restaurant, Category],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
