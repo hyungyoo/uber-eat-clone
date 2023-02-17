@@ -169,93 +169,6 @@ describe("Users resolver test (e2e)", () => {
     });
   });
 
-  describe("users", () => {
-    const gqlQeury = `
-    {
-      users {
-        isOk
-        errorMessage
-        users {
-          name
-          email
-          id
-          role
-        }
-      }
-    }`;
-    it(`should get user email name is ${dummy.email}`, () => {
-      return postRequest(gqlQeury)
-        .expect(200)
-        .expect((res) => {
-          const {
-            body: {
-              data: {
-                users: { isOk, errorMessage, users },
-              },
-            },
-          } = res;
-          expect(isOk).toBeTruthy();
-          expect(errorMessage).toBeNull();
-          const [user] = users;
-          expect(user.email).toBe(dummy.email);
-          expect(user.name).toBe(dummy.name);
-          expect(user.role).toBe(dummy.role);
-        });
-    });
-  });
-
-  describe("user", () => {
-    const gqlQeury = (userId: number) => {
-      return `
-    {
-      user (input: {id : ${userId}}) {
-        isOk
-        errorMessage
-        user{
-          id
-          name
-          email
-        }
-      }
-    }`;
-    };
-    it("should be fail if user id not exists", () => {
-      return postRequest(gqlQeury(5))
-        .expect(200)
-        .expect((res) => {
-          const {
-            body: {
-              data: {
-                user: { isOk, errorMessage, user },
-              },
-            },
-          } = res;
-          expect(isOk).toBeFalsy();
-          expect(errorMessage).toBe("user not found");
-          expect(user).toBeNull();
-        });
-    });
-    it("should succeed", async () => {
-      const [User] = await userRepository.find({
-        where: { email: dummy.email },
-      });
-      return postRequest(gqlQeury(User.id))
-        .expect(200)
-        .expect((res) => {
-          const {
-            body: {
-              data: {
-                user: { isOk, errorMessage, user },
-              },
-            },
-          } = res;
-          expect(isOk).toBeTruthy();
-          expect(errorMessage).toBeNull();
-          expect(user.id).toBe(User.id);
-        });
-    });
-  });
-
   describe("login", () => {
     const gqlQeury = (
       email: string = dummy.email,
@@ -322,6 +235,93 @@ describe("Users resolver test (e2e)", () => {
         })
         .then((res) => {
           jwtToken = res.body.data.login.token;
+        });
+    });
+  });
+
+  describe("users", () => {
+    const gqlQeury = `
+    {
+      users {
+        isOk
+        errorMessage
+        users {
+          name
+          email
+          id
+          role
+        }
+      }
+    }`;
+    it(`should get user email name is ${dummy.email}`, () => {
+      return postRequest(gqlQeury, jwtToken)
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                users: { isOk, errorMessage, users },
+              },
+            },
+          } = res;
+          expect(isOk).toBeTruthy();
+          expect(errorMessage).toBeNull();
+          const [user] = users;
+          expect(user.email).toBe(dummy.email);
+          expect(user.name).toBe(dummy.name);
+          expect(user.role).toBe(dummy.role);
+        });
+    });
+  });
+
+  describe("user", () => {
+    const gqlQeury = (userId: number) => {
+      return `
+    {
+      user (input: {id : ${userId}}) {
+        isOk
+        errorMessage
+        user{
+          id
+          name
+          email
+        }
+      }
+    }`;
+    };
+    it("should be fail if user id not exists", () => {
+      return postRequest(gqlQeury(5), jwtToken)
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                user: { isOk, errorMessage, user },
+              },
+            },
+          } = res;
+          expect(isOk).toBeFalsy();
+          expect(errorMessage).toBe("user not found");
+          expect(user).toBeNull();
+        });
+    });
+    it("should succeed", async () => {
+      const [User] = await userRepository.find({
+        where: { email: dummy.email },
+      });
+      return postRequest(gqlQeury(User.id), jwtToken)
+        .expect(200)
+        .expect((res) => {
+          const {
+            body: {
+              data: {
+                user: { isOk, errorMessage, user },
+              },
+            },
+          } = res;
+          expect(isOk).toBeTruthy();
+          expect(errorMessage).toBeNull();
+          expect(user.id).toBe(User.id);
         });
     });
   });
@@ -489,7 +489,7 @@ describe("Users resolver test (e2e)", () => {
       `;
     };
     it("should be fail if user is not exists with id", () => {
-      return postRequest(gqlQeury(10))
+      return postRequest(gqlQeury(10), jwtToken)
         .expect(200)
         .expect((res) => {
           const {
@@ -505,7 +505,7 @@ describe("Users resolver test (e2e)", () => {
         });
     });
     it("should delete user by id", async () => {
-      return postRequest(gqlQeury(dummy.id))
+      return postRequest(gqlQeury(dummy.id), jwtToken)
         .expect(200)
         .expect((res) => {
           const {

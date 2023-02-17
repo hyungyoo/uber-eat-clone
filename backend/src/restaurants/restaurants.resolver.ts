@@ -8,13 +8,13 @@ export class RestaurantResolver {
   constructor(private readonly restaurantService: RestaurantService) {}
 
   @Query((returns) => Restaurant)
-  @UserRole(["RESTAURANT_OWNER"])
+  @UserRole(["USER"])
   restaurant() {
     return;
   }
 
   @Query((returns) => [Restaurant])
-  @UserRole(["RESTAURANT_OWNER"])
+  @UserRole(["USER"])
   restaurants() {
     return { isOk: true };
   }

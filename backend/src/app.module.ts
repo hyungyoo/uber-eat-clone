@@ -24,7 +24,7 @@ import { AuthModule } from "./auth/auth.module";
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: process.env.ENV === "e2e" || "local" ? ".local.env" : ".env",
+      envFilePath: `.${process.env.ENV}.env`,
       validationSchema: Joi.object({
         POSTGRES_HOST: Joi.string().required(),
         POSTGRES_PORT: Joi.string().required(),
