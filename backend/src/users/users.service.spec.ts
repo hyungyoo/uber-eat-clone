@@ -232,7 +232,6 @@ describe("UsersService", () => {
         createUserArgs.email,
         createUserArgs.name,
         "verification for create",
-        "uber_eat_email_verification",
         expect.any(String)
       );
     });
@@ -298,7 +297,6 @@ describe("UsersService", () => {
         updateUserArgs.email,
         updateUserArgs.name,
         "verification for update",
-        "uber_eat_email_verification",
         expect.any(String)
       );
     });

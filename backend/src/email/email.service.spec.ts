@@ -22,7 +22,6 @@ const MockRepository = () => ({
  * variables for testing
  */
 const GET_VALUE = "fake-get-value";
-const FROM = "mock";
 const ID = 1;
 const CODE = "fake-code";
 const dummyUser = {
@@ -92,7 +91,6 @@ describe("EmailService", () => {
   const sendMailArg = {
     to: "hjyoo901112@gmail.com",
     subject: "mockValue",
-    template: "mockValue",
     name: "mockValue",
     code: "mockValue",
   };
@@ -112,11 +110,10 @@ describe("EmailService", () => {
       const result = await emailService.sendMail(
         sendMailArg.to,
         sendMailArg.subject,
-        sendMailArg.template,
         sendMailArg.name,
         sendMailArg.code
       );
-      expect(configService.get).toHaveBeenCalledTimes(3);
+      expect(configService.get).toHaveBeenCalledTimes(4);
       expect(result).toThrowError();
       expect(mailgun.messages).toBeCalled();
     });
@@ -129,11 +126,10 @@ describe("EmailService", () => {
       const result = await emailService.sendMail(
         sendMailArg.to,
         sendMailArg.subject,
-        sendMailArg.template,
         sendMailArg.name,
         sendMailArg.code
       );
-      expect(configService.get).toHaveBeenCalledTimes(3);
+      expect(configService.get).toHaveBeenCalledTimes(4);
       expect(result).toEqual({
         id: ID,
         message: "Queued. Thank you.",

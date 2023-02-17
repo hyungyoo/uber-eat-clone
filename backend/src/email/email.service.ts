@@ -23,17 +23,12 @@ export class EmailService {
    * @param name user name
    * @param code user code in email_verification table
    */
-  async sendMail(
-    to: string,
-    subject: string,
-    template: string,
-    name: string,
-    code: string
-  ) {
+  async sendMail(to: string, subject: string, name: string, code: string) {
     try {
-      const api_key = this.configService.get("MAILGUN_API_KEY");
-      const domain = this.configService.get("MAILGUN_DOMAIN_NAME");
-      const fromEmail = this.configService.get("MAILGUN_FROM");
+      const api_key = await this.configService.get("MAILGUN_API_KEY");
+      const domain = await this.configService.get("MAILGUN_DOMAIN_NAME");
+      const fromEmail = await this.configService.get("MAILGUN_FROM");
+      const template = await this.configService.get("MAILGUN_TEMPLATE_NAME");
       const mailgun = Mailgun({ apiKey: api_key, domain: domain });
       const data = {
         from: `Excited User <${fromEmail}>`,

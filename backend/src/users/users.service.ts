@@ -11,7 +11,6 @@ import { UpdateUserInput, UpdateUserOutput } from "./dtos/update-user.dto";
 import { DeleteUserInput, DeleteUserOutput } from "./dtos/delete-user.dto";
 import { EmailVerification } from "src/email/entities/email.verification.entity";
 import { EmailService } from "src/email/email.service";
-import { TEMPLATE_FOR_SENDMAIL } from "src/email/consts/email.const";
 
 @Injectable()
 export class UsersService {
@@ -69,7 +68,6 @@ export class UsersService {
         user.email,
         user.name,
         "verification for create",
-        TEMPLATE_FOR_SENDMAIL,
         emailVerified.verificationCode
       );
       return { emailVerified };
@@ -110,7 +108,6 @@ export class UsersService {
         userUpdated.email,
         userUpdated.name,
         "verification for update",
-        TEMPLATE_FOR_SENDMAIL,
         emailVerified.verificationCode
       );
       return {
