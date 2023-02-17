@@ -94,15 +94,13 @@ describe("UsersService", () => {
 
   const ID: number = 1;
 
-  const ROLE: number = 0;
-
   const dummyUser = {
     id: ID,
     email: "hjyoo901112@gmail.com",
     name: "hyungyoo",
     password: "12345",
     isVerified: false,
-    role: ROLE,
+    role: AllowedUserRole.CLIENT,
   };
 
   const createUserArgs: CreateUserInput = {
