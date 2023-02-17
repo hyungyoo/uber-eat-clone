@@ -178,7 +178,7 @@ export class UsersService {
    */
   async findUserById({ id }: GetUserInput): Promise<GetUserOutput> {
     try {
-      const user = await this.userRepository.findOne({ where: { id } });
+      const user: User = await this.userRepository.findOne({ where: { id } });
       if (!user) throw "user not found";
       return { user };
     } catch (errorMessage) {
