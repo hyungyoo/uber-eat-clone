@@ -1,10 +1,11 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, InputType, ObjectType } from "@nestjs/graphql";
 import { IsString } from "class-validator";
 import { BasedEntity } from "src/baseData/base.entity";
 import { User } from "src/users/entities/users.entity";
 import { Column, Entity, ManyToOne, RelationId } from "typeorm";
 import { Category } from "./category.entity";
 
+@InputType({ isAbstract: true })
 @ObjectType()
 @Entity()
 export class Restaurant extends BasedEntity {

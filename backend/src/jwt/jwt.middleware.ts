@@ -13,14 +13,16 @@ export class JwtMiddleWare implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
     try {
       if (JWT in req.headers) {
-        const id = this.JwtService.verifyToken(req.headers.jwt.toString());
-        const { user, errorMessage } = await this.UsersService.findUserById(id);
+        const id = await this.JwtService.verifyToken(
+          req.headers.jwt.toString()
+        );
+        const { user, errorMessage } = await this.UsersService.findUserById({
+          id,
+        });
         if (errorMessage) throw Error();
         req["user"] = user;
       }
-    } catch {
-    } finally {
-      next();
-    }
+    } catch {}
+    next();
   }
 }
