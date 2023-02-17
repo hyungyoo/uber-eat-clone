@@ -11,6 +11,7 @@ import { UpdateUserInput, UpdateUserOutput } from "./dtos/update-user.dto";
 import { DeleteUserInput, DeleteUserOutput } from "./dtos/delete-user.dto";
 import { EmailVerification } from "src/email/entities/email.verification.entity";
 import { EmailService } from "src/email/email.service";
+import { TEMPLATE_FOR_SENDMAIL } from "src/email/consts/email.const";
 
 @Injectable()
 export class UsersService {
@@ -57,10 +58,10 @@ export class UsersService {
         where: { email: createUserInput.email },
       });
       if (isAleadyEmail) throw "this email already exists";
-      const entityUser = this.userRepository.create({
+      const userEntity = this.userRepository.create({
         ...createUserInput,
       });
-      const user = await this.userRepository.save(entityUser);
+      const user = await this.userRepository.save(userEntity);
       const emailVerified = await this.emailVerificationRepository.save(
         this.emailVerificationRepository.create({ user })
       );
@@ -68,7 +69,7 @@ export class UsersService {
         user.email,
         user.name,
         "verification for create",
-        "uber_eat_email_verification",
+        TEMPLATE_FOR_SENDMAIL,
         emailVerified.verificationCode
       );
       return { emailVerified };
@@ -89,31 +90,31 @@ export class UsersService {
     updateUserInput: UpdateUserInput
   ): Promise<UpdateUserOutput> {
     try {
-      const isAleadyEmail = await this.userRepository.findOne({
+      const isEmailExists = await this.userRepository.findOne({
         where: { email: updateUserInput.email },
       });
-      if (isAleadyEmail) throw "this email already exists";
+      if (isEmailExists) throw "this email already exists";
       const userEntity = await this.userRepository.findOne({ where: { id } });
-      const user = this.userRepository.create({
+      const userUpdated = this.userRepository.create({
         ...userEntity,
         ...updateUserInput,
       });
       await this.emailVerificationRepository.delete({
-        user: { id: user.id },
+        user: { id: userUpdated.id },
       });
-      await this.userRepository.save(user);
+      await this.userRepository.save(userUpdated);
       const emailVerified = await this.emailVerificationRepository.save(
-        this.emailVerificationRepository.create({ user })
+        this.emailVerificationRepository.create({ user: userUpdated })
       );
       await this.emailService.sendMail(
-        user.email,
-        user.name,
+        userUpdated.email,
+        userUpdated.name,
         "verification for update",
-        "uber_eat_email_verification",
+        TEMPLATE_FOR_SENDMAIL,
         emailVerified.verificationCode
       );
       return {
-        user,
+        user: userUpdated,
       };
     } catch (errorMessage) {
       return {
@@ -130,13 +131,13 @@ export class UsersService {
    */
   async deleteUserById({ id }: DeleteUserInput): Promise<DeleteUserOutput> {
     try {
-      const user = await this.userRepository.findOne({
+      const userEntity = await this.userRepository.findOne({
         where: { id },
       });
-      if (!user) throw "this user not exists";
+      if (!userEntity) throw "this user not exists";
       await this.userRepository.delete(id);
       return {
-        user,
+        user: userEntity,
       };
     } catch (errorMessage) {
       return {
@@ -155,16 +156,15 @@ export class UsersService {
    */
   async login({ email, password }: LoginInput): Promise<LoginOutput> {
     try {
-      const IsUser = await this.userRepository.findOne({
+      const userEntity = await this.userRepository.findOne({
         where: { email },
         select: ["password", "id"],
       });
-      if (!IsUser)
-        return { isOk: false, errorMessage: "user not exists with this email" };
-      const isCorrectPW = await IsUser.ValidatePW(password);
+      if (!userEntity) throw "user not exists with this email";
+      const isCorrectPW = await userEntity.ValidatePW(password);
       if (!isCorrectPW) throw "password not correct";
       return {
-        token: this.jwtService.signToken({ id: IsUser.id }),
+        token: this.jwtService.signToken({ id: userEntity.id }),
       };
     } catch (errorMessage) {
       return { isOk: false, errorMessage };
@@ -179,7 +179,7 @@ export class UsersService {
   async findUserById({ id }: GetUserInput): Promise<GetUserOutput> {
     try {
       const user: User = await this.userRepository.findOne({ where: { id } });
-      if (!user) throw "user not found";
+      if (!user || !id) throw "user not found";
       return { user };
     } catch (errorMessage) {
       return {

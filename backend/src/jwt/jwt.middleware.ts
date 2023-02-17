@@ -10,15 +10,15 @@ export class JwtMiddleWare implements NestMiddleware {
     private readonly UsersService: UsersService,
     private readonly JwtService: JwtService
   ) {}
-  async use(req: Request, res: Response, next: NextFunction) {
+  async use(req: Request, _: Response, next: NextFunction) {
     try {
       if (JWT in req.headers) {
-        const id: number = await this.JwtService.verifyToken(
+        const idFromJwt: number = await this.JwtService.verifyToken(
           req.headers.jwt.toString()
         );
-        if (!id) throw "fail to get id from jwt";
+        if (!idFromJwt) throw "fail to get id from jwt";
         const { user, errorMessage } = await this.UsersService.findUserById({
-          id,
+          id: idFromJwt,
         });
         if (errorMessage) throw errorMessage;
         req["user"] = user;
