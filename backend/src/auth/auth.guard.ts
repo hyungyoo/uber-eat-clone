@@ -15,17 +15,17 @@ import { UserRoleType } from "./decorators/roles.decorator";
 export class AuthGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const userRole = this.reflector.get<UserRoleType>(
+    const userRoleFromGuard = this.reflector.get<UserRoleType>(
       "userRole",
       context.getHandler()
     );
     const userFromJWT = await GqlExecutionContext.create(context).getContext()
       .user;
-    if (!userFromJWT) return Boolean(!userRole);
+    if (!userFromJWT) return Boolean(!userRoleFromGuard);
     return (
-      (userRole.length === 1 &&
-        userRole.includes(userFromJWT.role.toUpperCase())) ||
-      userRole.includes("USER")
+      (userRoleFromGuard.length === 1 &&
+        userRoleFromGuard.includes(userFromJWT.role.toUpperCase())) ||
+      userRoleFromGuard.includes("USER")
     );
   }
 }
