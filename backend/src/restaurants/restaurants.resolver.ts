@@ -16,7 +16,7 @@ export class RestaurantResolver {
   @Query((returns) => [Restaurant])
   @UserRole(["RESTAURANT_OWNER"])
   restaurants() {
-    return;
+    return { isOk: true };
   }
 
   @Mutation((returns) => Restaurant)

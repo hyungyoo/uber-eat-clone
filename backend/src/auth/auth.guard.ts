@@ -7,21 +7,25 @@ import { UserRoleType } from "./decorators/roles.decorator";
 /**
  * AuthGuard is called with APP_GUARD when resolver is requested
  * with UserRole decorator (SetMetaData), AuthGuard can get role of user with reflector
- * if userRole and user from gqlRequest are undefined, AuthGuard will return true (no decorator, no jwt for createUser and login resolver)
- * if userRole and user from gqlRequest are equal, reutrn true, false otherwise
+ * if userRole and user from userFromJWT are undefined, AuthGuard will return true (no decorator, no jwt for createUser and login resolver)
+ * if userRole is defined but isUserFromJWT is undefined, AuthGuard will return false (decorator, but wrong jwt)
+ * if userRole and user from isUserFromJWT are equal, reutrn true, false otherwise
  */
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
-  canActivate(
-    context: ExecutionContext
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const userRole = this.reflector.get<UserRoleType>(
       "userRole",
       context.getHandler()
     );
-    const gqlRequest = GqlExecutionContext.create(context).getContext();
-    if (!userRole && !gqlRequest.user) return true;
-    return true;
+    const userFromJWT = await GqlExecutionContext.create(context).getContext()
+      .user;
+    if (!userFromJWT) return Boolean(!userRole);
+    return (
+      (userRole.length === 1 &&
+        userRole.includes(userFromJWT.role.toUpperCase())) ||
+      userRole.includes("USER")
+    );
   }
 }
