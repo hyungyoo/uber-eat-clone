@@ -11,6 +11,7 @@ import { UpdateUserInput } from "./dtos/update-user.dto";
 import { LoginInput } from "./dtos/login.dto";
 import { GetUserInput } from "./dtos/get-user.dto";
 import { DeleteUserInput } from "./dtos/delete-user.dto";
+import { AllowedUserRole } from "src/baseData/enums/user.enum";
 
 /**
  * Mock Types
@@ -108,7 +109,7 @@ describe("UsersService", () => {
     email: "hjyoo901112@gmail.com",
     name: "hyungyoo",
     password: "12345",
-    role: ROLE,
+    role: AllowedUserRole.CLIENT,
   };
 
   const updateUserArgs: UpdateUserInput = {

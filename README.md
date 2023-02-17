@@ -11,13 +11,20 @@
 
 - dev
 
-  - npm run start:dev : nest start --wath in docker container
-  - npm run start:local: nest start --watch in local with Dbeaver, Postico2
+  - npm run start:dev : with Dbeaver, Postico2, postgres in local
+  - env file must be in src of backend : .dev.env
 
 - test
-  - npm run test:watch : jest --watch
+
   - npm run test:cov
   - npm run test:e2e
+  - env file must be in src of backend : .e2e.env
+
+- prod
+  - make in root folder
+    - docker-compose up --build
+    - npm run start:prod with docker
+  - env file must be in root folder : .prod.env
 
 ## Backend
 
