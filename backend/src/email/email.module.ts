@@ -8,11 +8,7 @@ import { EmailModuleOptions } from "./options/email.options";
 
 @Module({})
 export class EmailModule {
-  constructor() {
-    console.log("constructor email module called");
-  }
   static forRoot(options: EmailModuleOptions): DynamicModule {
-    console.log("email module for root called");
     return {
       global: Boolean(options.isGlobal),
       module: EmailModule,

@@ -11,8 +11,4 @@ import { EmailVerification } from "src/email/entities/email.verification.entity"
   providers: [UsersResolver, UsersService, ConfigService],
   exports: [UsersService],
 })
-export class UsersModule {
-  constructor() {
-    console.log("constuctor user module called");
-  }
-}
+export class UsersModule {}

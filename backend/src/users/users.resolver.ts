@@ -13,18 +13,16 @@ import { UserRole } from "src/auth/decorators/roles.decorator";
 
 @Resolver((of) => User)
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService) {
-    console.log("constructor user resolver called");
-  }
+  constructor(private readonly usersService: UsersService) {}
 
   @Query((returns) => GetUsersOutput)
-  @UserRole("CLIENT")
+  @UserRole(["USER"])
   users() {
     return this.usersService.users();
   }
 
   @Query((returns) => GetUserOutput)
-  @UserRole("USER")
+  @UserRole(["USER"])
   async user(@Args(INPUT_ARG) getUserInput: GetUserInput) {
     return this.usersService.findUserById(getUserInput);
   }
@@ -40,13 +38,13 @@ export class UsersResolver {
   }
 
   @Query((returns) => User)
-  @UserRole("USER")
+  @UserRole(["USER"])
   myProfile(@AuthUser() User: User) {
     return User;
   }
 
   @Mutation((returns) => UpdateUserOutput)
-  @UserRole("USER")
+  @UserRole(["USER"])
   async updateUser(
     @AuthUser() { id }: User,
     @Args(INPUT_ARG) UpdateUserInput: UpdateUserInput
@@ -55,7 +53,7 @@ export class UsersResolver {
   }
 
   @Mutation((returns) => DeleteUserOutput)
-  @UserRole("USER")
+  @UserRole(["USER"])
   async deleteUser(@Args(INPUT_ARG) deleteUserInput: DeleteUserInput) {
     return await this.usersService.deleteUserById(deleteUserInput);
   }

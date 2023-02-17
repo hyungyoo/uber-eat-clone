@@ -4,9 +4,7 @@ import * as Jwt from "jsonwebtoken";
 
 @Injectable()
 export class JwtService {
-  constructor(private readonly configService: ConfigService) {
-    console.log("constructor jwt service called");
-  }
+  constructor(private readonly configService: ConfigService) {}
 
   signToken(payload: object): string {
     return Jwt.sign(payload, this.configService.get("PRIVATE_KEY_FOR_TOKEN"));

@@ -9,13 +9,10 @@ export class JwtMiddleWare implements NestMiddleware {
   constructor(
     private readonly UsersService: UsersService,
     private readonly JwtService: JwtService
-  ) {
-    console.log("constructor jwt middle ware called");
-  }
+  ) {}
   async use(req: Request, res: Response, next: NextFunction) {
     try {
-    console.log("jwt middle ware called");
-    if (JWT in req.headers) {
+      if (JWT in req.headers) {
         const id = this.JwtService.verifyToken(req.headers.jwt.toString());
         const { user, errorMessage } = await this.UsersService.findUserById(id);
         if (errorMessage) throw Error();

@@ -5,25 +5,23 @@ import { UserRole } from "src/auth/decorators/roles.decorator";
 
 @Resolver((of) => Restaurant)
 export class RestaurantResolver {
-  constructor(private readonly restaurantService: RestaurantService) {
-    console.log("constructor restarurant resovler called");
-  }
+  constructor(private readonly restaurantService: RestaurantService) {}
 
   @Query((returns) => Restaurant)
-  @UserRole("USER")
+  @UserRole(["RESTAURANT_OWNER"])
   restaurant() {
     return;
   }
 
   @Query((returns) => [Restaurant])
-  @UserRole("RESTAURANT_OWNER")
+  @UserRole(["RESTAURANT_OWNER"])
   restaurants() {
     return;
   }
 
   @Mutation((returns) => Restaurant)
-  @UserRole("RESTAURANT_OWNER")
+  @UserRole(["RESTAURANT_OWNER"])
   createRestaurant() {
-    return { isOk: "haha" };
+    return;
   }
 }

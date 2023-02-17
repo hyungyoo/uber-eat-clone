@@ -16,30 +16,12 @@ export class AuthGuard implements CanActivate {
   canActivate(
     context: ExecutionContext
   ): boolean | Promise<boolean> | Observable<boolean> {
-    console.log("auth gueard called");
-
     const userRole = this.reflector.get<UserRoleType>(
       "userRole",
       context.getHandler()
     );
     const gqlRequest = GqlExecutionContext.create(context).getContext();
     if (!userRole && !gqlRequest.user) return true;
-    console.log(userRole.toLowerCase(), "//////////////////////// is userRole");
-    console.log(
-      gqlRequest.user.role,
-      "/////////////////////// is user role in request"
-    );
-    console.log(
-      userRole.toLowerCase() === gqlRequest.user.role,
-      "/////////////////////// is result"
-    );
-    // comparer userRole and role from gqlRequest.user.role,
-    // if not comparere, no right for access!
-    // return false
-    // comparer with userRole, and user.role, but diff!
-    return (
-      userRole.toLowerCase() === "user" ||
-      userRole.toLowerCase() === gqlRequest.user.role
-    );
+    return true;
   }
 }

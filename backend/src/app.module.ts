@@ -52,7 +52,6 @@ import { AuthModule } from "./auth/auth.module";
       driver: ApolloDriver,
       autoSchemaFile: true,
       context: async ({ req }) => {
-        console.log("graph ql module for root with context called");
         return { user: req["user"] };
       },
     }),
@@ -66,11 +65,8 @@ import { AuthModule } from "./auth/auth.module";
   providers: [],
 })
 export class AppModule implements NestModule {
-  constructor() {
-    console.log("constructor app module called");
-  }
+  constructor() {}
   configure(consumer: MiddlewareConsumer) {
-    console.log("App module called");
     consumer.apply(JwtMiddleWare).forRoutes({
       path: "/graphql",
       method: RequestMethod.ALL,

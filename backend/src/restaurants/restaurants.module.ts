@@ -10,8 +10,4 @@ import { Category } from "./entities/category.entity";
   providers: [RestaurantResolver, RestaurantService],
   exports: [RestaurantService],
 })
-export class RestaurantModule {
-  constructor() {
-    console.log("constructor restaurant module called");
-  }
-}
+export class RestaurantModule {}

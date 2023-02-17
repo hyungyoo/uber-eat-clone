@@ -10,8 +10,4 @@ import { AuthGuard } from "./auth.guard";
     },
   ],
 })
-export class AuthModule {
-  constructor() {
-    console.log("constructor auth module called");
-  }
-}
+export class AuthModule {}
