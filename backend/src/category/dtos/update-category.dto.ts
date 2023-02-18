@@ -7,7 +7,7 @@ import {
 @InputType()
 export class UpdateCategoryInput extends PartialType(CreateCategoryInput) {
   @Field((type) => String)
-  categoryName: string;
+  categoryName?: string;
 }
 
 @ObjectType()
