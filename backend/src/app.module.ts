@@ -19,6 +19,7 @@ import { Restaurant } from "./restaurants/entities/restaurant.entity";
 import { RestaurantModule } from "./restaurants/restaurants.module";
 import { Category } from "./category/entities/category.entity";
 import { AuthModule } from "./auth/auth.module";
+import { CategoryModule } from "./category/category.module";
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AuthModule } from "./auth/auth.module";
         MAILGUN_API_KEY: Joi.string().required(),
         MAILGUN_DOMAIN_NAME: Joi.string().required(),
         MAILGUN_FROM: Joi.string().required(),
+        MAILGUN_TEMPLATE_NAME: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({
@@ -60,6 +62,7 @@ import { AuthModule } from "./auth/auth.module";
     UsersModule,
     RestaurantModule,
     AuthModule,
+    CategoryModule,
   ],
   controllers: [],
   providers: [],

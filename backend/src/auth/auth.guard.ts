@@ -21,6 +21,7 @@ export class AuthGuard implements CanActivate {
     );
     const userFromJWT = await GqlExecutionContext.create(context).getContext()
       .user;
+    if (userFromJWT && !userRoleFromGuard) return false; // for protection, after it will be deleted
     if (!userFromJWT) return Boolean(!userRoleFromGuard);
     return (
       (userRoleFromGuard.length === 1 &&

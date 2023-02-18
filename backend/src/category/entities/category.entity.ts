@@ -15,12 +15,12 @@ export class Category extends BasedEntity {
 
   @Field((type) => String)
   @IsString()
-  @Column({ unique: true })
+  @Column()
   description: string;
 
   @Field((type) => String)
   @IsString()
-  @Column({ unique: true })
+  @Column()
   categoryImg: String;
 
   @Field((type) => [Restaurant])
