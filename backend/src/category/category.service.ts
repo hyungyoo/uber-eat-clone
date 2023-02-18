@@ -8,6 +8,8 @@ import {
   UpdateCategoryInput,
   UpdateCategoryOutput,
 } from "./dtos/update-category.dto";
+import { DeleteCategoryOutput } from "./dtos/delete-category.dto";
+import { CategoriesOutput, CategoryOutput } from "./dtos/get-category.dto";
 
 @Injectable()
 export class CategoryService {
@@ -59,9 +61,48 @@ export class CategoryService {
     }
   }
 
-  async deleteCategoy(name: string) {
+  async deleteCategoy(name: string): Promise<DeleteCategoryOutput> {
     try {
+      const categoryEntity = await this.categoryRepository.findOne({
+        where: { name },
+      });
+      if (!categoryEntity) throw "category not exists";
       await this.categoryRepository.delete({ name });
-    } catch (errorMessage) {}
+      return {
+        category: categoryEntity,
+      };
+    } catch (errorMessage) {
+      return { isOk: false, errorMessage };
+    }
+  }
+
+  async category(name: string): Promise<CategoryOutput> {
+    try {
+      const category = await this.categoryRepository.findOne({
+        where: { name },
+      });
+      if (!category) throw "category not exists";
+      return {
+        category,
+      };
+    } catch (errorMessage) {
+      return {
+        isOk: false,
+        errorMessage,
+      };
+    }
+  }
+
+  async categories(): Promise<CategoriesOutput> {
+    try {
+      return {
+        categories: await this.categoryRepository.find(),
+      };
+    } catch (errorMessage) {
+      return {
+        isOk: false,
+        errorMessage,
+      };
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Args, Mutation, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { Category } from "./entities/category.entity";
 import { CategoryService } from "./category.service";
 import { UserRole } from "src/auth/decorators/roles.decorator";
@@ -15,6 +15,11 @@ import {
   DeleteCategoryInput,
   DeleteCategoryOutput,
 } from "./dtos/delete-category.dto";
+import {
+  CategoriesOutput,
+  CategoryInput,
+  CategoryOutput,
+} from "./dtos/get-category.dto";
 
 @Resolver((of) => Category)
 export class CategoryResolver {
@@ -40,5 +45,15 @@ export class CategoryResolver {
   @UserRole(["ADMIN"])
   async deleteCategory(@Args(INPUT_ARG) { name }: DeleteCategoryInput) {
     return this.categoryService.deleteCategoy(name);
+  }
+
+  @Query((returns) => CategoryOutput)
+  async category(@Args(INPUT_ARG) { name }: CategoryInput) {
+    return this.categoryService.category(name);
+  }
+
+  @Query((returns) => CategoriesOutput)
+  async categories() {
+    return this.categoryService.categories();
   }
 }
