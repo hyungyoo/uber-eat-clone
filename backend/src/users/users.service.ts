@@ -53,10 +53,10 @@ export class UsersService {
     createUserInput: CreateUserInput
   ): Promise<CreateUserOutput> {
     try {
-      const isAleadyEmail = await this.userRepository.findOne({
+      const isEmailExists = await this.userRepository.findOne({
         where: { email: createUserInput.email },
       });
-      if (isAleadyEmail) throw "this email already exists";
+      if (isEmailExists) throw "this email already exists";
       const userEntity = this.userRepository.create({
         ...createUserInput,
       });
