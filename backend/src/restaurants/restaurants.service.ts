@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Restaurant } from "./entities/restaurant.entity";
 import { Repository } from "typeorm";
 import {
   CreateRestaurantInput,
@@ -8,12 +7,13 @@ import {
 } from "./dtos/create-restaurant.dto";
 import { User } from "src/users/entities/users.entity";
 import { Category } from "src/category/entities/category.entity";
+import { UpdateRestaurantInput } from "./dtos/update-restaurant.dto";
+import { RestaurantRepository } from "./repositories/restaurant.repository";
 
 @Injectable()
 export class RestaurantService {
   constructor(
-    @InjectRepository(Restaurant)
-    private readonly restaurantRepository: Repository<Restaurant>,
+    private readonly restaurantRepository: RestaurantRepository,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>
   ) {}
@@ -64,4 +64,6 @@ export class RestaurantService {
       return { isOk: false, errorMessage };
     }
   }
+
+  async updateRestaurant(updateRestaurantInput: UpdateRestaurantInput) {}
 }
