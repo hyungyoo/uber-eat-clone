@@ -1,4 +1,4 @@
-import { Args, Mutation, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { EmailService } from "./email.service";
 import {
   EmailVerificationInput,
@@ -6,12 +6,14 @@ import {
 } from "./dtos/email.verification.dto";
 import { INPUT_ARG } from "src/baseData/consts/base.consts";
 import { EmailVerification } from "./entities/email.verification.entity";
+import { UserRole } from "src/auth/decorators/roles.decorator";
 
 @Resolver((of) => EmailVerification)
 export class EmailResolver {
   constructor(private readonly emailService: EmailService) {}
 
-  @Mutation((returns) => EmailVerificationOutput)
+  @Query((returns) => EmailVerificationOutput)
+  @UserRole(["USER"])
   verifierEmailCode(
     @Args(INPUT_ARG) { verificationCode }: EmailVerificationInput
   ) {

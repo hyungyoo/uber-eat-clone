@@ -132,7 +132,7 @@ export class UsersService {
         where: { id },
       });
       if (!userEntity) throw "this user not exists";
-      await this.userRepository.delete(id);
+      await this.userRepository.delete({ id });
       return {
         user: userEntity,
       };

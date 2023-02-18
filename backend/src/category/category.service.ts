@@ -59,5 +59,9 @@ export class CategoryService {
     }
   }
 
-  async deleteCategoy() {}
+  async deleteCategoy(name: string) {
+    try {
+      await this.categoryRepository.delete({ name });
+    } catch (errorMessage) {}
+  }
 }

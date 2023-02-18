@@ -434,7 +434,7 @@ describe("Users resolver test (e2e)", () => {
     };
     it("should fail", async () => {
       const verficationCode = "fake-verficationCode";
-      return postRequest(gqlQeury(verficationCode))
+      return postRequest(gqlQeury(verficationCode), jwtToken)
         .expect(200)
         .expect((res) => {
           const {
@@ -455,7 +455,7 @@ describe("Users resolver test (e2e)", () => {
           where: { user: { email: dummyForUpdate.email } },
         })
         .then((res) => res.verificationCode);
-      return postRequest(gqlQeury(verficationCode))
+      return postRequest(gqlQeury(verficationCode), jwtToken)
         .expect(200)
         .expect((res) => {
           const {

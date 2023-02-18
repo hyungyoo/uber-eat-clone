@@ -11,6 +11,10 @@ import {
   UpdateCategoryInput,
   UpdateCategoryOutput,
 } from "./dtos/update-category.dto";
+import {
+  DeleteCategoryInput,
+  DeleteCategoryOutput,
+} from "./dtos/delete-category.dto";
 
 @Resolver((of) => Category)
 export class CategoryResolver {
@@ -32,9 +36,9 @@ export class CategoryResolver {
     return this.categoryService.updateCategory(updateCategoryInput);
   }
 
-  @Mutation((returns) => Category)
+  @Mutation((returns) => DeleteCategoryOutput)
   @UserRole(["ADMIN"])
-  async deleteCategory() {
-    return this.categoryService.deleteCategoy();
+  async deleteCategory(@Args(INPUT_ARG) { name }: DeleteCategoryInput) {
+    return this.categoryService.deleteCategoy(name);
   }
 }
