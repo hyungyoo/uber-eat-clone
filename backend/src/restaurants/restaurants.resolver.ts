@@ -13,6 +13,10 @@ import {
   UpdateRestaurantInput,
   UpdateRestaurantOutput,
 } from "./dtos/update-restaurant.dto";
+import {
+  DeleteRestaurantInput,
+  DeleteRestaurantOutput,
+} from "./dtos/delete-restaurant.dto";
 
 @Resolver((of) => Restaurant)
 export class RestaurantResolver {
@@ -51,6 +55,11 @@ export class RestaurantResolver {
     return this.restaurantService.updateRestaurant(id, updateRestaurantInput);
   }
 
-  // @Mutation(returns => )
-  // delete
+  @Mutation((returns) => DeleteRestaurantOutput)
+  async deleteRestaurant(
+    @AuthUser() { id }: User,
+    @Args(INPUT_ARG) deleteRestaurantInput: DeleteRestaurantInput
+  ) {
+    return this.restaurantService.deleteRestaurant(id, deleteRestaurantInput);
+  }
 }

@@ -15,13 +15,14 @@ export class RestaurantRepository extends Repository<Restaurant> {
     });
   }
 
-  async hasRightForRestaurant(name: string, userId: number): Promise<Boolean> {
+  async canAccessToRestaurant(name: string, userId: number) {
     try {
       const restaurant = await this.isRestaurantExists(name);
-      return restaurant && restaurant.ownerId === userId;
+      if (restaurant && restaurant.ownerId === userId) return restaurant;
+      else throw "no right for restaurant";
     } catch (errorMessage) {
       console.log(errorMessage);
-      return false;
+      return undefined;
     }
   }
 }

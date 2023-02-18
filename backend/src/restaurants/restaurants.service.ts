@@ -10,6 +10,7 @@ import {
 } from "./dtos/update-restaurant.dto";
 import { RestaurantRepository } from "./repositories/restaurant.repository";
 import { CategoryRepository } from "src/category/repositories/category.respository";
+import { DeleteRestaurantInput } from "./dtos/delete-restaurant.dto";
 
 @Injectable()
 export class RestaurantService {
@@ -86,17 +87,11 @@ export class RestaurantService {
     }: UpdateRestaurantInput
   ): Promise<UpdateRestaurantOutput> {
     try {
-      const restaurant = await this.restaurantRepository.isRestaurantExists(
-        restaurantName
+      const restaurant = await this.restaurantRepository.canAccessToRestaurant(
+        restaurantName,
+        userId
       );
-      if (!restaurant) throw "restaurant not exists";
-      const hasRightForRestaurant =
-        await this.restaurantRepository.hasRightForRestaurant(
-          restaurantName,
-          userId
-        );
-      if (!hasRightForRestaurant)
-        throw "you do not have the right to update this restaurant";
+      if (!restaurant) throw "update restaurant fail";
       if (name) {
         const isRestaurantExists =
           await this.restaurantRepository.isRestaurantExists(name);
@@ -113,6 +108,25 @@ export class RestaurantService {
         if (category) restaurant.category = category;
       }
       await this.restaurantRepository.save(restaurant);
+      return {
+        restaurant,
+      };
+    } catch (errorMessage) {
+      return {
+        isOk: false,
+        errorMessage,
+      };
+    }
+  }
+
+  async deleteRestaurant(userId: number, { name }: DeleteRestaurantInput) {
+    try {
+      const restaurant = await this.restaurantRepository.canAccessToRestaurant(
+        name,
+        userId
+      );
+      if (!restaurant) throw "delete restaurant fail";
+      await this.restaurantRepository.delete({ name });
       return {
         restaurant,
       };
