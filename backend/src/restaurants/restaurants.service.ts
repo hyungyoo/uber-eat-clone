@@ -7,14 +7,13 @@ import {
   CreateRestaurantOutput,
 } from "./dtos/create-restaurant.dto";
 import { User } from "src/users/entities/users.entity";
-import { CategoryRepository } from "./repositories/category.custom.respository";
+import { CategoryRepository } from "../category/repositories/category.custom.respository";
 
 @Injectable()
 export class RestaurantService {
   constructor(
     @InjectRepository(Restaurant)
-    private readonly restaurantRepository: Repository<Restaurant>,
-    private readonly categoryRepository: CategoryRepository
+    private readonly restaurantRepository: Repository<Restaurant>
   ) {}
 
   /**
@@ -30,7 +29,7 @@ export class RestaurantService {
     owner: User,
     createRestaurantInput: CreateRestaurantInput
   ): Promise<CreateRestaurantOutput> {
-    // category.
+    // mettre category.
     // mette user
     // create
     // save

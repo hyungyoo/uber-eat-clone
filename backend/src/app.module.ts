@@ -17,7 +17,7 @@ import { EmailModule } from "./email/email.module";
 import { EmailVerification } from "./email/entities/email.verification.entity";
 import { Restaurant } from "./restaurants/entities/restaurant.entity";
 import { RestaurantModule } from "./restaurants/restaurants.module";
-import { Category } from "./restaurants/entities/category.entity";
+import { Category } from "./category/entities/category.entity";
 import { AuthModule } from "./auth/auth.module";
 
 @Module({

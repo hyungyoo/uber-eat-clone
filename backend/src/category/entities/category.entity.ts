@@ -1,21 +1,25 @@
 import { Field, InputType, ObjectType } from "@nestjs/graphql";
 import { BasedEntity } from "src/baseData/base.entity";
 import { Column, Entity, OneToMany } from "typeorm";
-import { Restaurant } from "./restaurant.entity";
+import { Restaurant } from "../../restaurants/entities/restaurant.entity";
+import { IsString } from "class-validator";
 
 @InputType({ isAbstract: true })
 @ObjectType()
 @Entity()
 export class Category extends BasedEntity {
   @Field((type) => String)
+  @IsString()
   @Column({ unique: true })
   name: string;
 
   @Field((type) => String)
+  @IsString()
   @Column({ unique: true })
-  slug: string;
+  description: string;
 
   @Field((type) => String)
+  @IsString()
   @Column({ unique: true })
   categoryImg: String;
 

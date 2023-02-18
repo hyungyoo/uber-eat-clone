@@ -9,6 +9,7 @@ import {
 } from "./dtos/create-restaurant.dto";
 import { AuthUser } from "src/auth/decorators/auth-user.decorator";
 import { User } from "src/users/entities/users.entity";
+import { Category } from "../category/entities/category.entity";
 
 @Resolver((of) => Restaurant)
 export class RestaurantResolver {

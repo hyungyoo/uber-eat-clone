@@ -7,7 +7,11 @@ export class CreateRestaurantInput extends PickType(Restaurant, [
   "name",
   "address",
   "restaurantImg",
-]) {}
+  "description",
+]) {
+  @Field((type) => String)
+  categotyName: string;
+}
 
 @ObjectType()
 export class CreateRestaurantOutput extends BaseOutput {

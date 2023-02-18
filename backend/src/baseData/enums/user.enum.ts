@@ -4,6 +4,7 @@ export enum AllowedUserRole {
   CLIENT = "client",
   RESTAURANT_OWNER = "restaurant_owner",
   DELIVERY = "delivery",
+  ADMIN = "admin",
 }
 
 export default registerEnumType(AllowedUserRole, {

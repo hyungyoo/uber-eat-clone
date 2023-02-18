@@ -3,6 +3,4 @@ import { Category } from "../entities/category.entity";
 import { Repository } from "typeorm";
 
 @CustomRepository(Category)
-export class CategoryRepository extends Repository<Category> {
-
-}
+export class CategoryRepository extends Repository<Category> {}
