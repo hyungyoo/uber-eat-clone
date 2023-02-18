@@ -862,5 +862,34 @@ describe("Uber-eat backend (e2e)", () => {
     });
   });
 
-  describe("Restaurant", () => {});
+    /**
+ *   { name: 'admin', email: 'admin@test.com', id: 2, role: 'ADMIN' },
+      {
+        name: 'owner',
+        email: 'owner@test.com',
+        id: 3,
+        role: 'RESTAURANT_OWNER'
+      },
+      { name: 'client', email: 'client@test.com', id: 4, role: 'CLIENT' }
+ */
+  describe("Restaurant", () => {
+    describe("createRestaurant", () => {
+      it.todo("should be fail if user role is not restaurant owner")
+      it.todo("should be success if user role is restaurant owner")
+    });
+
+    describe("updateRestaurant", () => {
+      it.todo("should be fail if user role is not restaurant owner");
+      it.todo("should be fail if restaurant name for change not exists");
+      it.todo("should be fail if user is not owner this restaurant");
+      it.todo("should be success");
+    });
+
+    describe("deleteRestaurant", () => {
+      it.todo("should be fail if user role is not restaurant owner");
+      it.todo("should be fail if restaurant name for delete not exists");
+      it.todo("should be fail if user is not owner this restaurant");
+      it.todo("should be success");
+    });
+  });
 });
