@@ -20,13 +20,13 @@ export class Restaurant extends BasedEntity {
   address: string;
 
   @Field((type) => String)
-  @Column({ unique: true })
+  @Column()
   @IsString()
   restaurantImg: string;
 
   @Field((type) => String)
   @IsString()
-  @Column({ unique: true })
+  @Column()
   description: string;
 
   @Field((type) => User)
@@ -35,11 +35,11 @@ export class Restaurant extends BasedEntity {
   })
   owner: User;
 
-  @Field((type) => Category)
+  @Field((type) => Category, { nullable: true })
   @ManyToOne((type) => Category, (category) => category.restaurants, {
     onDelete: "SET NULL",
   })
-  category: Category;
+  category?: Category;
 
   @RelationId((restaurant: Restaurant) => restaurant.owner)
   @IsNumber()
@@ -47,5 +47,5 @@ export class Restaurant extends BasedEntity {
 
   @RelationId((resaurant: Restaurant) => resaurant.category)
   @IsNumber()
-  categoryId: number;
+  categoryId?: number;
 }

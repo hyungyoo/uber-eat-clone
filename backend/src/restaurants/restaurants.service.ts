@@ -7,19 +7,22 @@ import {
   CreateRestaurantOutput,
 } from "./dtos/create-restaurant.dto";
 import { User } from "src/users/entities/users.entity";
-import { CategoryRepository } from "../category/repositories/category.custom.respository";
+import { Category } from "src/category/entities/category.entity";
 
 @Injectable()
 export class RestaurantService {
   constructor(
     @InjectRepository(Restaurant)
-    private readonly restaurantRepository: Repository<Restaurant>
+    private readonly restaurantRepository: Repository<Restaurant>,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>
   ) {}
 
   /**
    * create restaurant
    * 1. add category using categoryRepository function
-   * 2. save user in restaurant
+   * 2 - 1. save user in restaurant
+   * 2 - 2. save category in restaurant
    * 3. create restaurant and save
    * @param owner user info from AuthUser decorator
    * @param createRestaurantInput info for create restaurant
@@ -27,12 +30,38 @@ export class RestaurantService {
    */
   async createRestaurant(
     owner: User,
-    createRestaurantInput: CreateRestaurantInput
+    {
+      name,
+      description,
+      address,
+      categotyName,
+      restaurantImg,
+    }: CreateRestaurantInput
   ): Promise<CreateRestaurantOutput> {
-    // mettre category.
-    // mette user
-    // create
-    // save
-    return { isOk: true, errorMessage: "haha" };
+    try {
+      const isRestaurantExists = await this.restaurantRepository.findOne({
+        where: { name },
+      });
+      if (isRestaurantExists) throw "Restaurant is already exists";
+      const category = await this.categoryRepository.findOne({
+        where: { name: categotyName },
+      });
+      if (!category) throw "category not exists";
+      const restaurant = await this.restaurantRepository.save(
+        this.restaurantRepository.create({
+          name,
+          description,
+          address,
+          restaurantImg,
+          category,
+          owner,
+        })
+      );
+      return {
+        restaurant,
+      };
+    } catch (errorMessage) {
+      return { isOk: false, errorMessage };
+    }
   }
 }
