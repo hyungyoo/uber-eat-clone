@@ -10,8 +10,6 @@ import {
 } from "./dtos/update-restaurant.dto";
 import { RestaurantRepository } from "./repositories/restaurant.repository";
 import { CategoryRepository } from "src/category/repositories/category.respository";
-import { UpdateCategoryOutput } from "src/category/dtos/update-category.dto";
-import { Category } from "src/category/entities/category.entity";
 
 @Injectable()
 export class RestaurantService {

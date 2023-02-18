@@ -39,7 +39,7 @@ export class EmailService {
       };
       const resultSendmail = await mailgun.messages().send(data);
       // for test message
-      console.log(resultSendmail); ///////////////////////
+      // console.log(resultSendmail); ///////////////////////
       return resultSendmail;
     } catch (error) {
       console.log(error); //////////////////////////
