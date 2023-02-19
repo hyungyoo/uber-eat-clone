@@ -37,6 +37,9 @@ import { CategoryModule } from "./category/category.module";
         MAILGUN_DOMAIN_NAME: Joi.string().required(),
         MAILGUN_FROM: Joi.string().required(),
         MAILGUN_TEMPLATE_NAME: Joi.string().required(),
+        ADMIN_NAME: Joi.string().required(),
+        ADMIN_EMAIL: Joi.string().required(),
+        ADMIN_PASSWORD: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({

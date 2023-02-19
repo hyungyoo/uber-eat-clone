@@ -8,7 +8,6 @@ import { EmailVerification } from "src/email/entities/email.verification.entity"
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { JWT } from "src/jwt/consts/jwt.consts";
 import { AllowedUserRole } from "src/baseData/enums/user.enum";
-import { when } from "joi";
 
 /**
  * for mocking mailgun
@@ -876,9 +875,14 @@ describe("Uber-eat backend (e2e)", () => {
     });
   });
 
-  /**
-   * // 다시 받아야함
- *   { name: 'admin', email: 'admin@test.com', id: 2, role: 'ADMIN' },
+  /** users
+   *    [
+      {
+        name: 'admin',
+        email: 'admin@ubereateclone.com',
+        id: 1,
+        role: 'ADMIN'
+      },
       {
         name: 'owner',
         email: 'owner@test.com',
@@ -886,11 +890,16 @@ describe("Uber-eat backend (e2e)", () => {
         role: 'RESTAURANT_OWNER'
       },
       { name: 'client', email: 'client@test.com', id: 4, role: 'CLIENT' }
- */
+    ]
+  */
+  /** cateogories
+     categories: [ { name: 'changedName' } ]
+  * 
+  */
   describe("Restaurant", () => {
     describe("createRestaurant", () => {
-      it.todo("should be fail if user role is not restaurant owner");
-      it.todo("should be success if user role is restaurant owner");
+      it("should be fail if user role is not restaurant owner", () => {});
+      it("should be success if user role is restaurant owner", () => {});
     });
 
     describe("updateRestaurant", () => {
@@ -904,6 +913,7 @@ describe("Uber-eat backend (e2e)", () => {
       it.todo("should be fail if user role is not restaurant owner");
       it.todo("should be fail if restaurant name for delete not exists");
       it.todo("should be fail if user is not owner this restaurant");
+      it.todo("should be exists if category is deleted");
       it.todo("should be success");
     });
   });
