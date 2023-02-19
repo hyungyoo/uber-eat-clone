@@ -2,7 +2,7 @@ import { Field, InputType, ObjectType } from "@nestjs/graphql";
 import { BasedEntity } from "src/baseData/base.entity";
 import { User } from "src/users/entities/users.entity";
 import { BeforeInsert, Column, Entity, JoinColumn, OneToOne } from "typeorm";
-import { uuid } from "uuidv4";
+import { v4 as uuidv4 } from "uuid";
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -19,6 +19,6 @@ export class EmailVerification extends BasedEntity {
 
   @BeforeInsert()
   makeVerificationCode() {
-    this.verificationCode = uuid();
+    this.verificationCode = uuidv4();
   }
 }

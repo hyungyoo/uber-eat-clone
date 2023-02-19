@@ -7,6 +7,12 @@ export enum AllowedUserRole {
   ADMIN = "admin",
 }
 
+export enum UserRoleForCreate {
+  CLIENT = "client",
+  RESTAURANT_OWNER = "restaurant_owner",
+  DELIVERY = "delivery",
+}
+
 export default registerEnumType(AllowedUserRole, {
   name: "AllowedUserRole",
   description: "roles for user",
