@@ -7,6 +7,8 @@ import { HttpException, HttpStatus } from "@nestjs/common";
 import { Restaurant } from "src/restaurants/entities/restaurant.entity";
 import { AllowedUserRole } from "src/baseData/enums/user.enum";
 
+
+
 @InputType({ isAbstract: true })
 @ObjectType()
 @Entity()

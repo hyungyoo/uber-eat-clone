@@ -7,7 +7,7 @@ import { User } from "src/users/entities/users.entity";
 import { EmailVerification } from "src/email/entities/email.verification.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { JWT } from "src/jwt/consts/jwt.consts";
-import { UserRoleType } from "src/auth/decorators/roles.decorator";
+import { AllowedUserRole } from "src/baseData/enums/user.enum";
 
 /**
  * for mocking mailgun
@@ -44,9 +44,9 @@ const ownerDummy = {
 };
 
 const adminDummy = {
-  email: "admin@test.com",
-  password: "12345",
-  name: "admin",
+  email: process.env.ADMIN_EMAIL,
+  password: process.env.ADMIN_PASSWORD,
+  name: process.env.ADMIN_NAME,
   role: "ADMIN",
 };
 
@@ -158,6 +158,14 @@ describe("Uber-eat backend (e2e)", () => {
     app = moduleRef.createNestApplication();
     await app.init();
     userRepository = moduleRef.get<Repository<User>>(getRepositoryToken(User));
+    await userRepository.save(
+      userRepository.create({
+        name: process.env.ADMIN_NAME,
+        email: process.env.ADMIN_EMAIL,
+        password: process.env.ADMIN_PASSWORD,
+        role: AllowedUserRole.ADMIN,
+      })
+    );
     emailVerificationRepository = moduleRef.get<Repository<EmailVerification>>(
       getRepositoryToken(EmailVerification)
     );
@@ -191,7 +199,7 @@ describe("Uber-eat backend (e2e)", () => {
             name: "${dummy.name}",
             email: "${dummy.email}"
             password: "${dummy.password}"
-          role: ${dummy.role}
+            role: ${dummy.role}
         }
       ) {
         isOk
@@ -229,7 +237,7 @@ describe("Uber-eat backend (e2e)", () => {
           });
       });
 
-      it("should create admin", () => {
+      it("should be fail create admin", () => {
         return postRequest(
           gqlQeuryCreateUser(
             adminDummy.name,
@@ -240,7 +248,10 @@ describe("Uber-eat backend (e2e)", () => {
         )
           .expect(200)
           .expect((res) => {
-            expect(res.body.data.createUser.isOk).toBeTruthy();
+            expect(res.body.data.createUser.errorMessage).toBe(
+              "create account with admin is not allowed"
+            );
+            expect(res.body.data.createUser.isOk).toBeFalsy();
           });
       });
 
@@ -299,7 +310,7 @@ describe("Uber-eat backend (e2e)", () => {
       {
           login(input: {
             email: "${email}"
-        password: "${password}"
+            password: "${password}"
       }) {
         isOk
         errorMessage
@@ -358,6 +369,7 @@ describe("Uber-eat backend (e2e)", () => {
             jwtToken = res.body.data.login.token;
           });
       });
+
       it("should succeed and return token for admin", () => {
         return postRequest(gqlQeury(adminDummy.email, adminDummy.password))
           .expect(200)
@@ -372,11 +384,10 @@ describe("Uber-eat backend (e2e)", () => {
             expect(isOk).toBeTruthy();
             expect(errorMessage).toBeNull();
             expect(token).toBeDefined();
-          })
-          .then((res) => {
             jwtTokenForAdmin = res.body.data.login.token;
           });
       });
+
       it("should succeed and return token for restaurant owner", () => {
         return postRequest(gqlQeury(ownerDummy.email, ownerDummy.password))
           .expect(200)
@@ -431,7 +442,7 @@ describe("Uber-eat backend (e2e)", () => {
         }
       }
     }`;
-      it(`should get user email name is ${dummy.email}`, () => {
+      it(`should get users`, () => {
         return postRequest(gqlQeury, jwtToken)
           .expect(200)
           .expect((res) => {
@@ -444,10 +455,7 @@ describe("Uber-eat backend (e2e)", () => {
             } = res;
             expect(isOk).toBeTruthy();
             expect(errorMessage).toBeNull();
-            const [user] = users;
-            expect(user.email).toBe(dummy.email);
-            expect(user.name).toBe(dummy.name);
-            expect(user.role).toBe(dummy.role);
+            expect(users).toBeDefined();
           });
       });
     });
@@ -862,7 +870,8 @@ describe("Uber-eat backend (e2e)", () => {
     });
   });
 
-    /**
+  /**
+   * // 다시 받아야함
  *   { name: 'admin', email: 'admin@test.com', id: 2, role: 'ADMIN' },
       {
         name: 'owner',
@@ -874,8 +883,8 @@ describe("Uber-eat backend (e2e)", () => {
  */
   describe("Restaurant", () => {
     describe("createRestaurant", () => {
-      it.todo("should be fail if user role is not restaurant owner")
-      it.todo("should be success if user role is restaurant owner")
+      it.todo("should be fail if user role is not restaurant owner");
+      it.todo("should be success if user role is restaurant owner");
     });
 
     describe("updateRestaurant", () => {

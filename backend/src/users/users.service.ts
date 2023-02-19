@@ -53,6 +53,8 @@ export class UsersService {
     createUserInput: CreateUserInput
   ): Promise<CreateUserOutput> {
     try {
+      if (createUserInput.role === "admin")
+        throw "create account with admin is not allowed";
       const isEmailExists = await this.userRepository.findOne({
         where: { email: createUserInput.email },
       });

@@ -110,6 +110,13 @@ describe("UsersService", () => {
     role: AllowedUserRole.CLIENT,
   };
 
+  const createUserArgsRoleAdmin: CreateUserInput = {
+    email: "hjyoo901112@gmail.com",
+    name: "hyungyoo",
+    password: "12345",
+    role: AllowedUserRole.ADMIN,
+  };
+
   const updateUserArgs: UpdateUserInput = {
     email: "hjyoo901112@gmail.com",
     password: "12345",
@@ -184,6 +191,13 @@ describe("UsersService", () => {
       });
     });
 
+    it("should be fail if user role is admin", async () => {
+      const result = await usersService.createUser(createUserArgsRoleAdmin);
+      expect(result).toEqual({
+        isOk: false,
+        errorMessage: "create account with admin is not allowed",
+      });
+    });
     it("should create user", async () => {
       userRepository.findOne.mockResolvedValueOnce(undefined);
 
@@ -328,7 +342,7 @@ describe("UsersService", () => {
       });
 
       expect(userRepository.delete).toHaveBeenCalledTimes(1);
-      expect(userRepository.delete).toHaveBeenCalledWith(ID);
+      expect(userRepository.delete).toHaveBeenCalledWith({ id: ID });
     });
   });
 
