@@ -32,3 +32,15 @@ down :
 .PHONY: sclean
 sclean: 
 	docker system prune -a -f
+
+.PHONY: backend-dev
+backend-dev :
+	cd backend && npm run start:dev
+
+.PHONY: backend-test-cov
+backend-test-cov :
+	cd backend && npm run test:cov
+
+.PHONY: backend-test-e2e
+backend-test-e2e :
+	cd backend && npm run test:e2e
