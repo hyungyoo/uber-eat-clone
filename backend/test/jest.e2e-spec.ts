@@ -8,6 +8,7 @@ import { EmailVerification } from "src/email/entities/email.verification.entity"
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { JWT } from "src/jwt/consts/jwt.consts";
 import { AllowedUserRole } from "src/baseData/enums/user.enum";
+import { when } from "joi";
 
 /**
  * for mocking mailgun
@@ -156,7 +157,6 @@ describe("Uber-eat backend (e2e)", () => {
     }).compile();
 
     app = moduleRef.createNestApplication();
-    await app.init();
     userRepository = moduleRef.get<Repository<User>>(getRepositoryToken(User));
     await userRepository.save(
       userRepository.create({
@@ -166,6 +166,7 @@ describe("Uber-eat backend (e2e)", () => {
         role: AllowedUserRole.ADMIN,
       })
     );
+    await app.init();
     emailVerificationRepository = moduleRef.get<Repository<EmailVerification>>(
       getRepositoryToken(EmailVerification)
     );
@@ -407,6 +408,7 @@ describe("Uber-eat backend (e2e)", () => {
             jwtTokenForRestaurantOwner = res.body.data.login.token;
           });
       });
+
       it("should succeed and return token for client", () => {
         return postRequest(gqlQeury(clientDummy.email, clientDummy.password))
           .expect(200)
@@ -691,7 +693,10 @@ describe("Uber-eat backend (e2e)", () => {
           });
       });
       it("should delete user by id", async () => {
-        return postRequest(gqlQeury(dummy.id), jwtToken)
+        const userEntity = await userRepository.findOne({
+          where: { name: dummyForUpdate.name },
+        });
+        return postRequest(gqlQeury(userEntity.id), jwtToken)
           .expect(200)
           .expect((res) => {
             const {
@@ -703,7 +708,7 @@ describe("Uber-eat backend (e2e)", () => {
             } = res;
             expect(isOk).toBeTruthy();
             expect(errorMessage).toBeNull();
-            expect(user.id).toBe(dummy.id);
+            expect(user.id).toBe(userEntity.id);
           });
       });
     });
@@ -822,6 +827,7 @@ describe("Uber-eat backend (e2e)", () => {
           });
       });
     });
+
     describe("categories", () => {
       const gqlQeury = `
       {
