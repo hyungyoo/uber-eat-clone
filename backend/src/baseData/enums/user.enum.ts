@@ -13,7 +13,7 @@ export enum UserRoleForCreate {
   DELIVERY = "delivery",
 }
 
-export default registerEnumType(UserRoleForCreate, {
-  name: "UserRoleForCreate",
-  description: "roles for user in graphql",
+export default registerEnumType(AllowedUserRole, {
+  name: "AllowedUserRole",
+  description: "roles for user",
 });
