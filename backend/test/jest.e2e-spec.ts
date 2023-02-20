@@ -747,6 +747,13 @@ describe("Uber-eat backend (e2e)", () => {
             expect(res.body.data.createCategory.isOk).toBeTruthy();
           });
       });
+      it("should be success if user is ADMIN", () => {
+        return postRequest(gqlQeury("categoryForTest"), jwtTokenForAdmin)
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.data.createCategory.isOk).toBeTruthy();
+          });
+      });
     });
     describe("updateCategory", () => {
       const gqlQeury = (categoryName: string) => {
@@ -882,11 +889,16 @@ describe("Uber-eat backend (e2e)", () => {
         id: 3,
         role: 'RESTAURANT_OWNER'
       },
-      { name: 'client', email: 'client@test.com', id: 4, role: 'CLIENT' }
+      { 
+        name: 'client',
+        email: 'client@test.com', 
+        id: 4, 
+        role: 'CLIENT' 
+      }
     ]
   */
   /** cateogories
-     categories: [ { name: 'changedName' } ]
+     categories: [ { name: 'changedName' }, {name : 'categoryForTest'} ]
   * 
   */
   describe("Restaurant", () => {
