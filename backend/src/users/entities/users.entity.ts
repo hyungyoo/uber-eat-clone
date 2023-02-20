@@ -5,7 +5,10 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from "typeorm";
 import * as bcrypt from "bcryptjs";
 import { HttpException, HttpStatus } from "@nestjs/common";
 import { Restaurant } from "src/restaurants/entities/restaurant.entity";
-import { AllowedUserRole } from "src/baseData/enums/user.enum";
+import {
+  AllowedUserRole,
+  UserRoleForCreate,
+} from "src/baseData/enums/user.enum";
 
 @InputType({ isAbstract: true })
 @ObjectType()

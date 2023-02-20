@@ -11,6 +11,7 @@ import { UpdateUserInput, UpdateUserOutput } from "./dtos/update-user.dto";
 import { DeleteUserInput, DeleteUserOutput } from "./dtos/delete-user.dto";
 import { EmailVerification } from "src/email/entities/email.verification.entity";
 import { EmailService } from "src/email/email.service";
+import AdapteUserRole, { AllowedUserRole } from "src/baseData/enums/user.enum";
 
 @Injectable()
 export class UsersService {
@@ -53,14 +54,15 @@ export class UsersService {
     createUserInput: CreateUserInput
   ): Promise<CreateUserOutput> {
     try {
-      if (createUserInput.role === "admin")
-        throw "create account with admin is not allowed";
       const isEmailExists = await this.userRepository.findOne({
         where: { email: createUserInput.email },
       });
       if (isEmailExists) throw "this email already exists";
       const userEntity = this.userRepository.create({
-        ...createUserInput,
+        name: createUserInput.name,
+        email: createUserInput.email,
+        password: createUserInput.password,
+        role: AdapteUserRole(createUserInput.role),
       });
       const user = await this.userRepository.save(userEntity);
       const emailVerified = await this.emailVerificationRepository.save(

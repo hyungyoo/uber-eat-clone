@@ -237,7 +237,7 @@ describe("Uber-eat backend (e2e)", () => {
           });
       });
 
-      it("should be fail create admin", () => {
+      it("should be fail create admin and status code is 400", () => {
         return postRequest(
           gqlQeuryCreateUser(
             adminDummy.name,
@@ -245,14 +245,7 @@ describe("Uber-eat backend (e2e)", () => {
             adminDummy.password,
             adminDummy.role
           )
-        )
-          .expect(200)
-          .expect((res) => {
-            expect(res.body.data.createUser.errorMessage).toBe(
-              "create account with admin is not allowed"
-            );
-            expect(res.body.data.createUser.isOk).toBeFalsy();
-          });
+        ).expect(400);
       });
 
       it("should create restaurant_owner", () => {

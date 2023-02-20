@@ -11,7 +11,10 @@ import { UpdateUserInput } from "./dtos/update-user.dto";
 import { LoginInput } from "./dtos/login.dto";
 import { GetUserInput } from "./dtos/get-user.dto";
 import { DeleteUserInput } from "./dtos/delete-user.dto";
-import { AllowedUserRole } from "src/baseData/enums/user.enum";
+import {
+  AllowedUserRole,
+  UserRoleForCreate,
+} from "src/baseData/enums/user.enum";
 
 /**
  * Mock Types
@@ -107,14 +110,7 @@ describe("UsersService", () => {
     email: "hjyoo901112@gmail.com",
     name: "hyungyoo",
     password: "12345",
-    role: AllowedUserRole.CLIENT,
-  };
-
-  const createUserArgsRoleAdmin: CreateUserInput = {
-    email: "hjyoo901112@gmail.com",
-    name: "hyungyoo",
-    password: "12345",
-    role: AllowedUserRole.ADMIN,
+    role: UserRoleForCreate.CLIENT,
   };
 
   const updateUserArgs: UpdateUserInput = {
@@ -191,13 +187,6 @@ describe("UsersService", () => {
       });
     });
 
-    it("should be fail if user role is admin", async () => {
-      const result = await usersService.createUser(createUserArgsRoleAdmin);
-      expect(result).toEqual({
-        isOk: false,
-        errorMessage: "create account with admin is not allowed",
-      });
-    });
     it("should create user", async () => {
       userRepository.findOne.mockResolvedValueOnce(undefined);
 
