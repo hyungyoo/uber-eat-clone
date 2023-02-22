@@ -1,4 +1,4 @@
-import { Injectable, Res } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import {
   CreateRestaurantInput,
   CreateRestaurantOutput,

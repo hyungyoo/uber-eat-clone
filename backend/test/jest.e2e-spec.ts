@@ -8,6 +8,8 @@ import { EmailVerification } from "src/email/entities/email.verification.entity"
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { JWT } from "src/jwt/consts/jwt.consts";
 import { AllowedUserRole } from "src/baseData/enums/user.enum";
+import { Category } from "src/category/entities/category.entity";
+import { Restaurant } from "src/restaurants/entities/restaurant.entity";
 
 /**
  * for mocking mailgun
@@ -38,6 +40,13 @@ const dummy = {
 
 const ownerDummy = {
   email: "owner@test.com",
+  password: "12345",
+  name: "owner",
+  role: "RESTAURANT_OWNER",
+};
+
+const secondeOwnerDummy = {
+  email: "secondeOwner@test.com",
   password: "12345",
   name: "owner",
   role: "RESTAURANT_OWNER",
@@ -76,10 +85,13 @@ describe("Uber-eat backend (e2e)", () => {
    */
   let userRepository: Repository<User>;
   let emailVerificationRepository: Repository<EmailVerification>;
+  let categoryRespository: Repository<Category>;
+  let restaurantRepository: Repository<Restaurant>;
   let jwtToken: string;
   let jwtTokenForAdmin: string;
   let jwtTokenForClient: string;
   let jwtTokenForRestaurantOwner: string;
+  let jwtTokenForRestaurantOwnerForTest: string;
   /**
    * funtion for request
    * @param query query for send
@@ -262,6 +274,22 @@ describe("Uber-eat backend (e2e)", () => {
             expect(res.body.data.createUser.isOk).toBeTruthy();
           });
       });
+
+      it("should create restaurant_owner", () => {
+        return postRequest(
+          gqlQeuryCreateUser(
+            secondeOwnerDummy.name,
+            secondeOwnerDummy.email,
+            secondeOwnerDummy.password,
+            secondeOwnerDummy.role
+          )
+        )
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.data.createUser.isOk).toBeTruthy();
+          });
+      });
+
       it("should create ", () => {
         return postRequest(
           gqlQeuryCreateUser(
@@ -401,6 +429,28 @@ describe("Uber-eat backend (e2e)", () => {
           });
       });
 
+      it("should succeed and return token for restaurant seconde owner", () => {
+        return postRequest(
+          gqlQeury(secondeOwnerDummy.email, secondeOwnerDummy.password)
+        )
+          .expect(200)
+          .expect((res) => {
+            const {
+              body: {
+                data: {
+                  login: { isOk, errorMessage, token },
+                },
+              },
+            } = res;
+            expect(isOk).toBeTruthy();
+            expect(errorMessage).toBeNull();
+            expect(token).toBeDefined();
+          })
+          .then((res) => {
+            jwtTokenForRestaurantOwnerForTest = res.body.data.login.token;
+          });
+      });
+
       it("should succeed and return token for client", () => {
         return postRequest(gqlQeury(clientDummy.email, clientDummy.password))
           .expect(200)
@@ -470,7 +520,7 @@ describe("Uber-eat backend (e2e)", () => {
     }`;
       };
       it("should be fail if user id not exists", () => {
-        return postRequest(gqlQeury(5), jwtToken)
+        return postRequest(gqlQeury(10), jwtToken)
           .expect(200)
           .expect((res) => {
             const {
@@ -894,32 +944,185 @@ describe("Uber-eat backend (e2e)", () => {
         email: 'client@test.com', 
         id: 4, 
         role: 'CLIENT' 
-      }
+      },
+      {
+        name: 'secondeOwner',
+        email: 'owner@test.com',
+        id: 5, 
+        role: 'RESTAURANT_OWNER'
+      },
     ]
   */
   /** cateogories
-     categories: [ { name: 'changedName' }, {name : 'categoryForTest'} ]
+     categories: [ 
+      { 
+        name: 'changedName' 
+      }, 
+      {
+        name : 'categoryForTest'
+      } 
+    ]
   * 
   */
+
+  const restaurant = {
+    name: "restaurant",
+    address: "address",
+    restaurantImg: "img",
+    description: "description",
+  };
+
   describe("Restaurant", () => {
     describe("createRestaurant", () => {
-      it("should be fail if user role is not restaurant owner", () => {});
-      it("should be success if user role is restaurant owner", () => {});
+      const gqlQeury = `
+      mutation {
+        createRestaurant(input: {
+          name : "${restaurant.name}"
+          address : "${restaurant.address}"
+          restaurantImg: "${restaurant.restaurantImg}"
+          description: "${restaurant.description}"
+          categoryName : "categoryForTest"
+        }) {
+          isOk
+          errorMessage
+          restaurant {
+            id
+            name
+            category{
+              name
+            }
+          }
+        }
+      }
+      `;
+      it("should be fail if user role is not restaurant owner", () => {
+        return postRequest(gqlQeury, jwtTokenForClient)
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.errors).toBeDefined();
+          });
+      });
+      it("should be success if user role is restaurant owner", () => {
+        return postRequest(gqlQeury, jwtTokenForRestaurantOwner)
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.data.createRestaurant.isOk).toBeTruthy();
+            expect(res.body.data.createRestaurant.restaurant.id).toBe(1);
+            restaurant["id"] = res.body.data.createRestaurant.restaurant.id;
+          });
+      });
     });
 
     describe("updateRestaurant", () => {
-      it.todo("should be fail if user role is not restaurant owner");
-      it.todo("should be fail if restaurant name for change not exists");
-      it.todo("should be fail if user is not owner this restaurant");
-      it.todo("should be success");
+      const gqlQeury = (restaurantName: string) => {
+        return `
+      mutation {
+        updateRestaurant(input : {
+          restaurantName : "${restaurantName}",
+          description : "changed"
+        }) {
+          isOk
+          errorMessage
+          restaurant {
+            description
+          }
+        }
+      }
+      `;
+      };
+      it("should be fail if user role is not restaurant owner", () => {
+        return postRequest(gqlQeury(restaurant.name), jwtTokenForClient)
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.errors).toBeDefined();
+          });
+      });
+      it("should be fail if restaurant name for change not exists", () => {
+        return postRequest(gqlQeury("fake-name"), jwtTokenForRestaurantOwner)
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.data.updateRestaurant.isOk).toBeFalsy();
+          });
+      });
+      it("should be fail if user is not owner this restaurant", () => {
+        return postRequest(
+          gqlQeury(restaurant.name),
+          jwtTokenForRestaurantOwnerForTest
+        )
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.data.updateRestaurant.isOk).toBeFalsy();
+          });
+      });
+      it("should be success", () => {
+        return postRequest(
+          gqlQeury(restaurant.name),
+          jwtTokenForRestaurantOwner
+        )
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.data.updateRestaurant.isOk).toBeTruthy();
+            expect(res.body.data.updateRestaurant.restaurant.description).toBe(
+              "changed"
+            );
+          });
+      });
     });
 
     describe("deleteRestaurant", () => {
-      it.todo("should be fail if user role is not restaurant owner");
-      it.todo("should be fail if restaurant name for delete not exists");
-      it.todo("should be fail if user is not owner this restaurant");
-      it.todo("should be exists if category is deleted");
-      it.todo("should be success");
+      const gqlQeury = (name: string) => {
+        return `
+        mutation {
+          deleteRestaurant(input: {
+            name : "${name}"
+          }) {
+            isOk
+            errorMessage
+            restaurant {
+              name
+            }
+          }
+        }
+        `;
+      };
+      it("should be fail if user role is not restaurant owner", () => {
+        return postRequest(gqlQeury(restaurant.name), jwtTokenForClient)
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.errors).toBeDefined();
+          });
+      });
+      it("should be fail if restaurant name for delete not exists", () => {
+        return postRequest(
+          gqlQeury("fake-restaurnat-name"),
+          jwtTokenForRestaurantOwner
+        )
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.data.deleteRestaurant.isOk).toBeFalsy();
+          });
+      });
+      it("should be fail if user is not owner this restaurant", () => {
+        return postRequest(
+          gqlQeury(restaurant.name),
+          jwtTokenForRestaurantOwnerForTest
+        )
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.data.deleteRestaurant.isOk).toBeFalsy();
+          });
+      });
+      it("should be success", () => {
+        return postRequest(
+          gqlQeury(restaurant.name),
+          jwtTokenForRestaurantOwner
+        )
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.data.deleteRestaurant.isOk).toBeTruthy();
+          });
+      });
+      it.todo("should be not deleted if category is deleted");
     });
   });
 });

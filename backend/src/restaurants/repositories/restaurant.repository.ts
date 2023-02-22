@@ -18,8 +18,9 @@ export class RestaurantRepository extends Repository<Restaurant> {
   async canAccessToRestaurant(name: string, userId: number) {
     try {
       const restaurant = await this.isRestaurantExists(name);
-      if (restaurant && restaurant.ownerId === userId) return restaurant;
-      else throw "no right for restaurant";
+      if (!restaurant) throw "no restaurant corresponding";
+      if (restaurant.ownerId !== userId) throw "no right for restaurant";
+      return restaurant;
     } catch (errorMessage) {
       console.log(errorMessage);
       return undefined;
