@@ -10,7 +10,7 @@ import { Category } from "../../category/entities/category.entity";
 @Entity()
 export class Restaurant extends BasedEntity {
   @Field((type) => String)
-  @Column({ unique: true })
+  @Column()
   @IsString()
   name: string;
 

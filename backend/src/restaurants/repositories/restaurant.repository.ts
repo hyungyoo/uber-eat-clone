@@ -9,20 +9,18 @@ export class RestaurantRepository extends Repository<Restaurant> {
    * @param name
    * @returns restaurant
    */
-  isRestaurantExists(name: string): Promise<Restaurant> {
-    return this.findOne({
-      where: { name },
-    });
-  }
+  // isRestaurantExists(name: string): Promise<Restaurant> {
+  //   return this.findOne({
+  //     where: { name },
+  //   });
+  // }
 
-  async canAccessToRestaurant(name: string, userId: number) {
+  async canAccessToRestaurant(restaurantId: number, userId: number) {
     try {
-      const restaurant = await this.isRestaurantExists(name);
-      if (!restaurant) throw "no restaurant corresponding";
-      if (restaurant.ownerId !== userId) throw "no right for restaurant";
+      const restaurant = await this.findOne({ where: { id: restaurantId } });
+      if (!restaurant || restaurant.ownerId !== userId) return undefined;
       return restaurant;
-    } catch (errorMessage) {
-      console.log(errorMessage);
+    } catch {
       return undefined;
     }
   }

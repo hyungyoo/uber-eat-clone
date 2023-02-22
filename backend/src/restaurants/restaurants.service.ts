@@ -40,9 +40,6 @@ export class RestaurantService {
     }: CreateRestaurantInput
   ): Promise<CreateRestaurantOutput> {
     try {
-      const isRestaurantExists =
-        await this.restaurantRepository.isRestaurantExists(name);
-      if (isRestaurantExists) throw "Restaurant is already exists";
       const category = await this.categoryRepository.isCategoryExists(
         categoryName
       );
@@ -78,7 +75,7 @@ export class RestaurantService {
   async updateRestaurant(
     userId: number,
     {
-      restaurantName,
+      restaurantId,
       name,
       description,
       address,
@@ -88,16 +85,11 @@ export class RestaurantService {
   ): Promise<UpdateRestaurantOutput> {
     try {
       const restaurant = await this.restaurantRepository.canAccessToRestaurant(
-        restaurantName,
+        restaurantId,
         userId
       );
       if (!restaurant) throw "update restaurant fail";
-      if (name) {
-        const isRestaurantExists =
-          await this.restaurantRepository.isRestaurantExists(name);
-        if (isRestaurantExists) throw "restaurant name is already exists";
-        restaurant.name = name;
-      }
+      if (name) restaurant.name = name;
       if (description) restaurant.description = description;
       if (address) restaurant.address = address;
       if (restaurantImg) restaurant.restaurantImg = restaurantImg;
@@ -119,14 +111,14 @@ export class RestaurantService {
     }
   }
 
-  async deleteRestaurant(userId: number, { name }: DeleteRestaurantInput) {
+  async deleteRestaurant(userId: number, { id }: DeleteRestaurantInput) {
     try {
       const restaurant = await this.restaurantRepository.canAccessToRestaurant(
-        name,
+        id,
         userId
       );
       if (!restaurant) throw "delete restaurant fail";
-      await this.restaurantRepository.delete({ name });
+      await this.restaurantRepository.delete({ id });
       return {
         restaurant,
       };

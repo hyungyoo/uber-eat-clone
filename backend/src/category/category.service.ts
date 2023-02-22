@@ -40,10 +40,10 @@ export class CategoryService {
   }
 
   async updateCategory({
+    categoryName,
     name,
     description,
     categoryImg,
-    categoryName,
   }: UpdateCategoryInput): Promise<UpdateCategoryOutput> {
     try {
       const categoryEntity = await this.categoryRepository.findOne({

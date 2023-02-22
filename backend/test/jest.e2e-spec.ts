@@ -966,6 +966,7 @@ describe("Uber-eat backend (e2e)", () => {
   */
 
   const restaurant = {
+    id: 1,
     name: "restaurant",
     address: "address",
     restaurantImg: "img",
@@ -1014,11 +1015,11 @@ describe("Uber-eat backend (e2e)", () => {
     });
 
     describe("updateRestaurant", () => {
-      const gqlQeury = (restaurantName: string) => {
+      const gqlQeury = (restaurantId: number) => {
         return `
       mutation {
         updateRestaurant(input : {
-          restaurantName : "${restaurantName}",
+          restaurantId : ${restaurantId},
           description : "changed"
         }) {
           isOk
@@ -1031,14 +1032,14 @@ describe("Uber-eat backend (e2e)", () => {
       `;
       };
       it("should be fail if user role is not restaurant owner", () => {
-        return postRequest(gqlQeury(restaurant.name), jwtTokenForClient)
+        return postRequest(gqlQeury(restaurant.id), jwtTokenForClient)
           .expect(200)
           .expect((res) => {
             expect(res.body.errors).toBeDefined();
           });
       });
       it("should be fail if restaurant name for change not exists", () => {
-        return postRequest(gqlQeury("fake-name"), jwtTokenForRestaurantOwner)
+        return postRequest(gqlQeury(15), jwtTokenForRestaurantOwner)
           .expect(200)
           .expect((res) => {
             expect(res.body.data.updateRestaurant.isOk).toBeFalsy();
@@ -1046,7 +1047,7 @@ describe("Uber-eat backend (e2e)", () => {
       });
       it("should be fail if user is not owner this restaurant", () => {
         return postRequest(
-          gqlQeury(restaurant.name),
+          gqlQeury(restaurant.id),
           jwtTokenForRestaurantOwnerForTest
         )
           .expect(200)
@@ -1055,10 +1056,7 @@ describe("Uber-eat backend (e2e)", () => {
           });
       });
       it("should be success", () => {
-        return postRequest(
-          gqlQeury(restaurant.name),
-          jwtTokenForRestaurantOwner
-        )
+        return postRequest(gqlQeury(restaurant.id), jwtTokenForRestaurantOwner)
           .expect(200)
           .expect((res) => {
             expect(res.body.data.updateRestaurant.isOk).toBeTruthy();
@@ -1070,11 +1068,11 @@ describe("Uber-eat backend (e2e)", () => {
     });
 
     describe("deleteRestaurant", () => {
-      const gqlQeury = (name: string) => {
+      const gqlQeury = (id: number) => {
         return `
         mutation {
           deleteRestaurant(input: {
-            name : "${name}"
+            id : ${id}
           }) {
             isOk
             errorMessage
@@ -1086,17 +1084,14 @@ describe("Uber-eat backend (e2e)", () => {
         `;
       };
       it("should be fail if user role is not restaurant owner", () => {
-        return postRequest(gqlQeury(restaurant.name), jwtTokenForClient)
+        return postRequest(gqlQeury(restaurant.id), jwtTokenForClient)
           .expect(200)
           .expect((res) => {
             expect(res.body.errors).toBeDefined();
           });
       });
       it("should be fail if restaurant name for delete not exists", () => {
-        return postRequest(
-          gqlQeury("fake-restaurnat-name"),
-          jwtTokenForRestaurantOwner
-        )
+        return postRequest(gqlQeury(15), jwtTokenForRestaurantOwner)
           .expect(200)
           .expect((res) => {
             expect(res.body.data.deleteRestaurant.isOk).toBeFalsy();
@@ -1104,7 +1099,7 @@ describe("Uber-eat backend (e2e)", () => {
       });
       it("should be fail if user is not owner this restaurant", () => {
         return postRequest(
-          gqlQeury(restaurant.name),
+          gqlQeury(restaurant.id),
           jwtTokenForRestaurantOwnerForTest
         )
           .expect(200)
@@ -1113,10 +1108,7 @@ describe("Uber-eat backend (e2e)", () => {
           });
       });
       it("should be success", () => {
-        return postRequest(
-          gqlQeury(restaurant.name),
-          jwtTokenForRestaurantOwner
-        )
+        return postRequest(gqlQeury(restaurant.id), jwtTokenForRestaurantOwner)
           .expect(200)
           .expect((res) => {
             expect(res.body.data.deleteRestaurant.isOk).toBeTruthy();

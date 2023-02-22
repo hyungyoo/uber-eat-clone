@@ -7,9 +7,9 @@ import { IsString } from "class-validator";
 
 @InputType()
 export class UpdateRestaurantInput extends PartialType(CreateRestaurantInput) {
-  @Field((type) => String)
+  @Field((type) => Number)
   @IsString()
-  restaurantName: string;
+  restaurantId: number;
 }
 
 @ObjectType()
