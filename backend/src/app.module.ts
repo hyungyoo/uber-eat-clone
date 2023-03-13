@@ -1,24 +1,9 @@
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import * as Joi from "joi";
-import { JwtMiddleWare } from "./jwt/jwt.middleware";
-import { JwtModule } from "./jwt/jwt.module";
-import { User } from "./users/entities/users.entity";
-import { UsersModule } from "./users/users.module";
-import { EmailModule } from "./email/email.module";
-import { EmailVerification } from "./email/entities/email.verification.entity";
-import { Restaurant } from "./restaurants/entities/restaurant.entity";
-import { RestaurantModule } from "./restaurants/restaurants.module";
-import { Category } from "./category/entities/category.entity";
-import { CategoryModule } from "./category/category.module";
 
 @Module({
   imports: [
@@ -59,30 +44,14 @@ import { CategoryModule } from "./category/category.module";
       database: process.env.POSTGRES_DB,
       synchronize: process.env.ENV !== "prod",
       logging: false,
-      entities: [User, EmailVerification, Restaurant, Category],
+      entities: [],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
-      context: async ({ req }) => {
-        return { user: req["user"] };
-      },
     }),
-    JwtModule.forRoot({ isGlobal: true }),
-    EmailModule.forRoot({ isGlobal: true }),
-    UsersModule,
-    RestaurantModule,
-    CategoryModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule implements NestModule {
-  constructor() {}
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(JwtMiddleWare).forRoutes({
-      path: "/graphql",
-      method: RequestMethod.ALL,
-    });
-  }
-}
+export class AppModule {}
