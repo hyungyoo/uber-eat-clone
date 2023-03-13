@@ -1,32 +1,6 @@
-version: "3.8"
+version: "3.9"
 
 services:
-  #   nginx:
-  #     container_name: reverse_proxy
-  #     build:
-  #       context: Nginx
-  #       dockerfile: Dockerfile
-  #     volumes:
-  #       - ./Nginx/logs:/var/log/nginx
-  #       - ./Nginx/conf:/etc/nginx/conf.d
-  #     restart: always
-  #     ports:
-  #       - "8000:80"
-  #     depends_on:
-  # - front
-  #       - backend
-
-  # front:
-  #   container_name: frontend
-  #   build:
-  #     context: ./frontend
-  #   volumes:
-  #     - ./front:/usr/app
-  #     - /usr/app/node_modules
-  #   restart: always
-  #   depends_on:
-  #     - backend
-
   backend:
     container_name: backend
     build:
@@ -35,29 +9,42 @@ services:
       - ./backend:/app
       - /app/node_modules
     ports:
-      - 8080:3000
-    env_file: .env
+      - 3000:3000
+    env_file: .dev.env
+    environment:
+      APP_PORT: int
+      BACKEND_PORT: int
+    networks:
+      - user_eat
     depends_on:
-      - db
+      - postgres
+      - redis
 
-  db:
+  postgres:
     image: postgres
     container_name: postgres
     restart: always
     ports:
       - 5432:5432
-    env_file: .env
+    env_file: .dev.env
+    networks:
+      - user_eat
     volumes:
-      - api-db:/var/lib/postgresql/data
+      - postgres_db:/var/lib/postgresql/data
 
-  # dbadmin:
-  #   image: dpage/pgadmin4
-  #   restart: always
-  #   ports:
-  #     - 5050:80
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
-  #     PGADMIN_DEFAULT_PASSWORD: pgadmin4
+  redis:
+    image: redis
+    container_name: redis
+    restart: always
+    ports:
+      - 6379:6379
+    env_file: .dev.env
+    networks:
+      - user_eat
 
 volumes:
-  api-db:
+  postgres_db:
+
+networks:
+  user_eat:
+    driver: bridge
