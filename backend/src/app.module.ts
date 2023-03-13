@@ -3,6 +3,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { UsersModule } from './users/users.module';
 import * as Joi from "joi";
 
 @Module({
@@ -50,6 +51,7 @@ import * as Joi from "joi";
       driver: ApolloDriver,
       autoSchemaFile: true,
     }),
+    UsersModule,
   ],
   controllers: [],
   providers: [],
