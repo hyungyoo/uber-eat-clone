@@ -1,5 +1,5 @@
 import { Field, InputType, ObjectType } from "@nestjs/graphql";
-import { BasedEntity } from "src/baseData/base.entity";
+import { BasedEntity } from "src/core/core.entity";
 import { User } from "src/users/entities/users.entity";
 import { BeforeInsert, Column, Entity, JoinColumn, OneToOne } from "typeorm";
 import { v4 as uuidv4 } from "uuid";

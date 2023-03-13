@@ -34,8 +34,8 @@ export class CategoryService {
       return {
         category: newCategory,
       };
-    } catch (errorMessage) {
-      return { isOk: false, errorMessage };
+    } catch (error) {
+      return { isOk: false, error };
     }
   }
 
@@ -61,8 +61,8 @@ export class CategoryService {
       if (categoryImg) categoryEntity.categoryImg = categoryImg;
       const newCategory = await this.categoryRepository.save(categoryEntity);
       return { category: newCategory };
-    } catch (errorMessage) {
-      return { isOk: false, errorMessage };
+    } catch (error) {
+      return { isOk: false, error };
     }
   }
 
@@ -76,8 +76,8 @@ export class CategoryService {
       return {
         category: categoryEntity,
       };
-    } catch (errorMessage) {
-      return { isOk: false, errorMessage };
+    } catch (error) {
+      return { isOk: false, error };
     }
   }
 
@@ -90,10 +90,10 @@ export class CategoryService {
       return {
         category,
       };
-    } catch (errorMessage) {
+    } catch (error) {
       return {
         isOk: false,
-        errorMessage,
+        error,
       };
     }
   }
@@ -103,10 +103,10 @@ export class CategoryService {
       return {
         categories: await this.categoryRepository.find(),
       };
-    } catch (errorMessage) {
+    } catch (error) {
       return {
         isOk: false,
-        errorMessage,
+        error,
       };
     }
   }

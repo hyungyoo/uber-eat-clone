@@ -20,14 +20,10 @@ export class RestaurantService {
   ) {}
 
   /**
-   * create restaurant
-   * 1. add category using categoryRepository function
-   * 2 - 1. save user in restaurant
-   * 2 - 2. save category in restaurant
-   * 3. create restaurant and save
-   * @param owner user info from AuthUser decorator
-   * @param createRestaurantInput info for create restaurant
-   * @returns isOk, errorMessage, restaurant info
+   *
+   * @param owner
+   * @param param1
+   * @returns
    */
   async createRestaurant(
     owner: User,
@@ -57,20 +53,16 @@ export class RestaurantService {
       return {
         restaurant,
       };
-    } catch (errorMessage) {
-      return { isOk: false, errorMessage };
+    } catch (error) {
+      return { isOk: false, error };
     }
   }
 
   /**
-   * update restaurant
-   * 1. check the right for user if user can update restaurant (user must be owner)
-   * 2. check restaurant name for extence
-   * 3. create restaurant entity
-   * 4. save restaurant
-   * @param param0 user info
-   * @param param1 UpdateRestaurantInput
-   * @returns UpdateRestaurantOutput
+   *
+   * @param userId
+   * @param param1
+   * @returns
    */
   async updateRestaurant(
     userId: number,
@@ -103,14 +95,20 @@ export class RestaurantService {
       return {
         restaurant,
       };
-    } catch (errorMessage) {
+    } catch (error) {
       return {
         isOk: false,
-        errorMessage,
+        error,
       };
     }
   }
 
+  /**
+   * 
+   * @param userId 
+   * @param param1 
+   * @returns 
+   */
   async deleteRestaurant(userId: number, { id }: DeleteRestaurantInput) {
     try {
       const restaurant = await this.restaurantRepository.canAccessToRestaurant(
@@ -122,10 +120,10 @@ export class RestaurantService {
       return {
         restaurant,
       };
-    } catch (errorMessage) {
+    } catch (error) {
       return {
         isOk: false,
-        errorMessage,
+        error,
       };
     }
   }

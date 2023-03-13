@@ -1,5 +1,5 @@
 import { Field, InputType, ObjectType, PickType } from "@nestjs/graphql";
-import { BaseOutput } from "src/baseData/base.output";
+import { BaseOutput } from "src/core/core.output";
 import { User } from "../entities/users.entity";
 import { UserOutputType } from "./user.result.dto";
 

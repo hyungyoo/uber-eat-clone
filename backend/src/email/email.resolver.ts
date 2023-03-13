@@ -4,7 +4,7 @@ import {
   EmailVerificationInput,
   EmailVerificationOutput,
 } from "./dtos/email.verification.dto";
-import { INPUT_ARG } from "src/baseData/consts/base.consts";
+import { INPUT_ARG } from "src/core/consts/base.consts";
 import { EmailVerification } from "./entities/email.verification.entity";
 import { UserRole } from "src/auth/decorators/roles.decorator";
 

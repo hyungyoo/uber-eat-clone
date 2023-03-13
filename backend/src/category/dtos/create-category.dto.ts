@@ -1,6 +1,6 @@
 import { Field, InputType, ObjectType, PickType } from "@nestjs/graphql";
 import { Category } from "../entities/category.entity";
-import { BaseOutput } from "src/baseData/base.output";
+import { BaseOutput } from "src/core/core.output";
 
 @InputType()
 export class CreateCategoryInput extends PickType(Category, [

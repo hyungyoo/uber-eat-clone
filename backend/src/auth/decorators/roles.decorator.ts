@@ -1,5 +1,5 @@
 import { SetMetadata } from "@nestjs/common";
-import { AllowedUserRole } from "src/baseData/enums/user.enum";
+import { AllowedUserRole } from "src/core/enums/user.enum";
 
 export type UserRoleType = keyof typeof AllowedUserRole | "USER";
 

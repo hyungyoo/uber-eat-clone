@@ -7,7 +7,7 @@ import { GetUsersOutput } from "./dtos/get-users.dto";
 import { GetUserInput, GetUserOutput } from "./dtos/get-user.dto";
 import { UpdateUserInput, UpdateUserOutput } from "./dtos/update-user.dto";
 import { DeleteUserInput, DeleteUserOutput } from "./dtos/delete-user.dto";
-import { INPUT_ARG } from "src/baseData/consts/base.consts";
+import { INPUT_ARG } from "src/core/consts/base.consts";
 import { AuthUser } from "src/auth/decorators/auth-user.decorator";
 import { UserRole } from "src/auth/decorators/roles.decorator";
 

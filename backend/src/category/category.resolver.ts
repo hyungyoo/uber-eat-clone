@@ -6,7 +6,7 @@ import {
   CreateCategoryInput,
   CreateCategoryOutput,
 } from "./dtos/create-category.dto";
-import { INPUT_ARG } from "src/baseData/consts/base.consts";
+import { INPUT_ARG } from "src/core/consts/base.consts";
 import {
   UpdateCategoryInput,
   UpdateCategoryOutput,

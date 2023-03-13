@@ -3,7 +3,7 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { User } from "./users/entities/users.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { AllowedUserRole } from "./baseData/enums/user.enum";
+import { AllowedUserRole } from "./core/enums/user.enum";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

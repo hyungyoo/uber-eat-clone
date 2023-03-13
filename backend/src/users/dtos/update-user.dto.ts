@@ -5,7 +5,7 @@ import {
   PartialType,
   PickType,
 } from "@nestjs/graphql";
-import { BaseOutput } from "src/baseData/base.output";
+import { BaseOutput } from "src/core/core.output";
 import { User } from "../entities/users.entity";
 import { EmailVerification } from "src/email/entities/email.verification.entity";
 import { UserOutputType } from "./user.result.dto";

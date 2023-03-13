@@ -2,7 +2,7 @@ import { Args, Mutation, Resolver } from "@nestjs/graphql";
 import { Restaurant } from "./entities/restaurant.entity";
 import { RestaurantService } from "./restaurants.service";
 import { UserRole } from "src/auth/decorators/roles.decorator";
-import { INPUT_ARG } from "src/baseData/consts/base.consts";
+import { INPUT_ARG } from "src/core/consts/base.consts";
 import {
   CreateRestaurantInput,
   CreateRestaurantOutput,

@@ -9,5 +9,5 @@ export class BaseOutput {
 
   @Field((type) => String, { nullable: true })
   @IsString()
-  errorMessage?: string;
+  error?: string;
 }

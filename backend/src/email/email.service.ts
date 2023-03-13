@@ -73,8 +73,8 @@ export class EmailService {
       return {
         user,
       };
-    } catch (errorMessage) {
-      return { isOk: false, errorMessage };
+    } catch (error) {
+      return { isOk: false, error };
     }
   }
 }

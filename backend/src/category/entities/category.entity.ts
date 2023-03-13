@@ -1,5 +1,5 @@
 import { Field, InputType, ObjectType } from "@nestjs/graphql";
-import { BasedEntity } from "src/baseData/base.entity";
+import { BasedEntity } from "src/core/core.entity";
 import { Column, Entity, OneToMany } from "typeorm";
 import { Restaurant } from "../../restaurants/entities/restaurant.entity";
 import { IsString } from "class-validator";

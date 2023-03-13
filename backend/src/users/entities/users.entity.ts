@@ -1,14 +1,11 @@
 import { Field, InputType, ObjectType } from "@nestjs/graphql";
 import { IsBoolean, IsEmail, IsEnum, IsString } from "class-validator";
-import { BasedEntity } from "src/baseData/base.entity";
+import { BasedEntity } from "src/core/core.entity";
 import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from "typeorm";
 import * as bcrypt from "bcryptjs";
 import { HttpException, HttpStatus } from "@nestjs/common";
 import { Restaurant } from "src/restaurants/entities/restaurant.entity";
-import {
-  AllowedUserRole,
-  UserRoleForCreate,
-} from "src/baseData/enums/user.enum";
+import { AllowedUserRole } from "src/core/enums/user.enum";
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -59,8 +56,8 @@ export class User extends BasedEntity {
   async ValidatePW(InputPW: string): Promise<Boolean> {
     try {
       return await bcrypt.compare(InputPW, this.password);
-    } catch (errorMessage) {
-      throw { isOk: false, errorMessage };
+    } catch (error) {
+      throw { isOk: false, error };
     }
   }
 

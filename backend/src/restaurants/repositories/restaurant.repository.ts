@@ -1,4 +1,4 @@
-import { CustomRepository } from "src/baseData/decorators/typeorm-ex.decorator";
+import { CustomRepository } from "src/core/decorators/typeorm-ex.decorator";
 import { Repository } from "typeorm";
 import { Restaurant } from "../entities/restaurant.entity";
 

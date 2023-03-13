@@ -10,6 +10,13 @@ export class JwtMiddleWare implements NestMiddleware {
     private readonly UsersService: UsersService,
     private readonly JwtService: JwtService
   ) {}
+
+  /**
+   *
+   * @param req
+   * @param _
+   * @param next
+   */
   async use(req: Request, _: Response, next: NextFunction) {
     try {
       if (JWT in req.headers) {
@@ -17,14 +24,14 @@ export class JwtMiddleWare implements NestMiddleware {
           req.headers.jwt.toString()
         );
         if (!idFromJwt) throw "fail to get id from jwt";
-        const { user, errorMessage } = await this.UsersService.findUserById({
+        const { user, error } = await this.UsersService.findUserById({
           id: idFromJwt,
         });
-        if (errorMessage) throw errorMessage;
+        if (error) throw error;
         req["user"] = user;
       }
-    } catch (errorMessage) {
-      console.log(errorMessage);
+    } catch (error) {
+      console.log(error);
     }
     next();
   }

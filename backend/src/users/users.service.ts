@@ -11,7 +11,7 @@ import { UpdateUserInput, UpdateUserOutput } from "./dtos/update-user.dto";
 import { DeleteUserInput, DeleteUserOutput } from "./dtos/delete-user.dto";
 import { EmailVerification } from "src/email/entities/email.verification.entity";
 import { EmailService } from "src/email/email.service";
-import AdapteUserRole, { AllowedUserRole } from "src/baseData/enums/user.enum";
+import AdapteUserRole, { AllowedUserRole } from "src/core/enums/user.enum";
 
 @Injectable()
 export class UsersService {
@@ -25,7 +25,7 @@ export class UsersService {
 
   /**
    * get all users in database of users
-   * @return status, errorMessage, info of all users
+   * @return status, error, info of all users
    */
   async users(): Promise<GetUsersOutput> {
     try {
@@ -37,7 +37,7 @@ export class UsersService {
     } catch {
       return {
         isOk: false,
-        errorMessage: "fail to get users infos",
+        error: "fail to get users infos",
       };
     }
   }
@@ -48,7 +48,7 @@ export class UsersService {
    *  en dexieme, creation nouveau user
    *  en troiseme, hash de la PW
    * @param param0 email, password, role
-   * @return status, errorMessage, User info of the created user
+   * @return status, error, User info of the created user
    */
   async createUser(
     createUserInput: CreateUserInput
@@ -75,8 +75,8 @@ export class UsersService {
         emailVerified.verificationCode
       );
       return { emailVerified };
-    } catch (errorMessage) {
-      return { isOk: false, errorMessage };
+    } catch (error) {
+      return { isOk: false, error };
     }
   }
 
@@ -85,7 +85,7 @@ export class UsersService {
    * edit profile of user who has same id
    * @param id
    * @param UpdateUserInput
-   * @returns status, errorMessage, user info of the changed user
+   * @returns status, error, user info of the changed user
    */
   async updateUser(
     id: number,
@@ -117,10 +117,10 @@ export class UsersService {
       return {
         user: userUpdated,
       };
-    } catch (errorMessage) {
+    } catch (error) {
       return {
         isOk: false,
-        errorMessage,
+        error,
       };
     }
   }
@@ -128,7 +128,7 @@ export class UsersService {
   /**
    * delete user with id
    * @param id
-   * @returns status, errorMessage, user info of the deleted user
+   * @returns status, error, user info of the deleted user
    */
   async deleteUserById({ id }: DeleteUserInput): Promise<DeleteUserOutput> {
     try {
@@ -140,20 +140,18 @@ export class UsersService {
       return {
         user: userEntity,
       };
-    } catch (errorMessage) {
+    } catch (error) {
       return {
         isOk: false,
-        errorMessage,
+        error,
       };
     }
   }
 
   /**
-   * 1. check user email
-   * 2. comparer with password in users entitie class function for access user password
-   * 3. generate token
-   * @param param0 email, password
-   * @returns status, errorMessage, token
+   *
+   * @param param0
+   * @returns
    */
   async login({ email, password }: LoginInput): Promise<LoginOutput> {
     try {
@@ -164,18 +162,22 @@ export class UsersService {
       if (!userEntity) throw "user not exists with this email";
       const isCorrectPW = await userEntity.ValidatePW(password);
       if (!isCorrectPW) throw "password not correct";
+
+      /**
+       * 여기서 접근토큰과 리프레쉬토큰 두개를 발급해서 헤더에 넣어야함
+       */
       return {
         token: this.jwtService.signToken({ id: userEntity.id }),
       };
-    } catch (errorMessage) {
-      return { isOk: false, errorMessage };
+    } catch (error) {
+      return { isOk: false, error };
     }
   }
 
   /**
-   * find user from id
-   * @param id
-   * @returns status, errorMessage, user info of the requested user
+   *
+   * @param param0
+   * @returns
    */
   async findUserById({ id }: GetUserInput): Promise<GetUserOutput> {
     try {
@@ -183,12 +185,11 @@ export class UsersService {
       if (!user || !id) {
         throw "user not found";
       }
-
       return { user };
-    } catch (errorMessage) {
+    } catch (error) {
       return {
         isOk: false,
-        errorMessage,
+        error,
       };
     }
   }
